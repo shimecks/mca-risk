@@ -1,0 +1,15 @@
+* text=auto eol=lf
+# Source data must be byte-identical on every OS (input hashes in build/run_manifest.json, E1 reconciliation).
+raw/** -text
+ground_truth/** -text
+*.xlsx binary
+*.duckdb binary
+# Code and docs: normalize to LF in the repo.
+*.py text eol=lf
+*.sql text eol=lf
+*.md text eol=lf
+*.toml text eol=lf
+*.json text eol=lf
+*.yml text eol=lf
+*.yaml text eol=lf
+Makefile text eol=lf

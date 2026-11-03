@@ -1,0 +1,46 @@
+{
+  "as_of": "2026-09-30",
+  "n_merchants": 1200,
+  "n_deals": 2011,
+  "deals_by_type": {
+    "new": 1200,
+    "healthy_renewal": 567,
+    "distressed_refi": 244
+  },
+  "deals_by_outcome": {
+    "renewed_healthy": 567,
+    "paid_in_full": 524,
+    "active": 296,
+    "refinanced_distressed": 244,
+    "written_off": 158,
+    "defaulted": 71,
+    "settled": 61,
+    "active_modified": 38,
+    "active_stressed": 27,
+    "paid_in_full_early": 25
+  },
+  "closed_deals_reported_collection_rate_rtr_weighted": 0.9208,
+  "closed_deals_renewal_adjusted_collection_rate_rtr_weighted": 0.7084,
+  "share_of_reported_collections_that_are_internal_payoffs": 0.2022,
+  "renewed_deals_with_distressed_refi": 244,
+  "renewed_deals_total": 811,
+  "deal_level_bad_rate_naive_closed": 0.1387,
+  "deal_level_bad_rate_economic_closed": 0.2932,
+  "resolved_relationships": 768,
+  "resolved_relationship_cash_multiple": 1.1442,
+  "resolved_relationships_with_loss_share": 0.2122,
+  "open_economic_exposure_total": 11951402.84,
+  "open_contractual_balance_total": 25235742.35,
+  "distressed_refi_chains_ending_in_loss_share": 0.3978,
+  "anomaly_counts": {
+    "payment_posted_to_prior_deal": 227,
+    "renewal_link_missing": 122,
+    "collections_row_missing_deal_id": 93,
+    "deal_missing_from_tracker": 44,
+    "scorecard_missing": 38,
+    "renewal_link_only_in_notes": 33,
+    "stale_status_rows": 1,
+    "overlapping_export_duplicates": 1,
+    "export_date_format_change": 1
+  }
+}

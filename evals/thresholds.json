@@ -1,0 +1,87 @@
+{
+  "_comment": "Gates from plan.md §4, stated exactly. Never loosen a gate without writing the reason in PROGRESS.md and asking the user (CLAUDE.md). Each suite module must emit every metric named under 'gates'; metrics under 'report_only' are reported but not gated. ops: >=, <=, ==, between [lo, hi].",
+  "E1": {
+    "name": "Ingestion",
+    "plan_gate": "100% accounted",
+    "gates": {
+      "rows_accounted_rate": {"op": ">=", "value": 1.0},
+      "files_reconciled_rate": {"op": ">=", "value": 1.0}
+    },
+    "report_only": ["files_seen", "sheets_seen", "rows_source_nonblank", "rows_loaded", "rows_rejected", "value_fidelity_rate", "lineage_nonnull_rate"]
+  },
+  "E2": {
+    "name": "Standardization",
+    "plan_gate": ">= 99.5% field accuracy",
+    "gates": {
+      "field_accuracy": {"op": ">=", "value": 0.995}
+    },
+    "report_only": ["field_accuracy_by_field"]
+  },
+  "E3": {
+    "name": "Dedupe",
+    "plan_gate": "payments_std count and sum equal the true ledger (excluding commissions): exact",
+    "gates": {
+      "payments_count_abs_diff": {"op": "==", "value": 0},
+      "payments_sum_abs_diff_cents": {"op": "==", "value": 0}
+    },
+    "report_only": ["payments_count", "true_ledger_count"]
+  },
+  "E4": {
+    "name": "Entity resolution",
+    "plan_gate": "F1 >= 0.98",
+    "gates": {
+      "pairwise_f1": {"op": ">=", "value": 0.98}
+    },
+    "report_only": ["pairwise_precision", "pairwise_recall", "deal_to_merchant_accuracy"]
+  },
+  "E5": {
+    "name": "Linkage",
+    "plan_gate": "links P >= 0.98, R >= 0.97; L1 >= 0.99; L3 R >= 0.95",
+    "gates": {
+      "renewal_link_precision": {"op": ">=", "value": 0.98},
+      "renewal_link_recall": {"op": ">=", "value": 0.97},
+      "l1_payoff_accuracy": {"op": ">=", "value": 0.99},
+      "l3_misposting_recall": {"op": ">=", "value": 0.95}
+    },
+    "report_only": ["scorecard_match_rate", "l3_misposting_precision"]
+  },
+  "E6": {
+    "name": "Definitions",
+    "plan_gate": "outcome >= 0.97; D17 P >= 0.95, R >= 0.85",
+    "gates": {
+      "outcome_accuracy": {"op": ">=", "value": 0.97},
+      "d17_precision": {"op": ">=", "value": 0.95},
+      "d17_recall": {"op": ">=", "value": 0.85}
+    },
+    "report_only": ["default_date_within_25bd_rate"]
+  },
+  "E7": {
+    "name": "Metrics",
+    "plan_gate": "$1 per record; +/-0.5 pp portfolio",
+    "gates": {
+      "deal_metric_max_abs_err_usd": {"op": "<=", "value": 1.0},
+      "relationship_metric_max_abs_err_usd": {"op": "<=", "value": 1.0},
+      "portfolio_metric_max_abs_err_pp": {"op": "<=", "value": 0.5}
+    },
+    "report_only": ["end_to_end"]
+  },
+  "E8": {
+    "name": "Model",
+    "plan_gate": "AUC >= 0.70 (ceiling ~0.79); slope 0.8-1.2; main-driver signs correct",
+    "gates": {
+      "temporal_test_auc": {"op": ">=", "value": 0.70},
+      "calibration_slope": {"op": "between", "value": [0.8, 1.2]},
+      "main_driver_signs_correct": {"op": "==", "value": true}
+    },
+    "report_only": ["brier", "decile_lift", "ceiling_auc", "leakage_tests_passed"]
+  },
+  "E9": {
+    "name": "Notes (optional LLM)",
+    "plan_gate": "report both; LLM >= regex",
+    "optional": true,
+    "gates": {
+      "llm_minus_regex_accuracy": {"op": ">=", "value": 0.0}
+    },
+    "report_only": ["regex_accuracy", "llm_accuracy", "llm_cost_usd"]
+  }
+}

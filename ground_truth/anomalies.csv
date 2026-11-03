@@ -1,0 +1,561 @@
+type,deal_id,detail
+deal_missing_from_tracker,1005.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1024.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1091.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1096.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1102.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1147.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1188.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1263.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1265.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1307.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1337.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1422.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1467.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1482.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1524.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1640.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1682.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1684.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1716.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1813.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1826.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1881.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1893.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,1968.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2064.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2078.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2080.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2092.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2114.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2126.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2154.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2195.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2248.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2313.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2327.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2361.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2422.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2457.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2460.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2557.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2700.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2779.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2813.0,Deal funded and serviced (see ACH exports) but no tracker row
+deal_missing_from_tracker,2822.0,Deal funded and serviced (see ACH exports) but no tracker row
+renewal_link_only_in_notes,1004.0,prior=1001; note='ren. prev deal 1001'
+renewal_link_only_in_notes,1011.0,prior=1003; note='renewal - upsell'
+renewal_link_only_in_notes,1016.0,prior=1007; note=''
+renewal_link_only_in_notes,1017.0,prior=1002; note=''
+renewal_link_only_in_notes,1028.0,prior=1014; note='renewal of 1014'
+renewal_link_only_in_notes,1030.0,prior=1006; note=''
+renewal_link_only_in_notes,1031.0,prior=1009; note='renewal'
+renewal_link_only_in_notes,1033.0,prior=1010; note='RENEWAL - paid off #1010'
+renewal_link_only_in_notes,1036.0,prior=1028; note='rnwl'
+renewal_link_only_in_notes,1041.0,prior=1018; note='renewal'
+renewal_link_only_in_notes,1045.0,prior=1011; note='renewal'
+renewal_link_only_in_notes,1046.0,prior=1021; note='renewal'
+renewal_link_only_in_notes,1047.0,prior=1032; note='rnwl'
+renewal_link_only_in_notes,1049.0,prior=1024; note='rnwl'
+renewal_link_only_in_notes,1055.0,prior=1026; note='renewal'
+renewal_link_only_in_notes,1063.0,prior=1036; note='refi #1036'
+renewal_link_only_in_notes,1065.0,prior=1034; note='renewal of 1034'
+renewal_link_only_in_notes,1071.0,prior=1020; note='renewal of 1020; recon approved pmt $327.99'
+renewal_link_only_in_notes,1074.0,prior=1025; note=''
+renewal_link_only_in_notes,1079.0,prior=1035; note='RENEWAL - paid off #1035'
+renewal_link_only_in_notes,1080.0,prior=1054; note=''
+renewal_link_only_in_notes,1081.0,prior=1019; note=''
+renewal_link_only_in_notes,1083.0,prior=1038; note='RENEWAL - paid off #1038'
+renewal_link_only_in_notes,1085.0,prior=1063; note='rnwl'
+renewal_link_only_in_notes,1086.0,prior=1058; note='renewal of 1058'
+renewal_link_only_in_notes,1089.0,prior=1067; note='ren. prev deal 1067; recon approved pmt $233.10'
+renewal_link_only_in_notes,1090.0,prior=1064; note='ren. prev deal 1064'
+renewal_link_only_in_notes,1099.0,prior=1049; note='ren. prev deal 1049'
+renewal_link_only_in_notes,1100.0,prior=1044; note='RENEWAL - paid off #1044'
+renewal_link_only_in_notes,1104.0,prior=1050; note='rnwl'
+renewal_link_only_in_notes,1110.0,prior=1051; note='RENEWAL - paid off #1051'
+renewal_link_only_in_notes,1115.0,prior=1090; note=''
+renewal_link_only_in_notes,1119.0,prior=1042; note='RENEWAL - paid off #1042'
+renewal_link_missing,1120.0,true prior=1053; 'Prior Deal' blank
+renewal_link_missing,1127.0,true prior=1059; 'Prior Deal' blank
+renewal_link_missing,1136.0,true prior=1062; 'Prior Deal' blank
+renewal_link_missing,1143.0,true prior=1100; 'Prior Deal' blank
+renewal_link_missing,1154.0,true prior=1072; 'Prior Deal' blank
+renewal_link_missing,1160.0,true prior=1124; 'Prior Deal' blank
+renewal_link_missing,1165.0,true prior=1074; 'Prior Deal' blank
+renewal_link_missing,1167.0,true prior=1129; 'Prior Deal' blank
+renewal_link_missing,1187.0,true prior=1070; 'Prior Deal' blank
+renewal_link_missing,1190.0,true prior=1136; 'Prior Deal' blank
+renewal_link_missing,1201.0,true prior=1092; 'Prior Deal' blank
+renewal_link_missing,1214.0,true prior=1077; 'Prior Deal' blank
+renewal_link_missing,1217.0,true prior=1171; 'Prior Deal' blank
+renewal_link_missing,1221.0,true prior=1202; 'Prior Deal' blank
+renewal_link_missing,1229.0,true prior=1145; 'Prior Deal' blank
+renewal_link_missing,1251.0,true prior=1196; 'Prior Deal' blank
+renewal_link_missing,1253.0,true prior=1123; 'Prior Deal' blank
+renewal_link_missing,1262.0,true prior=1170; 'Prior Deal' blank
+renewal_link_missing,1268.0,true prior=1184; 'Prior Deal' blank
+renewal_link_missing,1278.0,true prior=1207; 'Prior Deal' blank
+renewal_link_missing,1279.0,true prior=1222; 'Prior Deal' blank
+renewal_link_missing,1306.0,true prior=1239; 'Prior Deal' blank
+renewal_link_missing,1323.0,true prior=1146; 'Prior Deal' blank
+renewal_link_missing,1330.0,true prior=1141; 'Prior Deal' blank
+renewal_link_missing,1344.0,true prior=1227; 'Prior Deal' blank
+renewal_link_missing,1350.0,true prior=1223; 'Prior Deal' blank
+renewal_link_missing,1360.0,true prior=1276; 'Prior Deal' blank
+renewal_link_missing,1381.0,true prior=1278; 'Prior Deal' blank
+renewal_link_missing,1403.0,true prior=1319; 'Prior Deal' blank
+renewal_link_missing,1410.0,true prior=1327; 'Prior Deal' blank
+renewal_link_missing,1424.0,true prior=1351; 'Prior Deal' blank
+renewal_link_missing,1431.0,true prior=1218; 'Prior Deal' blank
+renewal_link_missing,1441.0,true prior=1288; 'Prior Deal' blank
+renewal_link_missing,1447.0,true prior=1396; 'Prior Deal' blank
+renewal_link_missing,1452.0,true prior=1282; 'Prior Deal' blank
+renewal_link_missing,1510.0,true prior=1458; 'Prior Deal' blank
+renewal_link_missing,1514.0,true prior=1308; 'Prior Deal' blank
+renewal_link_missing,1515.0,true prior=1375; 'Prior Deal' blank
+renewal_link_missing,1526.0,true prior=1485; 'Prior Deal' blank
+renewal_link_missing,1599.0,true prior=1426; 'renewal_of' blank
+renewal_link_missing,1625.0,true prior=1435; 'renewal_of' blank
+renewal_link_missing,1648.0,true prior=1627; 'renewal_of' blank
+renewal_link_missing,1672.0,true prior=1519; 'renewal_of' blank
+renewal_link_missing,1675.0,true prior=1599; 'renewal_of' blank
+renewal_link_missing,1692.0,true prior=1450; 'renewal_of' blank
+renewal_link_missing,1701.0,true prior=1560; 'renewal_of' blank
+renewal_link_missing,1729.0,true prior=1622; 'renewal_of' blank
+renewal_link_missing,1742.0,true prior=1570; 'renewal_of' blank
+renewal_link_missing,1760.0,true prior=1512; 'renewal_of' blank
+renewal_link_missing,1801.0,true prior=1629; 'renewal_of' blank
+renewal_link_missing,1803.0,true prior=1597; 'renewal_of' blank
+renewal_link_missing,1824.0,true prior=1722; 'renewal_of' blank
+renewal_link_missing,1827.0,true prior=1636; 'renewal_of' blank
+renewal_link_missing,1828.0,true prior=1662; 'renewal_of' blank
+renewal_link_missing,1848.0,true prior=1678; 'renewal_of' blank
+renewal_link_missing,1867.0,true prior=1621; 'renewal_of' blank
+renewal_link_missing,1874.0,true prior=1610; 'renewal_of' blank
+renewal_link_missing,1879.0,true prior=1723; 'renewal_of' blank
+renewal_link_missing,1913.0,true prior=1593; 'renewal_of' blank
+renewal_link_missing,1921.0,true prior=1884; 'renewal_of' blank
+renewal_link_missing,1925.0,true prior=1789; 'renewal_of' blank
+renewal_link_missing,1944.0,true prior=1837; 'renewal_of' blank
+renewal_link_missing,1945.0,true prior=1770; 'renewal_of' blank
+renewal_link_missing,1960.0,true prior=1698; 'renewal_of' blank
+renewal_link_missing,1999.0,true prior=1896; 'renewal_of' blank
+renewal_link_missing,2040.0,true prior=1857; 'renewal_of' blank
+renewal_link_missing,2060.0,true prior=1957; 'renewal_of' blank
+renewal_link_missing,2095.0,true prior=1990; 'renewal_of' blank
+renewal_link_missing,2125.0,true prior=1675; 'renewal_of' blank
+renewal_link_missing,2133.0,true prior=1810; 'renewal_of' blank
+renewal_link_missing,2134.0,true prior=1878; 'renewal_of' blank
+renewal_link_missing,2139.0,true prior=1931; 'renewal_of' blank
+renewal_link_missing,2141.0,true prior=1962; 'renewal_of' blank
+renewal_link_missing,2149.0,true prior=2003; 'renewal_of' blank
+renewal_link_missing,2181.0,true prior=2095; 'renewal_of' blank
+renewal_link_missing,2184.0,true prior=2015; 'renewal_of' blank
+renewal_link_missing,2189.0,true prior=1908; 'renewal_of' blank
+renewal_link_missing,2201.0,true prior=2011; 'renewal_of' blank
+renewal_link_missing,2232.0,true prior=1897; 'renewal_of' blank
+renewal_link_missing,2254.0,true prior=2110; 'renewal_of' blank
+renewal_link_missing,2291.0,true prior=2169; 'renewal_of' blank
+renewal_link_missing,2304.0,true prior=1995; 'renewal_of' blank
+renewal_link_missing,2346.0,true prior=2064; 'renewal_of' blank
+renewal_link_missing,2381.0,true prior=2143; 'renewal_of' blank
+renewal_link_missing,2382.0,true prior=2231; 'renewal_of' blank
+renewal_link_missing,2396.0,true prior=2156; 'renewal_of' blank
+renewal_link_missing,2407.0,true prior=2082; 'renewal_of' blank
+renewal_link_missing,2418.0,true prior=2305; 'renewal_of' blank
+renewal_link_missing,2424.0,true prior=2148; 'renewal_of' blank
+renewal_link_missing,2442.0,true prior=2331; 'renewal_of' blank
+renewal_link_missing,2475.0,true prior=2286; 'renewal_of' blank
+renewal_link_missing,2484.0,true prior=2270; 'renewal_of' blank
+renewal_link_missing,2485.0,true prior=2350; 'renewal_of' blank
+renewal_link_missing,2504.0,true prior=2249; 'renewal_of' blank
+renewal_link_missing,2516.0,true prior=2366; 'renewal_of' blank
+renewal_link_missing,2518.0,true prior=2225; 'renewal_of' blank
+renewal_link_missing,2578.0,true prior=2239; 'renewal_of' blank
+renewal_link_missing,2611.0,true prior=2199; 'renewal_of' blank
+renewal_link_missing,2625.0,true prior=2254; 'renewal_of' blank
+renewal_link_missing,2632.0,true prior=2216; 'renewal_of' blank
+renewal_link_missing,2656.0,true prior=2378; 'renewal_of' blank
+renewal_link_missing,2663.0,true prior=2439; 'renewal_of' blank
+renewal_link_missing,2664.0,true prior=2473; 'renewal_of' blank
+renewal_link_missing,2670.0,true prior=2480; 'renewal_of' blank
+renewal_link_missing,2742.0,true prior=2382; 'renewal_of' blank
+renewal_link_missing,2752.0,true prior=2465; 'renewal_of' blank
+renewal_link_missing,2763.0,true prior=2658; 'renewal_of' blank
+renewal_link_missing,2787.0,true prior=2349; 'renewal_of' blank
+renewal_link_missing,2789.0,true prior=2573; 'renewal_of' blank
+renewal_link_missing,2798.0,true prior=2488; 'renewal_of' blank
+renewal_link_missing,2799.0,true prior=2600; 'renewal_of' blank
+renewal_link_missing,2820.0,true prior=2520; 'renewal_of' blank
+renewal_link_missing,2832.0,true prior=2413; 'renewal_of' blank
+renewal_link_missing,2836.0,true prior=2392; 'renewal_of' blank
+renewal_link_missing,2867.0,true prior=2576; 'renewal_of' blank
+renewal_link_missing,2910.0,true prior=2361; 'renewal_of' blank
+renewal_link_missing,2919.0,true prior=2469; 'renewal_of' blank
+renewal_link_missing,2952.0,true prior=2428; 'renewal_of' blank
+renewal_link_missing,2977.0,true prior=2532; 'renewal_of' blank
+renewal_link_missing,2994.0,true prior=2784; 'renewal_of' blank
+renewal_link_missing,2996.0,true prior=2628; 'renewal_of' blank
+renewal_link_missing,3009.0,true prior=2524; 'renewal_of' blank
+stale_status_rows,,163 tracker rows say Active although the deal had closed by the as-of date
+scorecard_missing,1006.0,No underwriting scorecard row
+scorecard_missing,1034.0,No underwriting scorecard row
+scorecard_missing,1047.0,No underwriting scorecard row
+scorecard_missing,1053.0,No underwriting scorecard row
+scorecard_missing,1058.0,No underwriting scorecard row
+scorecard_missing,1085.0,No underwriting scorecard row
+scorecard_missing,1097.0,No underwriting scorecard row
+scorecard_missing,1115.0,No underwriting scorecard row
+scorecard_missing,1117.0,No underwriting scorecard row
+scorecard_missing,1147.0,No underwriting scorecard row
+scorecard_missing,1160.0,No underwriting scorecard row
+scorecard_missing,1167.0,No underwriting scorecard row
+scorecard_missing,1190.0,No underwriting scorecard row
+scorecard_missing,1192.0,No underwriting scorecard row
+scorecard_missing,1202.0,No underwriting scorecard row
+scorecard_missing,1215.0,No underwriting scorecard row
+scorecard_missing,1237.0,No underwriting scorecard row
+scorecard_missing,1240.0,No underwriting scorecard row
+scorecard_missing,1283.0,No underwriting scorecard row
+scorecard_missing,1286.0,No underwriting scorecard row
+scorecard_missing,1292.0,No underwriting scorecard row
+scorecard_missing,1297.0,No underwriting scorecard row
+scorecard_missing,1299.0,No underwriting scorecard row
+scorecard_missing,1304.0,No underwriting scorecard row
+scorecard_missing,1327.0,No underwriting scorecard row
+scorecard_missing,1361.0,No underwriting scorecard row
+scorecard_missing,1378.0,No underwriting scorecard row
+scorecard_missing,1381.0,No underwriting scorecard row
+scorecard_missing,1383.0,No underwriting scorecard row
+scorecard_missing,1384.0,No underwriting scorecard row
+scorecard_missing,1420.0,No underwriting scorecard row
+scorecard_missing,1445.0,No underwriting scorecard row
+scorecard_missing,1458.0,No underwriting scorecard row
+scorecard_missing,1474.0,No underwriting scorecard row
+scorecard_missing,1477.0,No underwriting scorecard row
+scorecard_missing,1487.0,No underwriting scorecard row
+scorecard_missing,1505.0,No underwriting scorecard row
+scorecard_missing,1519.0,No underwriting scorecard row
+payment_posted_to_prior_deal,1017.0,ACH row dated 2023-05-08 shows deal 1002
+payment_posted_to_prior_deal,1036.0,ACH row dated 2023-07-27 shows deal 1028
+payment_posted_to_prior_deal,1036.0,ACH row dated 2023-07-28 shows deal 1028
+payment_posted_to_prior_deal,1036.0,ACH row dated 2023-07-31 shows deal 1028
+payment_posted_to_prior_deal,1045.0,ACH row dated 2023-08-21 shows deal 1011
+payment_posted_to_prior_deal,1045.0,ACH row dated 2023-08-22 shows deal 1011
+payment_posted_to_prior_deal,1124.0,ACH row dated 2024-01-08 shows deal 1046
+payment_posted_to_prior_deal,1136.0,ACH row dated 2024-01-26 shows deal 1062
+payment_posted_to_prior_deal,1136.0,ACH row dated 2024-01-29 shows deal 1062
+payment_posted_to_prior_deal,1136.0,ACH row dated 2024-01-30 shows deal 1062
+payment_posted_to_prior_deal,1147.0,ACH row dated 2024-02-14 shows deal 1115
+payment_posted_to_prior_deal,1154.0,ACH row dated 2024-02-23 shows deal 1072
+payment_posted_to_prior_deal,1154.0,ACH row dated 2024-02-26 shows deal 1072
+payment_posted_to_prior_deal,1155.0,ACH row dated 2024-02-27 shows deal 1109
+payment_posted_to_prior_deal,1155.0,ACH row dated 2024-02-28 shows deal 1109
+payment_posted_to_prior_deal,1166.0,ACH row dated 2024-03-21 shows deal 1153
+payment_posted_to_prior_deal,1166.0,ACH row dated 2024-03-22 shows deal 1153
+payment_posted_to_prior_deal,1166.0,ACH row dated 2024-03-25 shows deal 1153
+payment_posted_to_prior_deal,1193.0,ACH row dated 2024-04-15 shows deal 1091
+payment_posted_to_prior_deal,1193.0,ACH row dated 2024-04-16 shows deal 1091
+payment_posted_to_prior_deal,1213.0,ACH row dated 2024-04-30 shows deal 1110
+payment_posted_to_prior_deal,1251.0,ACH row dated 2024-06-06 shows deal 1196
+payment_posted_to_prior_deal,1251.0,ACH row dated 2024-06-07 shows deal 1196
+payment_posted_to_prior_deal,1263.0,ACH row dated 2024-06-20 shows deal 1152
+payment_posted_to_prior_deal,1263.0,ACH row dated 2024-06-21 shows deal 1152
+payment_posted_to_prior_deal,1284.0,ACH row dated 2024-07-05 shows deal 1209
+payment_posted_to_prior_deal,1296.0,ACH row dated 2024-07-17 shows deal 1211
+payment_posted_to_prior_deal,1300.0,ACH row dated 2024-07-23 shows deal 1175
+payment_posted_to_prior_deal,1332.0,ACH row dated 2024-08-15 shows deal 1265
+payment_posted_to_prior_deal,1345.0,ACH row dated 2024-08-20 shows deal 1272
+payment_posted_to_prior_deal,1345.0,ACH row dated 2024-08-21 shows deal 1272
+payment_posted_to_prior_deal,1350.0,ACH row dated 2024-08-21 shows deal 1223
+payment_posted_to_prior_deal,1350.0,ACH row dated 2024-08-22 shows deal 1223
+payment_posted_to_prior_deal,1356.0,ACH row dated 2024-08-29 shows deal 1292
+payment_posted_to_prior_deal,1356.0,ACH row dated 2024-08-30 shows deal 1292
+payment_posted_to_prior_deal,1356.0,ACH row dated 2024-09-03 shows deal 1292
+payment_posted_to_prior_deal,1379.0,ACH row dated 2024-09-16 shows deal 1251
+payment_posted_to_prior_deal,1379.0,ACH row dated 2024-09-17 shows deal 1251
+payment_posted_to_prior_deal,1379.0,ACH row dated 2024-09-18 shows deal 1251
+payment_posted_to_prior_deal,1382.0,ACH row dated 2024-09-17 shows deal 1296
+payment_posted_to_prior_deal,1411.0,ACH row dated 2024-10-08 shows deal 1281
+payment_posted_to_prior_deal,1411.0,ACH row dated 2024-10-09 shows deal 1281
+payment_posted_to_prior_deal,1411.0,ACH row dated 2024-10-10 shows deal 1281
+payment_posted_to_prior_deal,1478.0,ACH row dated 2024-11-20 shows deal 1373
+payment_posted_to_prior_deal,1507.0,ACH row dated 2024-12-13 shows deal 1465
+payment_posted_to_prior_deal,1507.0,ACH row dated 2024-12-16 shows deal 1465
+payment_posted_to_prior_deal,1542.0,ACH row dated 2025-01-08 shows deal 1377
+payment_posted_to_prior_deal,1568.0,ACH row dated 2025-01-24 shows deal 1407
+payment_posted_to_prior_deal,1568.0,ACH row dated 2025-01-27 shows deal 1407
+payment_posted_to_prior_deal,1588.0,ACH row dated 2025-02-06 shows deal 1480
+payment_posted_to_prior_deal,1608.0,ACH row dated 2025-02-18 shows deal 1442
+payment_posted_to_prior_deal,1608.0,ACH row dated 2025-02-19 shows deal 1442
+payment_posted_to_prior_deal,1608.0,ACH row dated 2025-02-20 shows deal 1442
+payment_posted_to_prior_deal,1654.0,ACH row dated 2025-03-17 shows deal 1631
+payment_posted_to_prior_deal,1654.0,ACH row dated 2025-03-18 shows deal 1631
+payment_posted_to_prior_deal,1675.0,ACH row dated 2025-03-26 shows deal 1599
+payment_posted_to_prior_deal,1688.0,ACH row dated 2025-04-02 shows deal 1584
+payment_posted_to_prior_deal,1694.0,ACH row dated 2025-04-03 shows deal 1515
+payment_posted_to_prior_deal,1694.0,ACH row dated 2025-04-10 shows deal 1515
+payment_posted_to_prior_deal,1694.0,ACH row dated 2025-04-17 shows deal 1515
+payment_posted_to_prior_deal,1699.0,ACH row dated 2025-04-07 shows deal 1431
+payment_posted_to_prior_deal,1736.0,ACH row dated 2025-04-24 shows deal 1563
+payment_posted_to_prior_deal,1736.0,ACH row dated 2025-04-25 shows deal 1563
+payment_posted_to_prior_deal,1736.0,ACH row dated 2025-04-28 shows deal 1563
+payment_posted_to_prior_deal,1756.0,ACH row dated 2025-05-06 shows deal 1580
+payment_posted_to_prior_deal,1764.0,ACH row dated 2025-05-08 shows deal 1574
+payment_posted_to_prior_deal,1764.0,ACH row dated 2025-05-15 shows deal 1574
+payment_posted_to_prior_deal,1764.0,ACH row dated 2025-05-22 shows deal 1574
+payment_posted_to_prior_deal,1794.0,ACH row dated 2025-05-23 shows deal 1613
+payment_posted_to_prior_deal,1794.0,ACH row dated 2025-05-27 shows deal 1613
+payment_posted_to_prior_deal,1807.0,ACH row dated 2025-06-03 shows deal 1612
+payment_posted_to_prior_deal,1810.0,ACH row dated 2025-06-04 shows deal 1707
+payment_posted_to_prior_deal,1836.0,ACH row dated 2025-06-17 shows deal 1676
+payment_posted_to_prior_deal,1836.0,ACH row dated 2025-06-18 shows deal 1676
+payment_posted_to_prior_deal,1836.0,ACH row dated 2025-06-20 shows deal 1676
+payment_posted_to_prior_deal,1842.0,ACH row dated 2025-06-24 shows deal 1742
+payment_posted_to_prior_deal,1842.0,ACH row dated 2025-06-25 shows deal 1742
+payment_posted_to_prior_deal,1847.0,ACH row dated 2025-06-26 shows deal 1736
+payment_posted_to_prior_deal,1847.0,ACH row dated 2025-06-27 shows deal 1736
+payment_posted_to_prior_deal,1863.0,ACH row dated 2025-07-03 shows deal 1679
+payment_posted_to_prior_deal,1863.0,ACH row dated 2025-07-07 shows deal 1679
+payment_posted_to_prior_deal,1876.0,ACH row dated 2025-07-11 shows deal 1718
+payment_posted_to_prior_deal,1876.0,ACH row dated 2025-07-18 shows deal 1718
+payment_posted_to_prior_deal,1897.0,ACH row dated 2025-07-21 shows deal 1608
+payment_posted_to_prior_deal,1897.0,ACH row dated 2025-07-22 shows deal 1608
+payment_posted_to_prior_deal,1936.0,ACH row dated 2025-08-08 shows deal 1784
+payment_posted_to_prior_deal,1936.0,ACH row dated 2025-08-11 shows deal 1784
+payment_posted_to_prior_deal,1936.0,ACH row dated 2025-08-12 shows deal 1784
+payment_posted_to_prior_deal,1957.0,ACH row dated 2025-08-19 shows deal 1767
+payment_posted_to_prior_deal,1957.0,ACH row dated 2025-08-20 shows deal 1767
+payment_posted_to_prior_deal,1976.0,ACH row dated 2025-08-28 shows deal 1611
+payment_posted_to_prior_deal,1976.0,ACH row dated 2025-08-29 shows deal 1611
+payment_posted_to_prior_deal,1976.0,ACH row dated 2025-09-02 shows deal 1611
+payment_posted_to_prior_deal,1991.0,ACH row dated 2025-09-03 shows deal 1766
+payment_posted_to_prior_deal,1991.0,ACH row dated 2025-09-04 shows deal 1766
+payment_posted_to_prior_deal,1991.0,ACH row dated 2025-09-05 shows deal 1766
+payment_posted_to_prior_deal,1998.0,ACH row dated 2025-09-05 shows deal 1836
+payment_posted_to_prior_deal,1998.0,ACH row dated 2025-09-08 shows deal 1836
+payment_posted_to_prior_deal,1998.0,ACH row dated 2025-09-09 shows deal 1836
+payment_posted_to_prior_deal,2008.0,ACH row dated 2025-09-11 shows deal 1865
+payment_posted_to_prior_deal,2008.0,ACH row dated 2025-09-18 shows deal 1865
+payment_posted_to_prior_deal,2014.0,ACH row dated 2025-09-15 shows deal 1710
+payment_posted_to_prior_deal,2027.0,ACH row dated 2025-09-19 shows deal 1887
+payment_posted_to_prior_deal,2027.0,ACH row dated 2025-09-22 shows deal 1887
+payment_posted_to_prior_deal,2027.0,ACH row dated 2025-09-23 shows deal 1887
+payment_posted_to_prior_deal,2053.0,ACH row dated 2025-10-01 shows deal 1822
+payment_posted_to_prior_deal,2063.0,ACH row dated 2025-10-07 shows deal 1866
+payment_posted_to_prior_deal,2063.0,ACH row dated 2025-10-08 shows deal 1866
+payment_posted_to_prior_deal,2065.0,ACH row dated 2025-10-07 shows deal 1929
+payment_posted_to_prior_deal,2065.0,ACH row dated 2025-10-08 shows deal 1929
+payment_posted_to_prior_deal,2065.0,ACH row dated 2025-10-09 shows deal 1929
+payment_posted_to_prior_deal,2087.0,ACH row dated 2025-10-15 shows deal 1871
+payment_posted_to_prior_deal,2087.0,ACH row dated 2025-10-16 shows deal 1871
+payment_posted_to_prior_deal,2092.0,ACH row dated 2025-10-17 shows deal 1959
+payment_posted_to_prior_deal,2092.0,ACH row dated 2025-10-20 shows deal 1959
+payment_posted_to_prior_deal,2092.0,ACH row dated 2025-10-21 shows deal 1959
+payment_posted_to_prior_deal,2118.0,ACH row dated 2025-10-30 shows deal 1977
+payment_posted_to_prior_deal,2118.0,ACH row dated 2025-10-31 shows deal 1977
+payment_posted_to_prior_deal,2184.0,ACH row dated 2025-12-02 shows deal 2015
+payment_posted_to_prior_deal,2184.0,ACH row dated 2025-12-03 shows deal 2015
+payment_posted_to_prior_deal,2184.0,ACH row dated 2025-12-04 shows deal 2015
+payment_posted_to_prior_deal,2189.0,ACH row dated 2025-12-03 shows deal 1908
+payment_posted_to_prior_deal,2204.0,ACH row dated 2025-12-09 shows deal 2059
+payment_posted_to_prior_deal,2211.0,ACH row dated 2025-12-12 shows deal 1841
+payment_posted_to_prior_deal,2211.0,ACH row dated 2025-12-15 shows deal 1841
+payment_posted_to_prior_deal,2211.0,ACH row dated 2025-12-16 shows deal 1841
+payment_posted_to_prior_deal,2240.0,ACH row dated 2025-12-22 shows deal 1895
+payment_posted_to_prior_deal,2240.0,ACH row dated 2025-12-23 shows deal 1895
+payment_posted_to_prior_deal,2240.0,ACH row dated 2025-12-24 shows deal 1895
+payment_posted_to_prior_deal,2272.0,ACH row dated 2026-01-05 shows deal 1863
+payment_posted_to_prior_deal,2272.0,ACH row dated 2026-01-06 shows deal 1863
+payment_posted_to_prior_deal,2309.0,ACH row dated 2026-01-22 shows deal 2086
+payment_posted_to_prior_deal,2309.0,ACH row dated 2026-01-29 shows deal 2086
+payment_posted_to_prior_deal,2309.0,ACH row dated 2026-02-05 shows deal 2086
+payment_posted_to_prior_deal,2330.0,ACH row dated 2026-01-30 shows deal 2077
+payment_posted_to_prior_deal,2330.0,ACH row dated 2026-02-02 shows deal 2077
+payment_posted_to_prior_deal,2330.0,ACH row dated 2026-02-03 shows deal 2077
+payment_posted_to_prior_deal,2331.0,ACH row dated 2026-01-30 shows deal 2152
+payment_posted_to_prior_deal,2331.0,ACH row dated 2026-02-02 shows deal 2152
+payment_posted_to_prior_deal,2403.0,ACH row dated 2026-03-02 shows deal 2054
+payment_posted_to_prior_deal,2403.0,ACH row dated 2026-03-09 shows deal 2054
+payment_posted_to_prior_deal,2404.0,ACH row dated 2026-03-02 shows deal 2088
+payment_posted_to_prior_deal,2404.0,ACH row dated 2026-03-03 shows deal 2088
+payment_posted_to_prior_deal,2443.0,ACH row dated 2026-03-17 shows deal 2160
+payment_posted_to_prior_deal,2443.0,ACH row dated 2026-03-18 shows deal 2160
+payment_posted_to_prior_deal,2443.0,ACH row dated 2026-03-19 shows deal 2160
+payment_posted_to_prior_deal,2470.0,ACH row dated 2026-03-24 shows deal 2166
+payment_posted_to_prior_deal,2479.0,ACH row dated 2026-03-26 shows deal 2347
+payment_posted_to_prior_deal,2480.0,ACH row dated 2026-03-26 shows deal 2386
+payment_posted_to_prior_deal,2480.0,ACH row dated 2026-03-27 shows deal 2386
+payment_posted_to_prior_deal,2480.0,ACH row dated 2026-03-30 shows deal 2386
+payment_posted_to_prior_deal,2485.0,ACH row dated 2026-03-27 shows deal 2350
+payment_posted_to_prior_deal,2485.0,ACH row dated 2026-03-30 shows deal 2350
+payment_posted_to_prior_deal,2491.0,ACH row dated 2026-03-31 shows deal 2394
+payment_posted_to_prior_deal,2508.0,ACH row dated 2026-04-07 shows deal 2147
+payment_posted_to_prior_deal,2508.0,ACH row dated 2026-04-08 shows deal 2147
+payment_posted_to_prior_deal,2512.0,ACH row dated 2026-04-08 shows deal 2233
+payment_posted_to_prior_deal,2513.0,ACH row dated 2026-04-08 shows deal 2140
+payment_posted_to_prior_deal,2529.0,ACH row dated 2026-04-14 shows deal 2401
+payment_posted_to_prior_deal,2529.0,ACH row dated 2026-04-15 shows deal 2401
+payment_posted_to_prior_deal,2530.0,ACH row dated 2026-04-14 shows deal 2123
+payment_posted_to_prior_deal,2578.0,ACH row dated 2026-04-28 shows deal 2239
+payment_posted_to_prior_deal,2578.0,ACH row dated 2026-04-29 shows deal 2239
+payment_posted_to_prior_deal,2579.0,ACH row dated 2026-04-28 shows deal 2277
+payment_posted_to_prior_deal,2579.0,ACH row dated 2026-04-29 shows deal 2277
+payment_posted_to_prior_deal,2610.0,ACH row dated 2026-05-08 shows deal 2219
+payment_posted_to_prior_deal,2610.0,ACH row dated 2026-05-11 shows deal 2219
+payment_posted_to_prior_deal,2610.0,ACH row dated 2026-05-12 shows deal 2219
+payment_posted_to_prior_deal,2621.0,ACH row dated 2026-05-13 shows deal 2370
+payment_posted_to_prior_deal,2621.0,ACH row dated 2026-05-14 shows deal 2370
+payment_posted_to_prior_deal,2621.0,ACH row dated 2026-05-15 shows deal 2370
+payment_posted_to_prior_deal,2633.0,ACH row dated 2026-05-15 shows deal 2384
+payment_posted_to_prior_deal,2633.0,ACH row dated 2026-05-18 shows deal 2384
+payment_posted_to_prior_deal,2653.0,ACH row dated 2026-05-21 shows deal 2210
+payment_posted_to_prior_deal,2678.0,ACH row dated 2026-06-02 shows deal 2535
+payment_posted_to_prior_deal,2678.0,ACH row dated 2026-06-03 shows deal 2535
+payment_posted_to_prior_deal,2678.0,ACH row dated 2026-06-04 shows deal 2535
+payment_posted_to_prior_deal,2679.0,ACH row dated 2026-06-02 shows deal 2306
+payment_posted_to_prior_deal,2702.0,ACH row dated 2026-06-11 shows deal 2346
+payment_posted_to_prior_deal,2702.0,ACH row dated 2026-06-12 shows deal 2346
+payment_posted_to_prior_deal,2702.0,ACH row dated 2026-06-15 shows deal 2346
+payment_posted_to_prior_deal,2710.0,ACH row dated 2026-06-15 shows deal 2328
+payment_posted_to_prior_deal,2710.0,ACH row dated 2026-06-16 shows deal 2328
+payment_posted_to_prior_deal,2724.0,ACH row dated 2026-06-17 shows deal 2643
+payment_posted_to_prior_deal,2737.0,ACH row dated 2026-06-22 shows deal 2637
+payment_posted_to_prior_deal,2737.0,ACH row dated 2026-06-23 shows deal 2637
+payment_posted_to_prior_deal,2745.0,ACH row dated 2026-06-24 shows deal 2272
+payment_posted_to_prior_deal,2779.0,ACH row dated 2026-07-07 shows deal 2558
+payment_posted_to_prior_deal,2779.0,ACH row dated 2026-07-08 shows deal 2558
+payment_posted_to_prior_deal,2779.0,ACH row dated 2026-07-09 shows deal 2558
+payment_posted_to_prior_deal,2782.0,ACH row dated 2026-07-08 shows deal 2181
+payment_posted_to_prior_deal,2784.0,ACH row dated 2026-07-08 shows deal 2397
+payment_posted_to_prior_deal,2784.0,ACH row dated 2026-07-09 shows deal 2397
+payment_posted_to_prior_deal,2785.0,ACH row dated 2026-07-08 shows deal 2489
+payment_posted_to_prior_deal,2785.0,ACH row dated 2026-07-09 shows deal 2489
+payment_posted_to_prior_deal,2785.0,ACH row dated 2026-07-10 shows deal 2489
+payment_posted_to_prior_deal,2799.0,ACH row dated 2026-07-13 shows deal 2600
+payment_posted_to_prior_deal,2799.0,ACH row dated 2026-07-14 shows deal 2600
+payment_posted_to_prior_deal,2801.0,ACH row dated 2026-07-14 shows deal 2463
+payment_posted_to_prior_deal,2801.0,ACH row dated 2026-07-15 shows deal 2463
+payment_posted_to_prior_deal,2814.0,ACH row dated 2026-07-16 shows deal 2451
+payment_posted_to_prior_deal,2814.0,ACH row dated 2026-07-17 shows deal 2451
+payment_posted_to_prior_deal,2818.0,ACH row dated 2026-07-17 shows deal 2751
+payment_posted_to_prior_deal,2818.0,ACH row dated 2026-07-20 shows deal 2751
+payment_posted_to_prior_deal,2818.0,ACH row dated 2026-07-21 shows deal 2751
+payment_posted_to_prior_deal,2832.0,ACH row dated 2026-07-23 shows deal 2413
+payment_posted_to_prior_deal,2836.0,ACH row dated 2026-07-24 shows deal 2392
+payment_posted_to_prior_deal,2836.0,ACH row dated 2026-07-31 shows deal 2392
+payment_posted_to_prior_deal,2838.0,ACH row dated 2026-07-24 shows deal 2598
+payment_posted_to_prior_deal,2850.0,ACH row dated 2026-07-28 shows deal 2579
+payment_posted_to_prior_deal,2864.0,ACH row dated 2026-07-31 shows deal 2565
+payment_posted_to_prior_deal,2898.0,ACH row dated 2026-08-11 shows deal 2363
+payment_posted_to_prior_deal,2898.0,ACH row dated 2026-08-12 shows deal 2363
+payment_posted_to_prior_deal,2919.0,ACH row dated 2026-08-17 shows deal 2469
+payment_posted_to_prior_deal,2926.0,ACH row dated 2026-08-18 shows deal 2793
+payment_posted_to_prior_deal,2926.0,ACH row dated 2026-08-19 shows deal 2793
+payment_posted_to_prior_deal,2956.0,ACH row dated 2026-08-27 shows deal 2425
+payment_posted_to_prior_deal,2958.0,ACH row dated 2026-08-27 shows deal 2852
+payment_posted_to_prior_deal,2958.0,ACH row dated 2026-08-28 shows deal 2852
+payment_posted_to_prior_deal,2968.0,ACH row dated 2026-08-31 shows deal 2733
+payment_posted_to_prior_deal,2968.0,ACH row dated 2026-09-14 shows deal 2733
+payment_posted_to_prior_deal,2986.0,ACH row dated 2026-09-10 shows deal 2761
+payment_posted_to_prior_deal,3004.0,ACH row dated 2026-09-28 shows deal 2794
+payment_posted_to_prior_deal,3004.0,ACH row dated 2026-09-29 shows deal 2794
+payment_posted_to_prior_deal,3004.0,ACH row dated 2026-09-30 shows deal 2794
+payment_posted_to_prior_deal,3007.0,ACH row dated 2026-09-29 shows deal 2743
+payment_posted_to_prior_deal,3007.0,ACH row dated 2026-09-30 shows deal 2743
+overlapping_export_duplicates,,15640 rows appear in two consecutive monthly exports (same Batch ID)
+export_date_format_change,,ACH exports switch from MM/DD/YYYY to YYYY-MM-DD starting 2024-07
+collections_row_missing_deal_id,1012.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1056.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1168.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1194.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1215.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1226.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1237.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1241.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1245.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1250.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1252.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1280.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1305.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1309.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1315.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1349.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1371.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1387.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1389.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1392.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1411.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1412.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1420.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1441.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1457.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1459.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1472.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1474.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1501.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1506.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1511.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1517.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1520.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1537.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1544.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1561.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1565.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1644.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1648.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1655.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1713.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1717.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1754.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1764.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1776.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1783.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1788.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1791.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1812.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1833.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1858.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1861.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1876.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1914.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1922.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1944.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1951.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1989.0,log row identifies merchant by name only
+collections_row_missing_deal_id,1993.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2031.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2055.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2069.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2074.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2091.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2105.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2141.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2185.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2193.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2194.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2200.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2224.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2228.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2232.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2271.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2314.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2317.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2340.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2381.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2402.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2427.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2462.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2505.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2509.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2528.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2612.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2614.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2618.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2635.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2697.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2715.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2736.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2754.0,log row identifies merchant by name only
+collections_row_missing_deal_id,2755.0,log row identifies merchant by name only

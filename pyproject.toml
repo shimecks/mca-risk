@@ -1,0 +1,61 @@
+[project]
+name = "mcarisk"
+version = "0.1.0"
+description = "MCA portfolio risk analytics: cash-based, relationship-level metrics from messy funder spreadsheets (synthetic data)."
+readme = "README.md"
+requires-python = ">=3.12,<3.13"
+# Upper caps on the compiled packages below are deliberate: on the dev machine (Windows 11 with
+# Smart App Control) brand-new binary wheels are blocked until they gain reputation. These ranges are
+# verified to load there; Linux CI is unaffected. See PROGRESS.md "Environment notes".
+dependencies = [
+    "duckdb>=1.4,<1.5",
+    "pyarrow>=21,<22",
+    "pandas>=2.2",
+    "openpyxl>=3.1",
+    "pandera>=0.20",
+    "rapidfuzz>=3.9",
+    "statsmodels>=0.14.5,<0.15",
+    "scikit-learn>=1.7,<1.8",
+    "scipy>=1.16,<1.17",
+    "lifelines>=0.30,<0.31",
+    "streamlit>=1.38",
+    "pyyaml>=6.0",
+    "pydantic>=2.8",
+    "openai>=1.40",
+    "matplotlib>=3.9",
+    "plotly>=5.24",
+]
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3",
+    "hypothesis>=6.112",
+    "ruff>=0.6",
+]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/mcarisk"]
+
+[tool.ruff]
+line-length = 110
+target-version = "py312"
+# scripts/ holds the provided data generator (dev-only tool, not pipeline code); left untouched.
+extend-exclude = ["scripts", "raw", "ground_truth", "build"]
+
+[tool.ruff.format]
+line-ending = "lf"
+
+[tool.ruff.lint]
+select = ["E", "F", "W", "I", "B", "UP", "SIM", "RUF"]
+ignore = ["E501"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+markers = [
+    "integration: tests that need the real raw/ data (still fast; run by default)",
+]

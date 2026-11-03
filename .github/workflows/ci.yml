@@ -1,0 +1,42 @@
+name: ci
+
+on:
+  push:
+    branches: [main]
+    tags: ["part-*"]
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Install uv
+        uses: astral-sh/setup-uv@18d369b23da25a81e9458561248e1aafff6a70fa # v10.3.1
+        with:
+          python-version: "3.12"
+          enable-cache: true
+
+      - name: Install dependencies (locked)
+        run: uv sync --locked
+
+      - name: Lint and test
+        run: make lint test
+
+      - name: Full pipeline from a clean build/
+        run: make clean all
+
+      - name: Evals (implemented suites are gated; unimplemented ones are reported)
+        run: make eval
+
+      - name: Upload build manifest and eval report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: run-artifacts
+          path: |
+            build/run_manifest.json
+            evals/reports/latest.*
+          if-no-files-found: warn

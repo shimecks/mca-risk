@@ -1,0 +1,33 @@
+{
+  "hazard": "daily distress hazard = BASE * exp(lin); lin below. Distress -> (distressed refinance | payment modification | default).",
+  "BASE": 0.0016,
+  "coef": {
+    "latent_quality_z": -0.65,
+    "industry_effect": "INDUSTRIES[ind][1]",
+    "fico_below_600": 0.45,
+    "fico_per_50_below_650": 0.2,
+    "log_tib_over_24m": -0.25,
+    "positions_at_funding": 0.3,
+    "nsf_90d": 0.12,
+    "burden_minus_0_15_x4": 4.0,
+    "is_distressed_refi": 0.9,
+    "is_healthy_renewal": -0.25,
+    "macro_2024Q3_2025Q1_vintage": 0.35
+  },
+  "branch_after_distress": {
+    "distressed_refi": 0.38,
+    "modification": 0.27,
+    "default": 0.35
+  },
+  "modification_recovery_prob": 0.45,
+  "healthy_renewal_prob": 0.5,
+  "early_cash_payoff_prob": 0.05,
+  "settlement_prob": 0.45,
+  "bankruptcy_share_of_defaults": 0.08,
+  "nsf_fail_rate": {
+    "healthy": 0.015,
+    "stressed": 0.45,
+    "modified_ok": 0.05,
+    "modified_bad": 0.3
+  }
+}
