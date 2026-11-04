@@ -5,11 +5,20 @@ WITH
 dm AS (SELECT * FROM deal_metrics_sql(as_of, attempt_basis)),
 rm AS (SELECT * FROM relationship_metrics_sql(as_of, attempt_basis)),
 closed AS (SELECT * FROM dm WHERE is_closed),
-p1 AS (
-    SELECT SUM(d9_reported_collected_cents) AS rep, SUM(d7_cash_from_merchant_cents) AS adj, SUM(d2_rtr_cents) AS rtr
-    FROM closed WHERE d2_rtr_cents IS NOT NULL
+p1g AS (
+    SELECT 'all' AS segment, * FROM closed WHERE d2_rtr_cents IS NOT NULL
+    UNION ALL SELECT vintage, * FROM closed WHERE d2_rtr_cents IS NOT NULL
 ),
-p3 AS (SELECT SUM(d8_internal_payoff_out_cents) AS d8, SUM(d9_reported_collected_cents) AS d9 FROM dm),
+p1 AS (
+    SELECT segment, SUM(d9_reported_collected_cents) AS rep, SUM(d7_cash_from_merchant_cents) AS adj,
+           SUM(d2_rtr_cents) AS rtr
+    FROM p1g GROUP BY segment
+),
+p3g AS (SELECT 'all' AS segment, * FROM dm UNION ALL SELECT vintage, * FROM dm),
+p3 AS (
+    SELECT segment, SUM(d8_internal_payoff_out_cents) AS d8, SUM(d9_reported_collected_cents) AS d9
+    FROM p3g GROUP BY segment
+),
 p4g AS (
     SELECT 'all' AS segment, * FROM closed
     UNION ALL SELECT vintage, * FROM closed
@@ -68,13 +77,13 @@ p9 AS (
     FROM dm WHERE has_modification AND is_closed
 ),
 rows_ AS (
-    SELECT 'P1' AS metric_id, 'reported_collection_rate' AS metric, 'all' AS segment, CAST(NULL AS BIGINT) AS k,
+    SELECT 'P1' AS metric_id, 'reported_collection_rate' AS metric, segment, CAST(NULL AS BIGINT) AS k,
            CASE WHEN rtr <> 0 THEN rep / rtr END AS value, rep AS numerator, rtr AS denominator, 'ratio' AS unit
     FROM p1
-    UNION ALL SELECT 'P1', 'adjusted_collection_rate', 'all', NULL, CASE WHEN rtr <> 0 THEN adj / rtr END, adj, rtr, 'ratio' FROM p1
-    UNION ALL SELECT 'P2', 'renewal_masking_gap_pp', 'all', NULL,
+    UNION ALL SELECT 'P1', 'adjusted_collection_rate', segment, NULL, CASE WHEN rtr <> 0 THEN adj / rtr END, adj, rtr, 'ratio' FROM p1
+    UNION ALL SELECT 'P2', 'renewal_masking_gap_pp', segment, NULL,
                      CASE WHEN rtr <> 0 THEN (rep / rtr - adj / rtr) * 100 END, rep - adj, rtr, 'pp' FROM p1
-    UNION ALL SELECT 'P3', 'internal_payoff_share', 'all', NULL, CASE WHEN d9 <> 0 THEN d8 / d9 END, d8, d9, 'ratio' FROM p3
+    UNION ALL SELECT 'P3', 'internal_payoff_share', segment, NULL, CASE WHEN d9 <> 0 THEN d8 / d9 END, d8, d9, 'ratio' FROM p3
     UNION ALL SELECT 'P4', 'bad_rate_naive', segment, NULL, CASE WHEN n <> 0 THEN nb / n END, nb, n, 'ratio' FROM p4
     UNION ALL SELECT 'P4', 'bad_rate_economic', segment, NULL, CASE WHEN n <> 0 THEN eb / n END, eb, n, 'ratio' FROM p4
     UNION ALL SELECT 'P5', 'resolved_bad_share', 'all', NULL, CASE WHEN n <> 0 THEN nbad / n END, nbad, n, 'ratio' FROM p5

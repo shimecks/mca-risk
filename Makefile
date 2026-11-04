@@ -7,7 +7,8 @@
 #   make resolve        Part 3: merchants, renewal links, L1 payoffs, L3 repairs, Q3/Q4 links, exceptions
 #   make notes-llm      Part 3 (optional): fill cache/llm_notes.jsonl via OpenRouter
 #   make ledger         Part 4: ledger, deal_status_events, ledger_rejects, cal_sched (METRICS.md §1)
-#   make metrics        Part 4: deal/relationship/portfolio metrics, SQL views, Q6, dq report
+#   make metrics        Part 4: deal/relationship/portfolio metrics, T1 targets, SQL views, Q6, dq report
+#   make analytics      Part 5: figures + build/findings.md (every number from a metric-table query)
 #   make test | lint    pytest | ruff check + ruff format --check
 #   make eval           all eval suites (unimplemented suites are reported, not failed)
 #   make eval SUITE=E1  one suite (fails if that suite is not implemented yet)
@@ -47,8 +48,9 @@ ledger:
 	$(PY) -m mcarisk.ledger
 metrics:
 	$(PY) -m mcarisk.metrics
+# Part 5: figures (build/figures/*.png, *.plotly.json, data/*.csv) + build/findings.md from the metric tables.
 analytics:
-	@echo "[analytics] not implemented until Part 5 -- skipped"
+	$(PY) -m mcarisk.analytics
 model:
 	@echo "[model] not implemented until Part 6 -- skipped"
 report:
@@ -75,4 +77,4 @@ clean:
 	rm -rf $(BUILD)
 
 help:
-	@sed -n '1,15p' Makefile
+	@sed -n '1,16p' Makefile

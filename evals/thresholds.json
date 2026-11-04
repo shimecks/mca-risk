@@ -64,7 +64,7 @@
       "relationship_metric_max_abs_err_usd": {"op": "<=", "value": 1.0},
       "portfolio_metric_max_abs_err_pp": {"op": "<=", "value": 0.5}
     },
-    "report_only": ["end_to_end", "portfolio_rates", "spec_on_truth"]
+    "report_only": ["end_to_end", "portfolio_rates", "spec_on_truth", "findings_numbers"]
   },
   "E8": {
     "name": "Model",

@@ -9,7 +9,7 @@ scores, known gaps, and the conventions later parts must follow. Gate rules: `CL
 | 2 Standardization + DQ report | done | `part-2` |
 | 3 Entity resolution + linkage | done | `part-3` |
 | 4 Ledger + metrics library | done | `part-4` |
-| 5 Portfolio analytics | not started | |
+| 5 Portfolio analytics | done | `part-5` |
 | 6 Risk modeling | not started | |
 | 7 App, report, demo | not started | |
 
@@ -459,7 +459,94 @@ The P6 dollar gaps come from tracker-missing deals: R7 is unknown when the RTR i
 7. **Resolved (user decision 2026-11-04).** The P8 distressed-chain loss share is D17-dependent, because chains are defined by D17. Like every D17-dependent P-metric, it is compared with spec-on-truth (40.45%, 89 chains). Its pipeline error is 0.00 pp, and its gap to the simulator label (39.78%) is +0.67 pp of definition error, reported only.
 
 ## Part 5: Portfolio analytics
-_not started_
+
+**Status: done, tagged `part-5`.** `make lint test` is green, `make eval` passes overall (E1-E7, E9; E8
+not implemented yet), and `make clean all` runs in about 22 s wall with no network.
+
+### What was built
+| Path | What it is |
+|---|---|
+| `src/mcarisk/metrics/targets.py` | **METRICS.md §5 T1**. `t1_deal_targets` gives one row per funded deal: horizon date = `add_business_days(funding, 180)`, `mature` (horizon <= as-of), and for mature deals `outcome_at_horizon`, `t1_bad_economic` (D19 of `deal_metrics(as_of=horizon)`) and `t1_bad_naive` (D18 at the horizon). `t1_rates` gives bad rates over mature deals by dimension (`all`, `vintage`, `industry`, `iso`, `positions`, `burden`) with `maturity` = mature / partial / immature. |
+| `src/mcarisk/metrics/attributes.py` | Origination segment labels (§5 feature list, known at funding): industry, ISO, positions bucket (0/1/2/3+), **burden** = daily equivalent x 21 / avg monthly revenue (§5) and its bucket (<15%, 15-20%, 20-25%, 25-35%, >=35%; integer arithmetic at the edges). Tracker inline fields (2025+) first, else the Q3-matched scorecard. Missing = `unknown`. |
+| `sql/metrics/01_deal_metrics.sql` | Refactored: the body is now `deal_metrics_at_sql(as_of, attempt_basis, horizon_bdays)`. With `horizon_bdays >= 0` each deal is evaluated as of its own horizon date (output `as_of`), for deals whose horizon is on or before `as_of`. `deal_metrics_sql(as_of, basis)` is a wrapper with `-1`; its output is unchanged (Part 4 Python == SQL tests still pass). |
+| `sql/metrics/04_targets.sql` | SQL mirrors `deal_attributes_sql()`, `t1_targets_sql(as_of, basis, horizon)`, `t1_metrics_sql(as_of, basis, horizon)`. |
+| `src/mcarisk/metrics/portfolio.py`, `03_portfolio_metrics.sql` | P1, P2 and P3 are now also computed by funding-quarter vintage (`segment` = vintage), as P4 already was. The `all` rows are unchanged (E7 reads only those). |
+| `src/mcarisk/metrics/stage.py` | Stage `metrics` also writes `deal_attributes` (2,011), `deal_targets` (2,011) and `target_metrics` (102), plus views `v_deal_attributes`, `v_deal_targets`, `v_target_metrics` and manifest `extra.t1`. |
+| `src/mcarisk/analytics/stats.py` | `wilson_ci(k, n)`: 95% Wilson score interval. n = 0 gives (None, None); k = 0 gives a lower bound of exactly 0; k = n gives an upper bound of exactly 1. Matches statsmodels. |
+| `src/mcarisk/analytics/data.py` | Figure data: read-only SQL over `portfolio_metrics`, `target_metrics` and `relationship_metrics`. It adds Wilson bounds on stored counts and a P7 censoring marker, and defines no metric. |
+| `src/mcarisk/analytics/figures.py` | Six figures, each `fig_*(df) -> (matplotlib Figure, plotly Figure)`. `FIGURE_METRICS` lists the metric IDs each figure cites (in its title / footnote). Reference palette in fixed order; single-hue ramp for the ordinal P7 cohorts. |
+| `src/mcarisk/analytics/findings.py` | `build/findings.md` from a **registry of numbers**. Each `Num` has a key, metric IDs, the SQL over the metric tables and a format. `build/findings_numbers.json` stores key, IDs, SQL, value and text. `check_findings` re-runs every query (value and text must match). It also fails on any decimal / % / pp / $ token in the findings body (before Caveats) that is not a registered number. |
+| `src/mcarisk/analytics/stage.py`, `__main__.py` | Stage `analytics` (`make analytics`, wired into `make all`). Raises if the findings check fails. Manifest stage `analytics`: figures, metric IDs, findings summary, check result. |
+| `evals/suites/e7_metrics.py`, `thresholds.json` | E7 gains report-only `findings_numbers` (re-runs `check_findings` on the build). No gate changed. |
+| `README.md` | The headline block quotes the pipeline's numbers, with one line on why they differ from the simulator's labels. |
+
+### Tests: 381 passed, no xfail or skip (`make lint test` green); the 347 from Parts 1-4 still pass
+- `test_analytics_unit.py` (21, tiny hand-built fixtures):
+  - **Wilson**: known values (5/10, 0/10, 10/10, 1/1, 36/89), edge cases n = 0, k = 0, k = n, invalid input, symmetry, and a grid checked against statsmodels.
+  - **T1 horizon boundary**: as-of = horizon date is mature and one day earlier is not. A two-deal vintage goes immature -> partial -> mature exactly at each deal's horizon. A write-off one business day after the horizon does not make a deal T1-bad; one on the horizon does. Unknown segments and dimension coverage.
+  - **Burden buckets** exact at the 15% / 35% edges, the weekly divisor, unknowns; positions buckets.
+  - **Every figure function runs on a tiny fixture**: 5 deals through the pure metric functions -> tables -> figure data -> PNG + plotly JSON + CSV. Each plotly title cites the figure's metric IDs; the figure data carries the Wilson bounds.
+- `test_analytics_build.py` (13, real build):
+  - T1 / attributes **Python == SQL** on the build and at two other as-of dates and D17 bases. `deal_metrics_at_sql(.., 180)` equals Python `deal_metrics(as_of=horizon)` on 60 sampled deals.
+  - **Maturity flags at the boundary** on every deal (horizon = funding + 180 bd; mature iff horizon <= as-of; targets NULL iff immature) and on every vintage. Deleting every event after a deal's horizon leaves T1 unchanged.
+  - All six figures are written. **Every findings.md number equals its metric-table query**, and 11 headline numbers are also queried independently in the test. The check **detects** a tampered `portfolio_metrics` value and an unregistered number. Section order, caveats, manifest stage.
+
+### Eval scores (`make eval`): overall **pass**
+E1-E6 and E9 are unchanged. E7 is unchanged: deal max $0.63, relationship max $0.00, **portfolio max 0.2086 pp** (gate 0.5 pp). Report-only `findings_numbers`: 266 registered numbers, 224 quoted in findings.md, 0 mismatches, 0 unregistered tokens, match rate 1.0.
+
+### Key findings (pipeline, as of 2026-09-30, METRICS.md v1.2; full text in `build/findings.md`)
+| Finding | Number | Metrics |
+|---|---|---|
+| Reported vs cash-adjusted collection rate (closed, RTR-weighted) | **92.2% vs 70.9%**, gap **21.3 pp** | P1, P2 |
+| Internal-payoff share of reported collections | **20.2%** | P3 |
+| Bad rate naive vs economic, closed deals (1,581) | **14.0% vs 27.9%** | P4, D18, D19 |
+| T1 (D19 within 180 bd), 1,297 mature of 2,011 deals | **29.1%** economic vs 16.7% naive | T1 |
+| Open exposure: contractual vs economic (430 open relationships) | **$24.84M vs $11.84M** | P6, R7, R6 |
+| Distressed share of renewals | 27.1% (220/811) | P8, D17 |
+| Resolved chains ending in loss: with a distressed refi vs without | **40.4%** [30.9-50.8%] (36/89) vs **18.9%** [16.2-22.1%]; all resolved 21.4% | P8, P5, R9 |
+| Modification cure rate | 32.8% of all modified deals (58/177); 48.7% of closed modified deals | P9 |
+
+**Vintage deterioration (T1, 95% Wilson CI).**
+- Mature vintages: 2024Q1 19.0% [10.9-30.9], 2024Q2 32.4% [24.1-41.9], **2024Q3 34.1% [26.4-42.9], 2024Q4 35.6% [28.0-44.1], 2025Q1 40.5% [33.1-48.4]**, 2025Q2 29.3% [23.1-36.5], 2025Q3 23.3% [17.9-29.8], 2025Q4 25.3% [20.0-31.5]. The 2023 vintages are small (9-55 deals).
+- 2026Q1 is partial (26 of 227 deals mature); 2026Q2 and 2026Q3 are immature.
+- The deterioration the plan expects is visible, but a little lower than "37-43%" (34-41%), and it ramps in from 2024Q2 rather than switching on at 2024Q3.
+- The closed-deals-only P4 view shows **2026Q3 at 56.5% on 23 closed deals** (the plan said about 61%): only fast failures and quick renewals have closed.
+
+**Segments (T1 economic, mature deals).**
+- Positions is the strongest signal: 0 = 20.5% (n=591), 1 = 30.2%, 2 = 46.9%, 3+ = 63.2% (n=38).
+- Industry: Construction 38.6% vs Medical/Dental 16.5%. ISO: Keystone Referral Group 38.1% vs Hudson Bridge 20.9% (wide, overlapping CIs).
+- **Burden is inverted**: the <15% bucket is the worst (37.2%). An exploratory split (not a persisted metric) puts that excess in renewals, because distressed refis are written at a lower payment; among new deals burden is roughly flat. Part 6 should model burden with renewal status alongside it.
+
+**P7 curves**: relationships break even (R2/R1 = 1) around month 12 (month-12 multiples 0.99-1.20).
+
+### Runtime
+`make clean all`: **about 22 s wall**, no network (standardize 4.4 s, resolve 3.2 s, ledger 2.0 s, metrics 2.6 s including T1, analytics 2.0 s). `make test`: about 75 s.
+
+### Known gaps
+- T1 counts a deal that is still open at its horizon as not bad, so a deal that goes bad on day 181 is good on T1. That is the design of a fixed horizon.
+- Segment and vintage rates are not adjusted for each other (the vintage mix differs by ISO and industry). Part 6 does the multivariate view.
+- The burden explanation in findings.md rests on an exploratory split that is not a persisted metric, so it is stated without numbers.
+- The numbers in findings.md are registry-driven, but the prose that interprets them ("the worst mature cohorts", "roughly doubles") is written for this seed and is not re-checked if the data changes.
+- The Caveats section quotes documentation figures that are not metric-table numbers: the simulator's 29.3%, D17 recall of about 0.89 from E6, and M0219's §7 values 0.73 / $10,072. The token check covers only the sections before Caveats.
+
+### Conventions Part 6 / 7 must follow
+- **Figures** (`build/figures/`): `masking`, `bad_rate_vintage`, `exposure`, `vintage_curves`, `refi_quality`, `segments`.
+  - Each has `<name>.png`, `<name>.plotly.json` (load with `plotly.io.from_json`) and `data/<name>.csv`.
+  - `mcarisk.analytics.data.DATASETS[name](con)` rebuilds the frame from the DB, and `mcarisk.analytics.figures.FIGURES[name](df)` re-renders it.
+  - `FIGURE_METRICS[name]` gives the metric IDs to link to METRICS.md.
+- **Findings**: `build/findings.md`. `build/findings_numbers.json` (key, metric_ids, sql, value, text) is the source for the app's "every number links to its definition". Add a number by adding a `Num` to `findings.registry`; `check_findings` rejects unregistered numbers.
+- **T1 for Part 6**:
+  - `deal_targets` (`mature`, `t1_bad_economic`, `t1_bad_naive`, `horizon_date`) is the label table. Train only on `mature` rows.
+  - `deal_attributes` holds the segment labels and `burden_value` (§5). Both use origination-time data only, but Part 6's leakage guard is still its own job.
+  - Other as-of dates: `compute_targets(con, as_of=..., d17_basis=...)` or `t1_targets_sql(DATE '...', basis, 180)`.
+- `deal_metrics_at_sql(as_of, basis, horizon_bdays)` evaluates each deal at funding + any horizon in business days.
+- `portfolio_metrics` now has P1-P3 rows per vintage too; filter `segment = 'all'` for headline values.
+
+### Open questions / deviations
+1. **T1 reading**: "D19 within 180 business days of funding" is implemented as D19 of the deal evaluated as of funding + 180 Fed ACH business days. Every event after that date is ignored, and the D17 `attempt` look-ahead is capped at the horizon. Population: horizon <= as-of. Say if you want a different reading (e.g. calendar days).
+2. **Vintage maturity** is count-based: mature when every funded deal in the vintage has reached its horizon, immature when none has, partial otherwise. 2026Q1 is partial (26 of 227 deals).
+3. **METRICS.md §7 wording**: it calls the pipeline's M0219 R3 of 0.80 a "lower bound". R1 is understated (missing commission), so R3 = R2 / R1 is *overstated*: 0.80 is an upper bound on the true 0.73. D6, R1 and the realized loss ($6,648 vs $10,072) are lower bounds. findings.md words it neutrally. METRICS.md was not edited; consider a v1.3 wording fix.
+4. The plan's expected numbers differ slightly from the pipeline's: the deteriorated vintages are at 34-41% (plan 37-43%), 2026Q3 closed-only is 56.5% (plan about 61%), and the economic bad rate is 27.9% (simulator 29.3%). They are reported as the pipeline shows them; nothing was tuned.
 
 ## Part 6: Risk modeling
 _not started_

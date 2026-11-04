@@ -5,11 +5,15 @@ metrics (``metrics/deal.py``, ``relationship.py``, ``portfolio.py``) as of a dat
 
   deal_metrics          one row per deal funded on or before the as-of date (D1-D19, outcome)
   relationship_metrics  one row per resolved merchant (R1-R10)
-  portfolio_metrics     long table of P1-P9 (P4 by vintage, P7 curves)
+  portfolio_metrics     long table of P1-P9 (P1-P4 by vintage, P7 curves)
+  deal_attributes       one row per deal: origination segment labels (industry, ISO, positions, burden)
+  deal_targets          one row per deal: METRICS.md §5 T1 (D19 within 180 business days), maturity
+  target_metrics        long table of T1 bad rates by dimension (all, vintage, industry, iso, ...)
 
 It also installs the SQL mirrors from ``sql/metrics/*.sql`` (table macros ``deal_metrics_sql``,
-``relationship_metrics_sql``, ``portfolio_metrics_sql``) and views ``v_deal_metrics``,
-``v_relationship_metrics``, ``v_portfolio_metrics`` at the same as-of date and D17 basis; updates the
+``relationship_metrics_sql``, ``portfolio_metrics_sql``, ``deal_attributes_sql``, ``t1_targets_sql``,
+``t1_metrics_sql``) and views ``v_deal_metrics``, ``v_relationship_metrics``, ``v_portfolio_metrics``,
+``v_deal_attributes``, ``v_deal_targets``, ``v_target_metrics`` at the same as-of date and D17 basis; updates the
 ``data_quality`` Q6 row (tracker status vs derived outcome); regenerates ``build/dq_report.md``; and
 records the manifest stage ``metrics``.
 """
@@ -30,6 +34,7 @@ import duckdb
 
 from mcarisk import paths
 from mcarisk.manifest import RunManifest, StageRecorder, open_run
+from mcarisk.metrics.attributes import ATTR_INPUT_SQL, deal_attributes
 from mcarisk.metrics.deal import (
     AS_OF_DEFAULT,
     D17_BASES,
@@ -42,6 +47,7 @@ from mcarisk.metrics.deal import (
 )
 from mcarisk.metrics.portfolio import portfolio_metrics
 from mcarisk.metrics.relationship import all_relationship_metrics
+from mcarisk.metrics.targets import T1_HORIZON_BDAYS, t1_deal_targets, t1_rates
 from mcarisk.resolve.stage import write_table
 
 SQL_DIR = paths.ROOT / "sql" / "metrics"
@@ -134,6 +140,44 @@ PORT_DDL = [
     ("as_of", "DATE"),
 ]
 
+ATTR_DDL = [
+    ("deal_id", "BIGINT NOT NULL"),
+    ("industry", "VARCHAR"),
+    ("iso", "VARCHAR"),
+    ("positions", "VARCHAR"),
+    ("burden", "VARCHAR"),
+    ("positions_n", "BIGINT"),
+    ("avg_monthly_rev_cents", "BIGINT"),
+    ("burden_value", "DOUBLE"),
+    ("attr_source", "VARCHAR"),
+]
+TARGET_DDL = [
+    ("deal_id", "BIGINT NOT NULL"),
+    ("merchant_key", "VARCHAR"),
+    ("funding_date", "DATE NOT NULL"),
+    ("vintage", "VARCHAR"),
+    ("horizon_bdays", "BIGINT"),
+    ("horizon_date", "DATE"),
+    ("mature", "BOOLEAN"),
+    ("outcome_at_horizon", "VARCHAR"),
+    ("t1_bad_economic", "BOOLEAN"),
+    ("t1_bad_naive", "BOOLEAN"),
+    ("as_of", "DATE"),
+]
+TMETRIC_DDL = [
+    ("metric_id", "VARCHAR NOT NULL"),
+    ("metric", "VARCHAR NOT NULL"),
+    ("dimension", "VARCHAR NOT NULL"),
+    ("segment", "VARCHAR NOT NULL"),
+    ("value", "DOUBLE"),
+    ("numerator", "BIGINT"),
+    ("denominator", "BIGINT"),
+    ("n_deals", "BIGINT"),
+    ("maturity", "VARCHAR"),
+    ("horizon_bdays", "BIGINT"),
+    ("as_of", "DATE"),
+]
+
 # Q6: tracker status (status_norm, as typed) -> derived outcomes it agrees with
 STATUS_AGREES = {
     "renewed": {"renewed_healthy", "refinanced_distressed"},
@@ -194,6 +238,26 @@ def compute(
     return dm, rm, pm
 
 
+def compute_targets(
+    con: duckdb.DuckDBPyConnection,
+    *,
+    as_of: date = AS_OF_DEFAULT,
+    d17_basis: str = D17_DEFAULT_BASIS,
+    horizon_bdays: int = T1_HORIZON_BDAYS,
+    model: dict[str, Any] | None = None,
+) -> tuple[list[dict], list[dict], list[dict]]:
+    """(deal_attributes, deal_targets, target_metrics): METRICS.md §5 T1 and its segment rates."""
+    m = model or load_model(con)
+    cur = con.execute(ATTR_INPUT_SQL)
+    cols = [c[0] for c in cur.description]
+    attrs = [deal_attributes(dict(zip(cols, r, strict=True))) for r in cur.fetchall()]
+    tg = t1_deal_targets(
+        m["deals"], m["events"], m["status"], as_of=as_of, d17_basis=d17_basis, horizon_bdays=horizon_bdays
+    )
+    tm = t1_rates(tg, {a["deal_id"]: a for a in attrs}, as_of=as_of, horizon_bdays=horizon_bdays)
+    return attrs, tg, tm
+
+
 # ------------------------------------------------------------------------------------------ SQL
 def install_sql(
     con: duckdb.DuckDBPyConnection, *, as_of: date = AS_OF_DEFAULT, d17_basis: str = D17_DEFAULT_BASIS
@@ -210,6 +274,9 @@ def install_sql(
         ("v_portfolio_metrics", "portfolio_metrics_sql"),
     ):
         con.execute(f"CREATE OR REPLACE VIEW {v} AS SELECT * FROM {mac}({lit}, {flag})")
+    con.execute("CREATE OR REPLACE VIEW v_deal_attributes AS SELECT * FROM deal_attributes_sql()")
+    for v, mac in (("v_deal_targets", "t1_targets_sql"), ("v_target_metrics", "t1_metrics_sql")):
+        con.execute(f"CREATE OR REPLACE VIEW {v} AS SELECT * FROM {mac}({lit}, {flag}, {T1_HORIZON_BDAYS})")
     return [f.name for f in files]
 
 
@@ -287,7 +354,7 @@ def dq_report(con: duckdb.DuckDBPyConnection) -> str:
         "deals_resolved", "merchants", "merchant_aliases", "merchant_merges", "deal_links", "payoff_classes",
         "payments_resolved", "misposting_repairs", "scorecard_links", "collections_links", "notes_extractions",
         "collections_terms", "exceptions", "ledger", "deal_status_events", "ledger_rejects", "deal_metrics",
-        "relationship_metrics", "portfolio_metrics",
+        "relationship_metrics", "portfolio_metrics", "deal_attributes", "deal_targets", "target_metrics",
     ):  # fmt: skip
         n = con.execute(f'SELECT COUNT(*) FROM "{t}"').fetchone()[0]
         lines.append(f"| `{t}` | {n:,} |")
@@ -359,12 +426,19 @@ def run_metrics(
         raise ValueError(f"d17 basis must be one of {D17_BASES}")
     con = duckdb.connect(str(db_path))
     try:
-        dm, rm, pm = compute(con, as_of=as_of, d17_basis=basis)
+        model = load_model(con)
+        dm = all_deal_metrics(model["deals"], model["events"], model["status"], as_of=as_of, d17_basis=basis)
+        rm = all_relationship_metrics(dm)
+        pm = portfolio_metrics(dm, rm, model["cash"], as_of=as_of)
+        attrs, tg, tm = compute_targets(con, as_of=as_of, d17_basis=basis, model=model)
         con.execute("BEGIN TRANSACTION")
         counts = {
             "deal_metrics": write_table(con, "deal_metrics", dm, DEAL_DDL),
             "relationship_metrics": write_table(con, "relationship_metrics", rm, REL_DDL),
             "portfolio_metrics": write_table(con, "portfolio_metrics", pm, PORT_DDL),
+            "deal_attributes": write_table(con, "deal_attributes", attrs, ATTR_DDL),
+            "deal_targets": write_table(con, "deal_targets", tg, TARGET_DDL),
+            "target_metrics": write_table(con, "target_metrics", tm, TMETRIC_DDL),
         }
         sql_files = install_sql(con, as_of=as_of, d17_basis=basis)
         q6 = stale_status(con)
@@ -395,6 +469,16 @@ def run_metrics(
             "q6_stale_status", {"hits": q6["hits"], "denominator": q6["denominator"], "pairs": q6["pairs"]}
         )
         st.extra("sql_files", sql_files)
+        t1 = {(r["metric"], r["dimension"]): r for r in tm if r["dimension"] == "all"}
+        st.extra(
+            "t1",
+            {
+                "horizon_bdays": T1_HORIZON_BDAYS,
+                "mature_deals": t1[("bad_rate_economic", "all")]["denominator"],
+                "bad_rate_economic": t1[("bad_rate_economic", "all")]["value"],
+                "bad_rate_naive": t1[("bad_rate_naive", "all")]["value"],
+            },
+        )
         st.extra(
             "tracker_missing",
             {

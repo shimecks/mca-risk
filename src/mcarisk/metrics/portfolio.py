@@ -2,7 +2,7 @@
 
 Output is a long table: one row per (metric_id, metric, segment, k) with ``value``, ``numerator``,
 ``denominator`` and ``unit`` (ratio | pp | cents | count). ``segment`` is ``all`` for the headline row,
-a funding-quarter vintage for P4 / P7 rows, ``closed`` for the P9 variant. SQL mirror:
+a funding-quarter vintage for P1-P4 rows (P7: first-funding quarter), ``closed`` for the P9 variant. SQL mirror:
 ``sql/metrics/03_portfolio_metrics.sql``.
 
 Conventions (METRICS.md leaves these open):
@@ -73,20 +73,33 @@ def portfolio_metrics(
         out.append(_row(*a, as_of=as_of, **kw))
 
     closed = [d for d in deals if d["outcome"] in CLOSED_OUTCOMES]
-    # P1 reported vs adjusted collection rate, RTR-weighted over closed deals
-    w = [d for d in closed if d["d2_rtr_cents"] is not None]
-    rtr = sum(d["d2_rtr_cents"] for d in w)
-    rep = sum(d["d9_reported_collected_cents"] for d in w)
-    adj = sum(d["d7_cash_from_merchant_cents"] for d in w)
-    p1r, p1a = _ratio(rep, rtr), _ratio(adj, rtr)
-    add("P1", "reported_collection_rate", p1r, rep, rtr)
-    add("P1", "adjusted_collection_rate", p1a, adj, rtr)
-    # P2 renewal masking gap (pp)
-    add("P2", "renewal_masking_gap_pp", None if p1r is None else (p1r - p1a) * 100, rep - adj, rtr, unit="pp")
-    # P3 internal-payoff share of reported collections, all deals
-    d8 = sum(d["d8_internal_payoff_out_cents"] for d in deals)
-    d9 = sum(d["d9_reported_collected_cents"] for d in deals)
-    add("P3", "internal_payoff_share", _ratio(d8, d9), d8, d9)
+    # P1 / P2 / P3 overall (segment "all") and by funding-quarter vintage
+    p1g: dict[str, list[dict]] = defaultdict(list)
+    p3g: dict[str, list[dict]] = defaultdict(list)
+    for d in deals:
+        p3g["all"].append(d)
+        p3g[d["vintage"]].append(d)
+    for d in closed:
+        if d["d2_rtr_cents"] is not None:
+            p1g["all"].append(d)
+            p1g[d["vintage"]].append(d)
+    for seg in sorted(p1g):
+        # P1 reported vs adjusted collection rate, RTR-weighted over closed deals
+        w = p1g[seg]
+        rtr = sum(d["d2_rtr_cents"] for d in w)
+        rep = sum(d["d9_reported_collected_cents"] for d in w)
+        adj = sum(d["d7_cash_from_merchant_cents"] for d in w)
+        p1r, p1a = _ratio(rep, rtr), _ratio(adj, rtr)
+        add("P1", "reported_collection_rate", p1r, rep, rtr, segment=seg)
+        add("P1", "adjusted_collection_rate", p1a, adj, rtr, segment=seg)
+        # P2 renewal masking gap (pp)
+        gap = None if p1r is None else (p1r - p1a) * 100
+        add("P2", "renewal_masking_gap_pp", gap, rep - adj, rtr, unit="pp", segment=seg)
+    for seg in sorted(p3g):
+        # P3 internal-payoff share of reported collections, all deals
+        d8 = sum(d["d8_internal_payoff_out_cents"] for d in p3g[seg])
+        d9 = sum(d["d9_reported_collected_cents"] for d in p3g[seg])
+        add("P3", "internal_payoff_share", _ratio(d8, d9), d8, d9, segment=seg)
     # P4 bad rates over closed deals, overall and by vintage
     groups: dict[str, list[dict]] = defaultdict(list)
     for d in closed:

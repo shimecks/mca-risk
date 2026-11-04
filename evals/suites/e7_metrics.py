@@ -230,6 +230,21 @@ def _summ(errs: dict[str, list[float]]) -> dict[str, dict]:
     return out
 
 
+def findings_numbers(ctx: EvalContext) -> dict:
+    """Report-only (Part 5): every number in build/findings.md equals the metric-table query behind it."""
+    md, js = ctx.build_dir / "findings.md", ctx.build_dir / "findings_numbers.json"
+    if not (md.exists() and js.exists()):
+        return {"status": "not_built"}
+    from mcarisk.analytics.findings import check_findings
+
+    con = duckdb.connect(str(ctx.db_path), read_only=True)
+    try:
+        chk = check_findings(con, md, js)
+    finally:
+        con.close()
+    return {"status": "ok" if not chk["mismatches"] and not chk["unregistered_tokens"] else "mismatch", **chk}
+
+
 def run(ctx: EvalContext) -> SuiteOutput:
     gt = ctx.ground_truth_dir
     truth = pd.read_csv(gt / "deals.csv")
@@ -509,6 +524,7 @@ def run(ctx: EvalContext) -> SuiteOutput:
             },
         },
         "portfolio_usd": p_usd,
+        "findings_numbers": findings_numbers(ctx),
         "portfolio_rates_failing": p_fail,
         "missing_values": {
             f"{k}{'' if lk else ' (end to end only)'}": v for (k, lk), v in sorted(missing.items())

@@ -4,7 +4,12 @@
 --   deal_metrics_sql(as_of DATE, attempt_basis BOOLEAN)
 --   attempt_basis = false: D17 uses only returns posted on or before the renewal date (literal reading)
 --   attempt_basis = true : D17 also counts later returns (up to as_of) of debits attempted by then
-CREATE OR REPLACE MACRO deal_metrics_sql(as_of, attempt_basis) AS TABLE
+--   deal_metrics_at_sql(as_of DATE, attempt_basis BOOLEAN, horizon_bdays INTEGER)
+--   horizon_bdays < 0 : every deal is evaluated as of `as_of` (deal_metrics_sql is this with -1)
+--   horizon_bdays >= 0: each deal is evaluated as of its own date, funding + horizon_bdays Fed ACH business
+--                       days (output column `as_of`), only for deals whose horizon date is on or before
+--                       `as_of` (METRICS.md §5 T1 uses 180). Mirror of mcarisk.metrics.targets.
+CREATE OR REPLACE MACRO deal_metrics_at_sql(as_of, attempt_basis, horizon_bdays) AS TABLE
 WITH
 dd AS (  -- deal inputs (tracker terms, or the ACH reconstruction for tracker-missing deals)
     SELECT deal_id, merchant_key, funding_date, advance_cents, rtr_cents AS rtr_tracker, fee_cents,
@@ -12,18 +17,22 @@ dd AS (  -- deal inputs (tracker terms, or the ACH reconstruction for tracker-mi
            COALESCE(frequency, frequency_ach) AS frequency, COALESCE(tracker_missing, false) AS tracker_missing
     FROM deals_resolved
 ),
-d AS (  -- schedule code: daily, or w<weekday of the first business day after funding>
+d0 AS (  -- schedule code: daily, or w<weekday of the first business day after funding>; per-deal as-of aod
     SELECT dd.*,
+           CASE WHEN horizon_bdays < 0 THEN CAST(as_of AS DATE) ELSE ch.d END AS aod,
            CASE WHEN dd.frequency = 'weekly' THEN 'w' || CAST(isodow(c1.d) - 1 AS VARCHAR) ELSE 'daily' END AS code,
            CASE WHEN dd.frequency = 'weekly' THEN 4 ELSE 20 END AS k16,
            CASE WHEN dd.frequency = 'weekly' THEN 5 ELSE 1 END AS div
     FROM dd
     JOIN cal_sched c0 ON c0.code = 'daily' AND c0.d = dd.funding_date
     JOIN cal_sched c1 ON c1.code = 'daily' AND c1.is_sched AND c1.n = c0.n + 1
+    LEFT JOIN cal_sched ch ON horizon_bdays >= 0 AND ch.code = 'daily' AND ch.is_sched
+         AND ch.n = c0.n + horizon_bdays
     WHERE dd.funding_date <= as_of
 ),
-e AS (SELECT l.* FROM ledger l JOIN d USING (deal_id) WHERE l.event_date <= as_of),
-st AS (SELECT s.* FROM deal_status_events s JOIN d USING (deal_id) WHERE s.event_date <= as_of),
+d AS (SELECT * FROM d0 WHERE aod IS NOT NULL AND aod <= as_of),
+e AS (SELECT l.* FROM ledger l JOIN d USING (deal_id) WHERE l.event_date <= d.aod),
+st AS (SELECT s.* FROM deal_status_events s JOIN d USING (deal_id) WHERE s.event_date <= d.aod),
 ret AS (SELECT matched_event_id AS debit_id FROM e WHERE kind = 'return' AND matched_event_id IS NOT NULL),
 deb AS (
     SELECT e.deal_id, e.event_id, e.event_date, e.amount_cents, (r.debit_id IS NOT NULL) AS returned,
@@ -80,7 +89,7 @@ b AS (  -- effective RTR (tracker, or the ledger-identity inference for tracker-
             WHEN ipo_date IS NOT NULL THEN d7 + d8
             WHEN epo_date IS NOT NULL OR n_debits = 0 THEN NULL
             WHEN n_status > 0 THEN NULL
-            WHEN NOT last_debit_returned AND stop_date IS NOT NULL AND stop_date <= as_of
+            WHEN NOT last_debit_returned AND stop_date IS NOT NULL AND stop_date <= aod
                  AND ret20 * 20 < 3 * att20 THEN d7
         END AS rtr,
         CASE
@@ -88,7 +97,7 @@ b AS (  -- effective RTR (tracker, or the ledger-identity inference for tracker-
             WHEN ipo_date IS NOT NULL THEN 'inferred_internal_payoff'
             WHEN epo_date IS NOT NULL OR n_debits = 0 THEN NULL
             WHEN n_status > 0 THEN NULL
-            WHEN NOT last_debit_returned AND stop_date IS NOT NULL AND stop_date <= as_of
+            WHEN NOT last_debit_returned AND stop_date IS NOT NULL AND stop_date <= aod
                  AND ret20 * 20 < 3 * att20 THEN 'inferred_paid_in_full'
         END AS rtr_source,
         LEAST(ipo_date, epo_date) AS close_limit
@@ -117,7 +126,7 @@ fire AS (
     FROM anch2 a
     JOIN b ON b.deal_id = a.deal_id
     ASOF LEFT JOIN cum ON cum.deal_id = a.deal_id AND cum.event_date <= a.r
-    WHERE a.r IS NOT NULL AND a.r <= as_of
+    WHERE a.r IS NOT NULL AND a.r <= b.aod
       AND (a.nxt IS NULL OR a.nxt > a.r)
       AND (b.close_limit IS NULL OR a.r < b.close_limit)
       AND (b.rtr IS NULL OR b.rtr - COALESCE(cum.cfm_to, 0) > 1)  -- $0.01 tolerance, as paid_in_full
@@ -211,7 +220,7 @@ o AS (  -- outcome (§2.1 precedence)
            (d17.att_t > 0 AND d17.ret_t * 20 >= 3 * d17.att_t) AS trig14,
            (COALESCE(d17.d12_t, 0) <> 0 AND d17.cfm_t * 100 < 85 * d17.d12_t) AS trig13,
            CASE WHEN d16.rec IS NOT NULL AND sdone.settle_done IS NULL
-                     AND CAST(d16.default_date + INTERVAL 180 DAY AS DATE) <= as_of
+                     AND CAST(d16.default_date + INTERVAL 180 DAY AS DATE) <= b.aod
                 THEN CAST(d16.default_date + INTERVAL 180 DAY AS DATE) END AS auto_wo
     FROM b
     LEFT JOIN d16 USING (deal_id) LEFT JOIN agreed USING (deal_id) LEFT JOIN sdone USING (deal_id)
@@ -253,7 +262,7 @@ o4 AS (
     FROM o3
     JOIN cal_sched cf ON cf.code = 'daily' AND cf.d = o3.funding_date
     JOIN cal_sched ce ON ce.code = 'daily'
-         AND ce.d = CASE WHEN o3.is_closed AND o3.outcome_date IS NOT NULL THEN o3.outcome_date ELSE as_of END
+         AND ce.d = CASE WHEN o3.is_closed AND o3.outcome_date IS NOT NULL THEN o3.outcome_date ELSE o3.aod END
 ),
 o5 AS (
     SELECT o4.*,
@@ -266,7 +275,7 @@ o5 AS (
 SELECT
     o5.deal_id,
     o5.merchant_key,
-    CAST(as_of AS DATE) AS as_of,
+    o5.aod AS as_of,
     o5.funding_date,
     CAST(year(o5.funding_date) AS VARCHAR) || 'Q' || CAST(quarter(o5.funding_date) AS VARCHAR) AS vintage,
     o5.frequency,
@@ -318,6 +327,9 @@ SELECT
     CASE WHEN o5.rtr IS NOT NULL THEN o5.rtr - o5.d7 - o5.d8 END AS remaining_rtr_cents,
     o5.has_mod AS has_modification
 FROM o5
-JOIN cal_sched ca ON ca.code = 'daily' AND ca.d = as_of
+JOIN cal_sched ca ON ca.code = 'daily' AND ca.d = o5.aod
 LEFT JOIN cal_sched cg ON cg.code = 'daily' AND cg.d = o5.last_good
 ORDER BY o5.deal_id;
+
+CREATE OR REPLACE MACRO deal_metrics_sql(as_of, attempt_basis) AS TABLE
+SELECT * FROM deal_metrics_at_sql(as_of, attempt_basis, -1);
