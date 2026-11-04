@@ -69,12 +69,13 @@
   "E8": {
     "name": "Model",
     "plan_gate": "AUC >= 0.70 (ceiling ~0.79); slope 0.8-1.2; main-driver signs correct",
+    "gate_change": "User-approved 2026-11-04: the absolute AUC gate (>= 0.70) is replaced by temporal-test AUC >= observable ceiling - 0.03, where the observable ceiling is the AUC of the simulator's true coefficients on observable inputs only (true log-hazard minus the latent quality term), on the same mature test deals, computed in evals/ from ground truth. Reason: the plan's reference figures (logistic ~0.76, true-hazard ceiling ~0.79) do not hold on this test window; the true-hazard AUC on the test deals is 0.726 and the observable ceiling is 0.681, so 0.70 would require beating the DGP's own coefficients. The absolute 0.70 figure (temporal_test_auc vs auc_absolute_reference) and the true-hazard ceiling (ceiling_auc) stay report-only. The calibration slope gate is unchanged.",
     "gates": {
-      "temporal_test_auc": {"op": ">=", "value": 0.70},
+      "temporal_test_auc_minus_observable_ceiling": {"op": ">=", "value": -0.03},
       "calibration_slope": {"op": "between", "value": [0.8, 1.2]},
       "main_driver_signs_correct": {"op": "==", "value": true}
     },
-    "report_only": ["brier", "decile_lift", "ceiling_auc", "leakage_tests_passed"]
+    "report_only": ["temporal_test_auc", "auc_absolute_reference", "observable_ceiling_auc", "ceiling_auc", "calibration_slope_uncalibrated", "brier", "decile_lift", "leakage_tests_passed"]
   },
   "E9": {
     "name": "Notes (optional LLM)",

@@ -28,13 +28,15 @@ MODEL_FIGURE_METRICS: dict[str, list[str]] = {
 }
 MODEL_COLORS = {
     "logit": BLUE,
+    "logit_uncalibrated": "#9ec5f4",
     "gbm_isotonic": ORANGE,
     "baseline_rule": GREY,
     "logit_naive": AQUA,
     "gbm": INK2,
 }
 MODEL_LABELS = {
-    "logit": "Logistic (economic T1)",
+    "logit": "Logistic (economic T1, val-recalibrated)",
+    "logit_uncalibrated": "Logistic, uncalibrated",
     "gbm_isotonic": "Gradient boosting + isotonic",
     "gbm": "Gradient boosting (raw)",
     "baseline_rule": "Baseline rule (positions + burden)",

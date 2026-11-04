@@ -4,8 +4,12 @@
 Gates (``evals/thresholds.json``) apply to the **primary model** fixed in the pipeline before the test split
 was scored (``mcarisk.model.train.PRIMARY_MODEL`` = ``logit``):
 
-* ``temporal_test_auc`` >= 0.70: AUC of the economic T1 target on mature test deals (funded
-  2025-07..2026-03), read from ``model_performance``.
+* ``temporal_test_auc_minus_observable_ceiling`` >= -0.03 (user-approved 2026-11-04, replacing the
+  absolute ``AUC >= 0.70``): AUC of the economic T1 target on mature test deals (funded 2025-07..2026-03),
+  minus the **observable ceiling** = AUC of the simulator's true coefficients on observable inputs only
+  (``hazard_lin`` minus the latent-quality term) on the same deals. The plan's 0.76 / 0.79 reference
+  figures do not hold on this test window. ``temporal_test_auc`` against the absolute 0.70 and the
+  true-hazard ``ceiling_auc`` are report-only.
 * ``calibration_slope`` in [0.8, 1.2]: logistic recalibration slope on the same deals.
 * ``main_driver_signs_correct``: every main driver in ``dgp.json`` ``coef`` that maps to a logistic term has
   the DGP's sign. Mapping (term: DGP coefficient, orientation): ``fico_per50``: ``fico_per_50_below_650`` and
@@ -18,7 +22,7 @@ Report-only: Brier, decile lift, **ceiling AUC** (the simulator's true log-hazar
 ``ground_truth/deals.csv`` ranked against the pipeline's T1 labels on the same test deals), the same
 ceiling without the unobservable latent quality term (``hazard_lin + 0.65 z``: the best any origination
 model could do with the true coefficients), every model's val / test numbers, the naive-vs-economic
-comparison, a diagnostic validation-fitted recalibration of the primary model (not a pipeline model), and
+comparison, an independent re-computation of the validation-fitted recalibration from ``logit_uncalibrated``, and
 ``leakage_tests_passed`` (perturbation check on a copy of the build database).
 """
 
@@ -141,9 +145,10 @@ def run(ctx: EvalContext) -> SuiteOutput:
             "primary_model_auc": auc(y, d["score"]),
         }
 
-    # diagnostic only: recalibrate the primary model on validation, apply to test
-    pv = preds[(preds.model == PRIMARY_MODEL) & (preds.split == "val")]
-    pt = preds[(preds.model == PRIMARY_MODEL) & (preds.split == "test")]
+    # independent cross-check of the pipeline's validation recalibration: refit it here from the
+    # uncalibrated scores (validation only) and apply it to test
+    pv = preds[(preds.model == "logit_uncalibrated") & (preds.split == "val")]
+    pt = preds[(preds.model == "logit_uncalibrated") & (preds.split == "test")]
     b, a = calibration_slope(pv["t1_bad_economic"].astype(int), pv["score"])
     p_rec = 1 / (1 + np.exp(-(a + b * logit(pt["score"]))))
     rec_slope, rec_int = calibration_slope(pt["t1_bad_economic"].astype(int), p_rec)
@@ -151,7 +156,12 @@ def run(ctx: EvalContext) -> SuiteOutput:
     leak = leakage_check(ctx.db_path)
     models = sorted(perf["model"].unique())
     metrics = {
+        "temporal_test_auc_minus_observable_ceiling": m(PRIMARY_MODEL, "test", "auc")
+        - ceil["test"]["observable_true_coef_auc"],
         "temporal_test_auc": m(PRIMARY_MODEL, "test", "auc"),
+        "auc_absolute_reference": {"value": 0.70, "met": m(PRIMARY_MODEL, "test", "auc") >= 0.70},
+        "observable_ceiling_auc": ceil["test"]["observable_true_coef_auc"],
+        "calibration_slope_uncalibrated": m("logit_uncalibrated", "test", "calibration_slope"),
         "calibration_slope": m(PRIMARY_MODEL, "test", "calibration_slope"),
         "main_driver_signs_correct": bool(signs) and all(s["sign_ok"] for s in signs),
         "brier": m(PRIMARY_MODEL, "test", "brier"),
@@ -186,7 +196,7 @@ def run(ctx: EvalContext) -> SuiteOutput:
         "ceiling": ceil,
         "signs": signs,
         "naive_vs_economic_test": {f"{r.model}.{r.metric}": r.value for r in naive.itertuples()},
-        "diagnostic_val_recalibrated_primary": {
+        "recalibration_cross_check": {
             "val_slope": b,
             "val_intercept": a,
             "test_slope": rec_slope,
@@ -207,7 +217,11 @@ def run(ctx: EvalContext) -> SuiteOutput:
         "test AUC by model: "
         + ", ".join(f"{k} {v['test']['auc']:.3f}" for k, v in details["models"].items()),
         f"signs: {sum(s['sign_ok'] for s in signs)}/{len(signs)} main drivers match dgp.json",
-        f"diagnostic: validation-fitted recalibration of `{PRIMARY_MODEL}` gives test slope {rec_slope:.2f}",
+        f"recalibration cross-check (refit in evals from logit_uncalibrated on validation): test slope {rec_slope:.2f}; "
+        f"uncalibrated test slope {metrics['calibration_slope_uncalibrated']:.2f}",
+        f"AUC gate: {metrics['temporal_test_auc']:.3f} - observable ceiling {metrics['observable_ceiling_auc']:.3f} = "
+        f"{metrics['temporal_test_auc_minus_observable_ceiling']:+.3f} (>= -0.03); absolute 0.70 reference met: "
+        f"{metrics['auc_absolute_reference']['met']}",
         f"leakage perturbation: {leak['post_funding_ledger_rows']} post-funding ledger rows scrambled, "
         f"{leak['fake_events']} fake events added -> {leak['n_diffs']} feature differences",
     ]

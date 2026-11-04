@@ -27,6 +27,11 @@ the *training-split* median, plus the indicator ``uw_missing`` (any of the five 
   stopping) on the logistic inputs plus the raw prior-deal features, contract terms and industry
   (categorical); ``gbm_isotonic`` = the same scores mapped through an isotonic regression fit on the
   **validation** split.
+* ``logit`` scores are then **recalibrated on the validation split** (Platt / logistic recalibration:
+  ``p = sigmoid(a + b * logit(p_raw))``, ``a, b`` fit by maximum likelihood on validation only, never on
+  test). User-approved 2026-11-04, and **chosen after the test split had been read** (the uncalibrated
+  model had test slope 0.69, validation slope 0.72). The uncalibrated scores are kept as
+  ``logit_uncalibrated`` (report-only). Recalibration is monotone, so ranking (AUC, lift) is unchanged.
 * ``logit_naive``: the ``logit`` specification trained on the naive target (D18 at the horizon), to show
   how it under-ranks distressed-refinance risk.
 """
@@ -41,6 +46,9 @@ import pandas as pd
 import statsmodels.api as sm
 from sklearn.ensemble import HistGradientBoostingClassifier
 from sklearn.isotonic import IsotonicRegression
+
+from mcarisk.model.evaluate import calibration_slope
+from mcarisk.model.evaluate import logit as _logit
 
 TRAIN_END = date(2024, 12, 31)
 VAL_START, VAL_END = date(2025, 1, 1), date(2025, 6, 30)
@@ -218,7 +226,7 @@ def fit_isotonic(scores: np.ndarray, y: np.ndarray) -> IsotonicRegression:
 
 
 # ---------------------------------------------------------------------------------------- all
-MODELS = ("baseline_rule", "logit", "gbm", "gbm_isotonic", "logit_naive")
+MODELS = ("baseline_rule", "logit", "logit_uncalibrated", "gbm", "gbm_isotonic", "logit_naive")
 PRIMARY_MODEL = "logit"
 
 
@@ -239,6 +247,9 @@ def fit_all(frame: pd.DataFrame) -> dict[str, Any]:
 
     base = fit_baseline(train, econ)
     lg = fit_logit(train, econ, med)
+    lg_raw = predict_logit(lg, scope, med)
+    rec_b, rec_a = calibration_slope(val[econ].astype(int).to_numpy(), predict_logit(lg, val, med))
+    lg_cal = 1 / (1 + np.exp(-(rec_a + rec_b * _logit(lg_raw))))
     lg_n = fit_logit(train, naive, med)
     gb = fit_gbm(train, econ, industries)
     gb_scores = gb.predict_proba(gbm_design(scope, industries))[:, 1]
@@ -247,7 +258,8 @@ def fit_all(frame: pd.DataFrame) -> dict[str, Any]:
 
     scores = {
         ("baseline_rule", "economic"): predict_baseline(base, scope, float(train[econ].mean())),
-        ("logit", "economic"): predict_logit(lg, scope, med),
+        ("logit", "economic"): lg_cal,
+        ("logit_uncalibrated", "economic"): lg_raw,
         ("gbm", "economic"): gb_scores,
         ("gbm_isotonic", "economic"): iso.predict(gb_scores),
         ("logit_naive", "naive"): predict_logit(lg_n, scope, med),
@@ -263,6 +275,7 @@ def fit_all(frame: pd.DataFrame) -> dict[str, Any]:
         "predictions": preds,
         "coefficients": {"logit": coef_table(lg), "logit_naive": coef_table(lg_n)},
         "medians": med,
+        "logit_recalibration": {"slope": rec_b, "intercept": rec_a, "fit_on": "val"},
         "baseline": base,
         "industries": industries,
         "n_train": len(train),

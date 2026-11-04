@@ -60,6 +60,7 @@ MODEL_CARD = paths.BUILD_DIR / "model_card.md"
 TRAINED_ON = {
     "baseline_rule": "economic",
     "logit": "economic",
+    "logit_uncalibrated": "economic",
     "gbm": "economic",
     "gbm_isotonic": "economic",
     "logit_naive": "naive",
@@ -500,26 +501,35 @@ def render_model_card(frame, fit, perf, coefs, naive, fair, t2, t3, h, as_of) ->
     tl = h["test"][PRIMARY_MODEL]
     lines += [
         "",
-        f"- Primary model: `{PRIMARY_MODEL}` (fixed before looking at the test split). Test n = {_f(tl['n'], '.0f')}, "
-        f"bad rate {_f(tl['bad_rate'], '.1%')}. `logit_naive` is scored here against the economic target.",
+        f"- Primary model: `{PRIMARY_MODEL}`: the logistic regression (specification fixed before looking at "
+        "the test split) followed by a validation-fitted logistic recalibration (below). Test n = "
+        f"{_f(tl['n'], '.0f')}, bad rate {_f(tl['bad_rate'], '.1%')}. `logit_naive` is scored here against the "
+        "economic target.",
         "- **Ceiling**: plan.md quotes a logistic origination-only temporal-test AUC of about 0.76 and a true-hazard "
-        "ceiling of about 0.79. The true-hazard AUC on *this* test split is computed by E8 and reported next to "
-        "these numbers (it is lower on this window; see PROGRESS.md Part 6).",
+        "ceiling of about 0.79. Those figures do not hold on this test window. E8 computes, on the same test "
+        "deals, the true-hazard AUC and the AUC of the true coefficients on observable inputs only (the "
+        "*observable ceiling*); the AUC gate is observable ceiling - 0.03 (user-approved 2026-11-04). See "
+        "`evals/reports/latest.md`.",
         "",
         "## Calibration",
         "- Calibration slope / intercept: logistic recalibration of the outcome on logit(prediction) "
-        "(slope 1 / intercept 0 = perfect). `gbm_isotonic` is calibrated on the validation split; the "
-        "logistic model is not re-calibrated.",
-        "- Plot: `build/figures/model_calibration.png`. The training window includes the 2024Q3-2025Q1 "
-        "deterioration and the test window is a better period, so predicted levels run above observed "
-        "rates on test (calibration-in-the-large "
-        f"{_f(_metric(perf, PRIMARY_MODEL, 'test', 'calibration_in_the_large'), '+.3f')} for `{PRIMARY_MODEL}`).",
-        f"- Slope: validation {_f(_metric(perf, PRIMARY_MODEL, 'val', 'calibration_slope'), '.2f')}, test "
-        f"{_f(_metric(perf, PRIMARY_MODEL, 'test', 'calibration_slope'), '.2f')} for `{PRIMARY_MODEL}`. A slope "
-        "below 1 on *both* later windows means the predictions are too spread out for later vintages, not "
-        "only shifted: the model is fit on about 500 deals from a worse period. The isotonic GBM does no "
-        "better on test (a step function fit on about 320 validation deals). Re-calibrate on the most "
-        "recent mature window before any use of the probability level.",
+        "(slope 1 / intercept 0 = perfect).",
+        f"- **`{PRIMARY_MODEL}` is recalibrated on the validation split** (Platt / logistic recalibration "
+        f"p = sigmoid(a + b logit(p_raw)), a = {fit['logit_recalibration']['intercept']:+.3f}, "
+        f"b = {fit['logit_recalibration']['slope']:.3f}, fit on validation only, never on test). "
+        "**This method was chosen after the test split had been read** (user-approved 2026-11-04): the "
+        "uncalibrated model's test slope was "
+        f"{_f(_metric(perf, 'logit_uncalibrated', 'test', 'calibration_slope'), '.2f')} (validation "
+        f"{_f(_metric(perf, 'logit_uncalibrated', 'val', 'calibration_slope'), '.2f')}). The uncalibrated "
+        "scores are kept as `logit_uncalibrated` (report-only). Recalibration is monotone, so AUC and lift "
+        "are unchanged.",
+        f"- After recalibration: test slope {_f(_metric(perf, PRIMARY_MODEL, 'test', 'calibration_slope'), '.2f')}, "
+        f"intercept {_f(_metric(perf, PRIMARY_MODEL, 'test', 'calibration_intercept'), '+.2f')}, "
+        f"calibration-in-the-large {_f(_metric(perf, PRIMARY_MODEL, 'test', 'calibration_in_the_large'), '+.3f')}. "
+        "The uncalibrated model was too spread out for later vintages (fit on about 500 deals from the "
+        "2024Q3-2025Q1 deterioration). `gbm_isotonic` (isotonic on about 320 validation deals) does not "
+        "transfer as well. Plot: `build/figures/model_calibration.png`. Re-calibrate on the most recent "
+        "mature window before any use of the probability level.",
         "",
         "## Logistic coefficients (economic T1, training split)",
         "",

@@ -39,7 +39,8 @@ def test_thresholds_cover_all_suites_with_plan_gates():
     assert th["E7"]["gates"]["deal_metric_max_abs_err_usd"]["value"] == 1.0
     assert th["E7"]["gates"]["portfolio_metric_max_abs_err_pp"]["value"] == 0.5
     assert th["E8"]["gates"]["calibration_slope"]["value"] == [0.8, 1.2]
-    assert th["E8"]["gates"]["temporal_test_auc"]["value"] == 0.70
+    # user-approved 2026-11-04: AUC gate relative to the observable ceiling (PROGRESS.md Part 6)
+    assert th["E8"]["gates"]["temporal_test_auc_minus_observable_ceiling"] == {"op": ">=", "value": -0.03}
     assert th["E9"]["optional"] is True
 
 

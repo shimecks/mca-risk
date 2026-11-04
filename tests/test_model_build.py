@@ -125,7 +125,14 @@ def test_deterministic_predictions(con):
 
 def test_performance_tables(con):
     perf = con.execute("SELECT * FROM model_performance").df()
-    assert set(perf.model) == {"baseline_rule", "logit", "gbm", "gbm_isotonic", "logit_naive"}
+    assert set(perf.model) == {
+        "baseline_rule",
+        "logit",
+        "logit_uncalibrated",
+        "gbm",
+        "gbm_isotonic",
+        "logit_naive",
+    }
     for metric in ("auc", "brier", "calibration_slope", "top_decile_lift"):
         assert not perf[(perf.split == "test") & (perf.metric == metric)].empty
     lift = con.execute(
@@ -173,3 +180,21 @@ def test_manifest_stage(model_build):
     st = m["stages"]["model"]
     assert st["status"] == "ok" and st["tables"]["model_predictions"]["accepted"] > 0
     assert st["extra"]["headline"]["primary_model"] == "logit"
+
+
+def test_logit_recalibrated_on_validation_only(con):
+    """The primary logit = validation-fitted logistic recalibration of logit_uncalibrated (monotone)."""
+    from mcarisk.model.evaluate import calibration_slope, logit
+
+    p = con.execute(
+        "SELECT deal_id, model, split, score, t1_bad_economic FROM model_predictions "
+        "WHERE model IN ('logit', 'logit_uncalibrated') ORDER BY deal_id"
+    ).df()
+    raw = p[p.model == "logit_uncalibrated"].set_index("deal_id")
+    cal = p[p.model == "logit"].set_index("deal_id")
+    v = raw[(raw.split == "val") & raw.t1_bad_economic.notna()]
+    b, a = calibration_slope(v.t1_bad_economic.astype(int), v.score)
+    expect = 1 / (1 + np.exp(-(a + b * logit(raw.score.to_numpy()))))
+    np.testing.assert_allclose(cal.loc[raw.index, "score"].to_numpy(), expect, rtol=1e-9)
+    vc = cal.loc[v.index]
+    assert calibration_slope(vc.t1_bad_economic.astype(int), vc.score)[0] == pytest.approx(1.0, abs=1e-6)
