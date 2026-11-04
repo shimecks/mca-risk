@@ -4,6 +4,8 @@
 #   make all            full pipeline (stages not built yet print "not implemented until Part N")
 #   make ingest         Part 1: raw/ -> build/portfolio.duckdb raw_* tables + build/run_manifest.json
 #   make standardize    Part 2: raw_* -> *_std tables, data_quality, build/dq_report.md (mappings/*.yaml)
+#   make resolve        Part 3: merchants, renewal links, L1 payoffs, L3 repairs, Q3/Q4 links, exceptions
+#   make notes-llm      Part 3 (optional): fill cache/llm_notes.jsonl via OpenRouter
 #   make test | lint    pytest | ruff check + ruff format --check
 #   make eval           all eval suites (unimplemented suites are reported, not failed)
 #   make eval SUITE=E1  one suite (fails if that suite is not implemented yet)
@@ -16,6 +18,8 @@ BUILD   := build
 DB      := $(BUILD)/portfolio.duckdb
 SUITE   ?=
 
+
+.PHONY: notes-llm
 .PHONY: all ingest standardize resolve ledger metrics analytics model report \
         test lint format eval app clean help
 
@@ -29,7 +33,12 @@ ingest:
 standardize:
 	$(PY) -m mcarisk.standardize
 resolve:
-	@echo "[resolve] not implemented until Part 3 -- skipped"
+	$(PY) -m mcarisk.resolve
+
+# Optional: send collections notes missing from cache/llm_notes.jsonl to the LLM (needs OPENROUTER_API_KEY
+# + MODEL in the env or in $$MCARISK_DOTENV). `make all` never calls the network; it reads the cache.
+notes-llm:
+	$(PY) -m mcarisk.notes.extract --llm
 ledger:
 	@echo "[ledger] not implemented until Part 4 -- skipped"
 metrics:
@@ -62,4 +71,4 @@ clean:
 	rm -rf $(BUILD)
 
 help:
-	@sed -n '1,13p' Makefile
+	@sed -n '1,15p' Makefile

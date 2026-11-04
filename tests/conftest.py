@@ -55,3 +55,22 @@ def std_build(raw_ingest, tmp_path_factory: pytest.TempPathFactory):
     with run.stage("standardize"):
         res = standardize(db, dq_report_path=tmp / "dq_report.md", run=run)
     return {"db": db, "manifest": manifest, "report": tmp / "dq_report.md", "result": res}
+
+
+@pytest.fixture(scope="session")
+def resolve_build(std_build, tmp_path_factory: pytest.TempPathFactory):
+    """A copy of the standardized build, then resolved (Part 3) in place. Notes use the committed LLM
+    cache in ``auto`` mode, which never calls the network."""
+    import shutil
+
+    from mcarisk.manifest import open_run
+    from mcarisk.resolve.stage import resolve
+
+    tmp = tmp_path_factory.mktemp("resolve")
+    db, manifest = tmp / "portfolio.duckdb", tmp / "run_manifest.json"
+    shutil.copy(std_build["db"], db)
+    shutil.copy(std_build["manifest"], manifest)
+    run = open_run(manifest)
+    with run.stage("resolve"):
+        res = resolve(db, dq_report_path=tmp / "dq_report.md", run=run, l1_policy="strict", notes_mode="auto")
+    return {"db": db, "manifest": manifest, "report": tmp / "dq_report.md", "result": res}

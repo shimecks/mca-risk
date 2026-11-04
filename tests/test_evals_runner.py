@@ -113,8 +113,18 @@ def test_runner_writes_reports_and_exit_codes(std_build, tmp_path, monkeypatch):
     rep = json.loads((tmp_path / "latest.json").read_text(encoding="utf-8"))
     assert rep["overall"] == "pass" and rep["suites"][0]["status"] == "pass"
     assert (tmp_path / "latest.md").exists()
-    assert runner.main(["--suite", "E5", "--reports-dir", str(tmp_path)]) == 2  # requested but not built yet
-    assert runner.main(["--reports-dir", str(tmp_path)]) == 0  # all: unimplemented suites don't fail
+    assert runner.main(["--suite", "E6", "--reports-dir", str(tmp_path)]) == 2  # requested but not built yet
+
+
+def test_runner_all_suites_on_resolved_build(resolve_build, tmp_path, monkeypatch):
+    monkeypatch.setattr(runner, "EvalContext", lambda: EvalContext(db_path=resolve_build["db"]))
+    code = runner.main(["--reports-dir", str(tmp_path)])
+    rep = json.loads((tmp_path / "latest.json").read_text(encoding="utf-8"))
+    status = {s["suite"]: s["status"] for s in rep["suites"]}
+    assert code == (0 if rep["overall"] == "pass" else 1)
+    assert status["E8"] == "not_implemented"  # unimplemented suites don't fail the run
+    for sid in ("E1", "E2", "E3", "E4"):
+        assert status[sid] == "pass", sid
 
 
 def test_e2_e3_pass_on_standardized_build(std_build):
@@ -153,3 +163,27 @@ def test_e3_detects_a_surviving_duplicate(std_build, tmp_path):
     con.close()
     out = e3_dedupe.run(EvalContext(db_path=db))
     assert out.metrics["payments_count_abs_diff"] == 1 and out.metrics["payments_sum_abs_diff_cents"] > 0
+
+
+def test_e4_e5_on_resolved_build_and_detect_errors(resolve_build, tmp_path):
+    from evals.suites import e4_entity_resolution, e5_linkage
+
+    e4 = e4_entity_resolution.run(EvalContext(db_path=resolve_build["db"]))
+    assert e4.metrics["pairwise_f1"] >= 0.98
+    e5 = e5_linkage.run(EvalContext(db_path=resolve_build["db"]))
+    assert e5.metrics["renewal_link_precision"] >= 0.98 and e5.metrics["l3_misposting_precision"] == 1.0
+    db = tmp_path / "broken.duckdb"
+    shutil.copy(resolve_build["db"], db)
+    con = duckdb.connect(str(db))
+    try:
+        # merge two merchants and drop the regex links; misattribute every repaired debit
+        con.execute("UPDATE deals_resolved SET merchant_key = (SELECT min(merchant_key) FROM deals_resolved)")
+        con.execute("DELETE FROM deal_links WHERE method = 'regex'")
+        con.execute("UPDATE payments_resolved SET deal_id = deal_id_posted")
+        con.execute("UPDATE payoff_classes SET payoff_class = 'early_payoff_cash'")
+    finally:
+        con.close()
+    assert e4_entity_resolution.run(EvalContext(db_path=db)).metrics["pairwise_f1"] < 0.5
+    bad = e5_linkage.run(EvalContext(db_path=db)).metrics
+    assert bad["renewal_link_recall"] < e5.metrics["renewal_link_recall"]
+    assert bad["l3_misposting_recall"] == 0.0 and bad["l1_payoff_accuracy"] < 0.1

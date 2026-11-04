@@ -32,7 +32,7 @@
     "gates": {
       "pairwise_f1": {"op": ">=", "value": 0.98}
     },
-    "report_only": ["pairwise_precision", "pairwise_recall", "deal_to_merchant_accuracy"]
+    "report_only": ["pairwise_precision", "pairwise_recall", "deal_to_merchant_accuracy", "n_deals", "n_clusters", "n_true_merchants", "merges_by_method", "scorecard_merchant_accuracy", "collections_merchant_accuracy"]
   },
   "E5": {
     "name": "Linkage",
@@ -43,7 +43,7 @@
       "l1_payoff_accuracy": {"op": ">=", "value": 0.99},
       "l3_misposting_recall": {"op": ">=", "value": 0.95}
     },
-    "report_only": ["scorecard_match_rate", "l3_misposting_precision"]
+    "report_only": ["scorecard_match_rate", "l3_misposting_precision", "renewal_links_by_method", "renewal_links_true", "renewal_links_predicted", "l1_accuracy_by_method", "l1_successor_accuracy", "l1_description_hint_only_accuracy", "l1_policy", "l3_true_misposted_rows", "l3_repairs", "rows_on_wrong_deal_as_posted", "rows_on_wrong_deal_after_repair", "scorecards_with_truth_deal", "collections_link_accuracy"]
   },
   "E6": {
     "name": "Definitions",
@@ -82,6 +82,6 @@
     "gates": {
       "llm_minus_regex_accuracy": {"op": ">=", "value": 0.0}
     },
-    "report_only": ["regex_accuracy", "llm_accuracy", "llm_cost_usd"]
+    "report_only": ["regex_accuracy", "llm_accuracy", "llm_cost_usd", "by_group"]
   }
 }
