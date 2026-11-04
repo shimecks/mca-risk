@@ -150,3 +150,87 @@ def t1_rates(
                 }
             )
     return out
+
+
+# ------------------------------------------------------------------------------------------ T2 / T3
+T2_BAD_OUTCOMES = ("written_off", "settled", "defaulted", "refinanced_distressed")  # D19 (METRICS.md §2)
+T2_GOOD_CLOSES = ("renewed_healthy", "paid_in_full_early", "paid_in_full")
+T3_WINDOW_MONTHS = 18  # METRICS.md §5 T3
+
+
+def t2_survival_rows(
+    deal_metric_rows: Iterable[dict[str, Any]], *, as_of: date = AS_OF_DEFAULT
+) -> list[dict]:
+    """METRICS.md §5 **T2**: time to the D19 event, for every deal; censored at a good close or as-of.
+
+    Reads ``deal_metrics`` rows as of ``as_of`` (D19 is not redefined here). Event date: the D16
+    default date (last good payment + 1 bd) when D16 fired, else the outcome date (the internal-payoff
+    date for ``refinanced_distressed``; the write-off / settlement date otherwise). Censoring date: the
+    outcome date of a good close (``T2_GOOD_CLOSES``), else ``as_of`` for open deals. Duration is in Fed
+    ACH business days from funding (``business_days_between``), at least 1 for an event."""
+    from mcarisk.calendar import business_days_between
+
+    out = []
+    for m in deal_metric_rows:
+        if m["d19_bad_economic"]:
+            end = m["d16_default_date"] if m["d16_default"] and m["d16_default_date"] else m["outcome_date"]
+            end = end or as_of
+            event = True
+        elif m["outcome"] in T2_GOOD_CLOSES and m["outcome_date"] is not None:
+            end, event = m["outcome_date"], False
+        else:
+            end, event = as_of, False
+        end = min(end, as_of)
+        dur = business_days_between(m["funding_date"], end) if end > m["funding_date"] else 0
+        out.append(
+            {
+                "deal_id": m["deal_id"],
+                "funding_date": m["funding_date"],
+                "end_date": end,
+                "duration_bdays": max(dur, 1) if event else dur,
+                "event": event,
+                "outcome": m["outcome"],
+            }
+        )
+    return out
+
+
+def _add_months(d: date, k: int) -> date:
+    import calendar as _cal
+
+    y, mth = divmod(d.month - 1 + k, 12)
+    y, mth = d.year + y, mth + 1
+    return date(y, mth, min(d.day, _cal.monthrange(y, mth)[1]))
+
+
+def t3_relationship_rows(
+    rel_rows: Iterable[dict[str, Any]], *, as_of: date = AS_OF_DEFAULT, window_months: int = T3_WINDOW_MONTHS
+) -> list[dict]:
+    """METRICS.md §5 **T3**: relationship R9, for relationships resolved within 18 months of first funding.
+
+    ``observable`` = the whole window has elapsed (first funding + 18 months <= as-of), so the population
+    is not limited to fast resolvers. ``in_population`` = observable and resolved (R5) by first funding
+    + 18 months (R10 days to resolution). Survivorship caveat (§5): relationships still open at 18 months
+    (long-lived chains) are left out."""
+    out = []
+    for r in rel_rows:
+        first = r["first_funding_date"]
+        end = _add_months(first, window_months)
+        observable = end <= as_of
+        days = r["r10_days_to_resolution"]
+        resolved_in = (
+            r["r5_status"] == "resolved"
+            and days is not None
+            and (first.toordinal() + days) <= end.toordinal()
+        )
+        out.append(
+            {
+                "merchant_key": r["merchant_key"],
+                "first_funding_date": first,
+                "window_end": end,
+                "observable": observable,
+                "in_population": bool(observable and resolved_in),
+                "t3_bad": bool(r["r9_relationship_bad"]) if (observable and resolved_in) else None,
+            }
+        )
+    return out

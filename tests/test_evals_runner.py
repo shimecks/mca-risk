@@ -113,19 +113,24 @@ def test_runner_writes_reports_and_exit_codes(std_build, tmp_path, monkeypatch):
     rep = json.loads((tmp_path / "latest.json").read_text(encoding="utf-8"))
     assert rep["overall"] == "pass" and rep["suites"][0]["status"] == "pass"
     assert (tmp_path / "latest.md").exists()
-    assert runner.main(["--suite", "E8", "--reports-dir", str(tmp_path)]) == 2  # requested but not built yet
+    real = runner.suites.discover()
+    monkeypatch.setattr(runner.suites, "discover", lambda: {k: v for k, v in real.items() if k != "E8"})
+    assert runner.main(["--suite", "E8", "--reports-dir", str(tmp_path)]) == 2  # requested but not built
 
 
-def test_runner_all_suites_on_metrics_build(metrics_build, tmp_path, monkeypatch):
-    """Every implemented suite runs on the Part 4 build; the exit code follows the gates."""
-    monkeypatch.setattr(runner, "EvalContext", lambda: EvalContext(db_path=metrics_build["db"]))
+def test_runner_all_suites_on_model_build(model_build, tmp_path, monkeypatch):
+    """Every suite (E1-E9) runs on the Part 6 build; the exit code follows the gates."""
+    monkeypatch.setattr(runner, "EvalContext", lambda: EvalContext(db_path=model_build["db"]))
     code = runner.main(["--reports-dir", str(tmp_path)])
     rep = json.loads((tmp_path / "latest.json").read_text(encoding="utf-8"))
     status = {s["suite"]: s["status"] for s in rep["suites"]}
-    assert status["E8"] == "not_implemented"  # unimplemented suites don't fail the run
     for sid in ("E1", "E2", "E3", "E4", "E5", "E9"):
         assert status[sid] == "pass", sid
-    assert status["E6"] in ("pass", "fail") and status["E7"] in ("pass", "fail")  # no suite errors
+    for sid in ("E6", "E7", "E8"):  # no suite errors
+        assert status[sid] in ("pass", "fail"), sid
+    e8 = next(s for s in rep["suites"] if s["suite"] == "E8")
+    assert e8["metrics"]["main_driver_signs_correct"] is True
+    assert e8["metrics"]["leakage_tests_passed"] is True
     failed = [s for s, v in status.items() if v in ("fail", "error")]
     assert code == (1 if failed else 0) and rep["overall"] == ("fail" if failed else "pass")
 

@@ -9,6 +9,7 @@
 #   make ledger         Part 4: ledger, deal_status_events, ledger_rejects, cal_sched (METRICS.md §1)
 #   make metrics        Part 4: deal/relationship/portfolio metrics, T1 targets, SQL views, Q6, dq report
 #   make analytics      Part 5: figures + build/findings.md (every number from a metric-table query)
+#   make model          Part 6: risk models, predictions, model figures, build/model_card.md
 #   make test | lint    pytest | ruff check + ruff format --check
 #   make eval           all eval suites (unimplemented suites are reported, not failed)
 #   make eval SUITE=E1  one suite (fails if that suite is not implemented yet)
@@ -51,8 +52,10 @@ metrics:
 # Part 5: figures (build/figures/*.png, *.plotly.json, data/*.csv) + build/findings.md from the metric tables.
 analytics:
 	$(PY) -m mcarisk.analytics
+# Part 6: T1 models (baseline, logistic, GBM + isotonic, naive-target logistic), T2 KM/Cox, T3, figures,
+# predictions in DuckDB and build/model_card.md.
 model:
-	@echo "[model] not implemented until Part 6 -- skipped"
+	$(PY) -m mcarisk.model
 report:
 	@echo "[report] not implemented until Part 7 -- skipped"
 
@@ -77,4 +80,4 @@ clean:
 	rm -rf $(BUILD)
 
 help:
-	@sed -n '1,16p' Makefile
+	@sed -n '1,17p' Makefile

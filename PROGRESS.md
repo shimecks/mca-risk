@@ -10,7 +10,7 @@ scores, known gaps, and the conventions later parts must follow. Gate rules: `CL
 | 3 Entity resolution + linkage | done | `part-3` |
 | 4 Ledger + metrics library | done | `part-4` |
 | 5 Portfolio analytics | done | `part-5` |
-| 6 Risk modeling | not started | |
+| 6 Risk modeling | built; gate pending (E8 AUC + slope, user decision) | |
 | 7 App, report, demo | not started | |
 
 ---
@@ -549,7 +549,132 @@ E1-E6 and E9 are unchanged. E7 is unchanged: deal max $0.63, relationship max $0
 4. The plan's expected numbers differ slightly from the pipeline's: the deteriorated vintages are at 34-41% (plan 37-43%), 2026Q3 closed-only is 56.5% (plan about 61%), and the economic bad rate is 27.9% (simulator 29.3%). They are reported as the pipeline shows them; nothing was tuned.
 
 ## Part 6: Risk modeling
-_not started_
+
+**Status: built, gate NOT passed, not tagged.** `make lint test` is green (410 passed, no xfail or skip)
+and `make clean all` runs in about 22 s with no network. `make eval` fails overall because **E8 fails two gates**:
+temporal-test AUC 0.660 (gate >= 0.70) and calibration slope 0.69 (gate 0.8-1.2). Main-driver signs pass
+(7/7). No gate was loosened and nothing was tuned on the test split. The evidence that the AUC gate is
+out of reach on this test window, and the proposed fixes, are in Open questions 1 and 2. E1-E7 and E9
+still pass.
+
+### What was built
+| Path | What it is |
+|---|---|
+| `src/mcarisk/model/features.py` | Origination-only features (METRICS.md §5). `FEATURE_INPUT_SQL` names every input column: contract terms, ISO, the Q2 renewal link, the tracker's inline underwriting fields and the Q3 scorecard (application date 0-10 days before funding). Precedence is tracker first, then scorecard. **TIB harmonized** to months: tracker `tib_months`, or scorecard `tib_years` x 12 (+/- 0.6 months), with `tib_source`. Burden comes from `metrics.attributes.burden`. **As-of-renewal prior-deal features** (`prior_features`): the prior deal's D13 pace, D14 return rate, attempts, modification flag, payment ratio, the D17 *rule* evaluated on those as-of values (`prior_stress_rule_asof`) and the elapsed share of its term. They are computed only from the prior's ledger events dated on or before the renewal's funding date (`prior_events_asof`, the leakage guard) with the `asof` return basis, so a return that posts after funding never counts. A tracker-missing prior's installment is the modal debit up to t. `FORBIDDEN_INPUTS` lists names that must never appear in the feature SQL (status, outcome, metric / target tables, payoff results, notes, D16 / D17, collections). |
+| `src/mcarisk/model/train.py` | Temporal split (`split_of`): train <= 2024-12-31, val 2025-01-01..06-30, test 2025-07-01..2026-03-31, else `out_of_window`. `model_frame` sets `excluded_reason`: `tracker_missing` / `immature` / `out_of_window`, or NULL = labelled. Models: `baseline_rule` (points = min(positions, 3) + [burden >= 25%] + [burden >= 35%], smoothed training bad rate per points value); **`logit` (primary, fixed before the test read)**: statsmodels Logit on 9 terms, with a coefficient table (coef, SE, z, p, 95% CI, odds ratios); `gbm`: HistGradientBoosting with fixed hyperparameters and `random_state=0`, no early stopping; `gbm_isotonic`: isotonic regression fit on validation; `logit_naive`: the `logit` specification trained on the naive D18 target. Median imputation from the training split, plus `uw_missing`. |
+| `src/mcarisk/model/evaluate.py` | AUC, Brier, **calibration slope / intercept** (Newton-Raphson logistic recalibration of y on logit(p), equal to statsmodels; NaN under separation), calibration-in-the-large, reliability bins, decile lift (ties broken by deal_id). |
+| `src/mcarisk/metrics/targets.py` | **T2** `t2_survival_rows`: time to the D19 event from `deal_metrics`. The event date is the D16 default date when D16 fired, else the outcome date. Censored at a good close or the as-of date. Durations are in business days. **T3** `t3_relationship_rows`: relationships resolved (R5) within 18 calendar months of first funding, among those whose 18-month window has fully elapsed. |
+| `src/mcarisk/model/survival.py` | Kaplan-Meier by renewal status, positions and burden (lifelines, 95% CIs on a 10-bd grid). Cox PH on the logistic inputs (penalizer 0.01; descriptive, all deals). T3 logistic on the first deal's origination features, temporal split by first funding (train <= 2024-06-30). |
+| `src/mcarisk/model/leakage.py` | `perturb_post_funding(con)` changes four things. (1) It scrambles every ledger row dated after the funding date of the deal that reads it: amount, and debit<->return. (2) It adds a look-ahead return for every pre-cutoff debit, dated the day after the renewal's funding, plus a fake modification. (3) It overwrites tracker status, notes and payoff fields. (4) It deletes the collections servicing tables and drops every outcome / metric / target table. `feature_diff` compares the two feature sets. Used by the tests and by E8. |
+| `src/mcarisk/model/figures.py` | `model_calibration`, `model_lift`, `model_naive_vs_economic`, `model_coefficients`, `survival_km`. Part 5 conventions: `<name>.png`, `<name>.plotly.json`, `data/<name>.csv`; `MODEL_DATASETS[name](con)` rebuilds each frame from the model tables; `MODEL_FIGURE_METRICS` holds the metric IDs. |
+| `src/mcarisk/model/stage.py`, `__main__.py` | Stage `model` (`make model`, wired into `make all`). Writes the tables below, the figures and `build/model_card.md`, and records the manifest stage `model` (tables, headline numbers, figures). |
+| `evals/suites/e8_model.py` | E8 (below). It also reads `ground_truth/deals.csv` `hazard_lin` and `merchants.csv` `z` for the ceiling. |
+| `tests/test_model_unit.py` (21), `tests/test_model_build.py` (8), `tests/conftest.py` (`model_build`), `tests/test_evals_runner.py` (all-suites test now runs on the model build, E1-E9) | See Tests. |
+
+### Tests: 410 passed (`make lint test` green); the 381 from Parts 1-5 still pass
+- **Leakage guard, perturbation (build)**: `perturb_post_funding` on a copy of the real build scrambles about 102k post-funding ledger rows and adds about 96k fake look-ahead returns and modifications. It also overwrites every tracker status, deletes collections servicing rows and drops all outcome, metric and target tables. The features are **identical**. A control change on pre-cutoff debits does change them, so the check is not vacuous.
+- **Leakage guard, perturbation (pure, hypothesis)**: any random events dated after the funding date leave `prior_features` unchanged.
+- **Leakage guard, static**: the feature SQL contains no `FORBIDDEN_INPUTS` and no `SELECT *`. No model feature name contains status / outcome / D16-D19 / T1 / payoff / write / default.
+- **As-of-renewal features ignore later returns**: three bounced debits whose returns post 2 bd after the renewal leave the D14 rate at 0 and the stress rule off, while D17 `attempt` counts them. The same returns posted on the funding date do count. On the build, every one of the 800+ renewals equals a recomputation from events cut at the funding date, and real renewals do have post-funding returns of pre-funding debits.
+- **Split boundaries**: unit tests at each edge (2024-12-31 / 2025-01-01 / 06-30 / 07-01 / 2026-03-31 / 04-01). In the persisted tables, every labelled deal is mature, immature test deals are excluded and counted, and the 44 tracker-missing deals are never scored.
+- **Deterministic seeds**: two fits give bit-identical predictions for all five models, equal to the stored `model_predictions`.
+- **Calibration slope on known inputs**: about 1 for well-calibrated draws (n = 200k), 0.5 for logits doubled, 2 for logits halved, equal to statsmodels to 1e-8, NaN under perfect separation.
+- Also: decile lift and tie determinism; TIB harmonization and tracker-first precedence; burden; chain sequence; T2 event / censoring dates; T3 window; tables, figures, model card sections, manifest.
+
+### Eval scores (`make eval`): overall **FAIL** (E8); E1-E7, E9 pass
+**E8 gates (primary model `logit`, mature test deals funded 2025-07..2026-03, n = 424, bad rate 23.8%)**
+| Metric | Value | Gate | |
+|---|---|---|---|
+| temporal_test_auc | **0.660** | >= 0.70 | FAIL |
+| calibration_slope | **0.69** | 0.8-1.2 | FAIL |
+| main_driver_signs_correct | **true** (7/7) | == true | pass |
+| brier (report) | 0.173 | | |
+| top-decile lift (report) | 2.34 (55.8% bad in decile 1 vs 23.8%) | | |
+| **ceiling_auc** (report): the simulator's true log-hazard on the same 424 deals | **0.726** | | |
+| observable ceiling (report): true hazard without the latent quality term z, i.e. the true coefficients on observable inputs | **0.681** | | |
+| leakage_tests_passed (report) | true (0 feature differences) | | |
+
+**Every model** (economic T1 target; validation n = 321 at a 34.3% bad rate, test n = 424 at 23.8%)
+| Model | Val AUC | Test AUC | Test Brier | Test slope | Test top-decile lift |
+|---|---|---|---|---|---|
+| baseline_rule | 0.607 | 0.575 | 0.184 | 0.99 | 1.46 |
+| **logit** (primary) | 0.693 | **0.660** | 0.173 | 0.69 | 2.34 |
+| gbm (raw) | 0.688 | 0.643 | 0.179 | 0.53 | 2.15 |
+| gbm_isotonic | 0.704 | 0.636 | 0.184 | 0.49 | 2.25 |
+| logit_naive (scored on economic) | 0.680 | 0.650 | 0.171 | 0.90 | 1.95 |
+
+Ceiling on validation: true hazard 0.767, observable-only 0.725. Diagnostic (report-only, not a pipeline model): a validation-fitted logistic recalibration of `logit` gives a **test slope of 0.96**.
+
+**Naive (D18) vs economic (D19) target, same features, test split** (k = 101 economic bads; 44 deals refinanced distressed by their horizon):
+| | logit (economic) | logit_naive (D18) |
+|---|---|---|
+| AUC vs economic T1 | 0.660 | 0.650 |
+| Recall of distressed refis in the top k | 0.386 | 0.386 |
+| Mean risk percentile of distressed refis | 0.62 | 0.65 |
+| Mean predicted probability (observed economic 23.8%) | 30.0% | **17.4%** |
+| Mean predicted probability, distressed refis | 39.0% | **23.3%** |
+
+On *ranking* the naive model does **not** under-rank distressed refinances on this book: distressed refis, modifications and defaults share the same distress drivers in the DGP, so a D18 model orders deals almost the same way. The difference is the **level**: the naive model under-predicts economic bad by about 6 pp overall and by about 16 pp on the distressed refis, which is the share renewals hide. The model card says this as measured and does not claim a ranking effect.
+
+**Coefficients (logit, training split, odds ratios with 95% CI)**:
+- fico_per50 0.66 (0.54-0.81)
+- log_tib_24m 0.75 (0.57-0.98)
+- positions 1.34 (1.02-1.76)
+- nsf_90d 1.07 (0.92-1.23)
+- **burden_per10pp 1.36 (0.97-1.91)**
+- renewal_healthy_asof 0.59 (0.34-1.03)
+- renewal_stressed_asof 2.02 (0.76-5.41)
+- log_term_120 3.06 (1.30-7.24)
+- uw_missing 1.71 (1.00-2.92)
+
+Burden is modelled together with renewal status and term. Without the term, burden comes out at about 0. Short, high-payment deals close within the horizon before distress can show, so the term is the exposure; the DGP has no exposure term in its daily hazard. With the term included, burden is positive, as in `dgp.json`. The naive model's burden OR is 0.91.
+
+**T2**: Kaplan-Meier by renewal status shows about 25% of stressed-as-of-funding renewals still without a D19 event at 500 bd, vs about 54% of new deals and about 61% of healthy renewals. By positions: 3+ about 32% vs 0 about 55%. Cox (n = 1,967, 496 events, penalizer 0.01) has concordance **0.720**. Hazard ratios: FICO/50 0.80, positions 1.27, NSF 1.16, burden/10pp 1.11, stressed renewal 1.34.
+
+**T3** (implemented, with the survivorship caveat):
+- Population: 453 of 1,200 relationships have an elapsed 18-month window; 404 of them resolved within it; 394 are scored (not tracker-missing).
+- R9 bad rate 24.4%.
+- First-deal logistic AUC: train 0.748 (n = 170, first funding <= 2024-06), temporal test 0.691 (n = 224).
+
+### Runtime
+`make clean all`: **about 22 s** wall, no network (ingest 1.9 s, standardize 3.0 s, resolve 2.2 s, ledger 1.8 s, metrics 1.8 s, analytics 1.6 s, model 3.0 s). `make test`: about 2 min 7 s.
+
+### Known gaps
+- E8 AUC and slope gates fail (Open questions 1-2). Part 6 is not tagged.
+- The logistic model is not re-calibrated. `gbm_isotonic` is, on 321 validation deals, and the step function does not transfer (test slope 0.49).
+- `prior_modified_asof` is always 0 on this book (no renewed deal had a modification before its renewal), so it is kept in `model_features` but not in any model.
+- Industry enters only the GBM. Its dummies over-fit the logistic model on validation. State and ISO are in `model_features` but not in any model. State is reported for fairness monitoring only.
+- The renewal link (`prior_deal_id`) for 111 deals comes from L1's funding formula. That uses the renewal's own FUNDING row, dated the funding day. That is origination information (the funder knows it is paying off a prior), but it is not a tracker field.
+- Cox is descriptive (fit on all deals; no PH diagnostics); the temporal evaluation is on T1.
+- 44 tracker-missing deals are excluded from fitting and scoring. 33 are mature, and their T1 bad rate is 24.2% (in the model card).
+
+### Conventions Part 7 must follow (what the app should read)
+- **Tables** (`build/portfolio.duckdb`):
+  - `model_features`: one row per deal, with features, `split`, `mature`, labels, `excluded_reason` and lineage.
+  - `model_predictions`: one row per (deal, model). Columns: `score`, `trained_on`, `split`, `excluded_reason`, labels, `outcome_at_horizon`. Filter `excluded_reason IS NULL` for evaluation rows; `model = 'logit'` is the primary.
+  - `model_performance`: long. Columns: `model, trained_on, eval_target, split, metric, value`. Metrics: n, n_bad, bad_rate, mean_pred, auc, brier, calibration_slope / intercept / in_the_large, top_decile_lift / bad_rate.
+  - `model_coefficients` (logit and logit_naive; `term_order`), `model_lift`, `model_calibration` (split val/test), `model_naive_comparison`, `model_fairness`, `survival_km`, `survival_cox` (with `concordance`), `t3_summary` (key / JSON value).
+- **Figures** (`build/figures/`): `model_calibration`, `model_lift`, `model_naive_vs_economic`, `model_coefficients`, `survival_km`. Each has `.png`, `.plotly.json` and `data/*.csv`. Re-render with `mcarisk.model.figures.MODEL_DATASETS[name](con)` -> `MODEL_FIGURES[name](df)`. Metric IDs are in `MODEL_FIGURE_METRICS`.
+- **Model card**: `build/model_card.md`. It is generated, so do not edit it by hand. It points to the E8 report for the ceiling, because pipeline code cannot read ground truth.
+- The manifest stage `model` has `extra.headline` (split counts, per-model test / val metrics, the naive comparison, T2 / T3) and `extra.figures`.
+- The E8 report (`evals/reports/latest.json`, suite E8 `details`) has per-model numbers, the ceilings, the sign table, the recalibration diagnostic and the leakage result.
+
+### Open questions / deviations (need a user decision before tagging `part-6`)
+1. **E8 AUC gate (>= 0.70) is not reachable on this test window; the plan's reference points do not hold here.**
+   - **Evidence (E8, report-only).** On the same 424 mature test deals, the simulator's *true* log-hazard ranks at AUC **0.726**. That is the ceiling, not about 0.79. With the true coefficients on the *observable* inputs only (dropping the latent quality z, which no origination model can see), it ranks at **0.681**. The primary logistic model reaches 0.660 and the GBM 0.643.
+   - **Other windows.** On validation (2025H1) the numbers are 0.767 / 0.725 / 0.693; on all mature deals pooled they are 0.772 / 0.725. So about 0.79 / 0.76 are not this seed's numbers for this target and split. An origination-only model cannot reach 0.70 on this test window without beating the DGP's own coefficients.
+   - **Proposed fixes (pick one).**
+     - (a) Gate AUC relative to the observable ceiling on the same deals, e.g. model AUC >= observable ceiling - 0.03 (passes at 0.660 vs 0.681).
+     - (b) Keep >= 0.70 but evaluate on validation + test pooled (2025-01..2026-03).
+     - (c) Lower the absolute gate to the measured ceiling minus a margin (e.g. >= 0.65).
+
+   I have not changed `thresholds.json`.
+2. **E8 calibration slope (0.8-1.2) misses: 0.69 on test, but also 0.72 on validation**, so it is not only the 2024Q3-2025Q1 drift. The model trained on about 500 deals from a worse period is too spread out for later vintages. The calibration-in-the-large is +0.06 on test.
+   - **Proposed fix:** make a validation-fitted logistic recalibration part of the `logit` pipeline, the logistic counterpart of the GBM's isotonic step. In the E8 diagnostic this gives a test slope of **0.96** with the AUC unchanged.
+   - I did not apply it, because the method was not fixed before the test split was read. Adopting it now is a decision for you.
+3. The naive-target comparison does **not** show a ranking under-rank of distressed refinances on this book (equal top-k recall 0.386; the naive model's mean percentile is 0.65 vs 0.62). It shows a level under-prediction instead (17.4% vs 23.8% observed; 23.3% vs 39.0% on distressed refis). The task brief expected a ranking effect; the card and this section report what was measured.
+4. **T2 event time**: the D16 default date (last good payment + 1 bd) for defaults, settlements and write-offs that went through D16; the outcome date otherwise (renewal date for refinanced_distressed). METRICS.md §5 says only "time to D19 event". Say if you prefer the recognition date.
+5. **T3 window**: "within 18 months" is 18 calendar months from first funding. The population is restricted to relationships whose window has fully elapsed by 2026-09-30, so recent fast resolvers do not bias it.
 
 ## Part 7: App, report, reproducibility, demo
 _not started_

@@ -96,3 +96,22 @@ def metrics_build(resolve_build, tmp_path_factory: pytest.TempPathFactory):
         met = run_metrics(db, d17_basis="attempt", dq_report_path=tmp / "dq_report.md", run=run)
     run.write()
     return {"db": db, "manifest": manifest, "report": tmp / "dq_report.md", "ledger": led, "metrics": met}
+
+
+@pytest.fixture(scope="session")
+def model_build(metrics_build, tmp_path_factory: pytest.TempPathFactory):
+    """A copy of the metrics build, then the Part 6 model stage in place (figures + card in the temp dir)."""
+    import shutil
+
+    from mcarisk.manifest import open_run
+    from mcarisk.model.stage import run_model
+
+    tmp = tmp_path_factory.mktemp("model")
+    db, manifest = tmp / "portfolio.duckdb", tmp / "run_manifest.json"
+    shutil.copy(metrics_build["db"], db)
+    shutil.copy(metrics_build["manifest"], manifest)
+    run = open_run(manifest)
+    with run.stage("model"):
+        res = run_model(db, fig_dir=tmp / "figures", model_card=tmp / "model_card.md", run=run)
+    run.write()
+    return {"db": db, "manifest": manifest, "dir": tmp, "result": res}
