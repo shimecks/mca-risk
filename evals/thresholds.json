@@ -58,7 +58,7 @@
   "E7": {
     "name": "Metrics",
     "plan_gate": "$1 per record; +/-0.5 pp portfolio",
-    "comparison_basis": "User decision 2026-11-04: the P4 economic bad rate and the P8 distressed share of renewals are gated at +/-0.5 pp against METRICS.md v1.2 D17 applied to the true ledger (spec-on-truth, computed in evals/), not against the simulator's distressed labels in portfolio_expected.json. Every other P-metric is still gated against portfolio_expected.json. The gate value (0.5 pp) is unchanged. The gap to the simulator labels is report-only, split into definition error and pipeline error (PROGRESS.md Part 4).",
+    "comparison_basis": "User decisions 2026-11-04: every D17-dependent P-metric (the P4 economic bad rate, the P8 distressed share of renewals and the P8 distressed-chain loss share) is gated at +/-0.5 pp against METRICS.md v1.2 D17 applied to the true ledger (spec-on-truth, computed in evals/), not against the simulator's distressed labels in portfolio_expected.json. Every other P-metric is still gated against portfolio_expected.json. The gate value (0.5 pp) is unchanged. The gap to the simulator labels is report-only, split into definition error and pipeline error (PROGRESS.md Part 4).",
     "gates": {
       "deal_metric_max_abs_err_usd": {"op": "<=", "value": 1.0},
       "relationship_metric_max_abs_err_usd": {"op": "<=", "value": 1.0},

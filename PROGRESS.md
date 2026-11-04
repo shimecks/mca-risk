@@ -8,7 +8,7 @@ scores, known gaps, and the conventions later parts must follow. Gate rules: `CL
 | 1 Repo, ingestion, lineage | done | `part-1` |
 | 2 Standardization + DQ report | done | `part-2` |
 | 3 Entity resolution + linkage | done | `part-3` |
-| 4 Ledger + metrics library | built; **gate pending**: E7 fails on P8 distressed-chain loss share (0.67 pp, D17-defined; Part 4 open question 7) | |
+| 4 Ledger + metrics library | done | `part-4` |
 | 5 Portfolio analytics | not started | |
 | 6 Risk modeling | not started | |
 | 7 App, report, demo | not started | |
@@ -327,16 +327,13 @@ For comparison, with `MCARISK_L1_TRACKER_MISSING=strict` (v1.0): links P/R 1.0/0
 
 ## Part 4: Ledger and metrics library
 
-**Status: built, gate pending, not tagged.** The user decided the first three open questions on
-2026-11-04, and they are resolved as follows:
+**Status: done, tagged `part-4`.** The user decided every open question on 2026-11-04:
 1. METRICS.md v1.2 makes the `attempt` reading of D17 the default.
 2. §7 now documents the M0219 lower bounds, and the strict xfail was replaced by passing tests.
-3. E7 compares the P4 economic bad rate and the P8 distressed share of renewals with spec-on-truth.
+3. and 7. Every D17-dependent P-metric is compared with spec-on-truth.
 
-After that, `make lint test` is green with no xfail or skip, and E1-E6 and E9 pass. **E7 still fails on
-one P-metric the decision did not cover**: the P8 distressed-chain loss share. It is defined by D17, like
-the two re-based rows, and the pipeline matches spec-on-truth exactly (open question 7). I did not
-re-base it without approval.
+`make lint test` is green with no xfail or skip, and `make eval` passes overall: E1-E7 and E9 pass; E8
+is not implemented yet.
 
 ### What was built
 | Path | What it is |
@@ -371,7 +368,7 @@ re-base it without approval.
   - Q6, the DQ report and the manifest. E6 and E7 on the build, and both **detect** corrupted outcomes and amounts.
 - `test_evals_runner.py`: the all-suites run now uses the Part 4 build and checks that the exit code follows the gates. The "requested but not implemented" check now uses E8.
 
-### Eval scores (`make eval`, METRICS.md v1.2, D17 basis `attempt` = default): overall **fail** (E7 only). E1-E6 and E9 pass.
+### Eval scores (`make eval`, METRICS.md v1.2, D17 basis `attempt` = default): overall **pass** (E1-E7, E9; E8 not implemented)
 | Suite | Metric | Value | Gate |
 |---|---|---|---|
 | E6 | outcome accuracy (§2.1) | **0.9806** (strict, unmapped 0.9677) | >= 0.97: pass |
@@ -380,7 +377,7 @@ re-base it without approval.
 | E6 | with the v1.1 literal basis `asof` (report-only) | outcome 0.9727, D17 P 0.9853 / R 0.8238 | |
 | E7 | deal metrics on correctly linked records (D1-D9, D12) | max error **$0.63** (D12, weekly deals only: the truth rounds rtr/term to the cent, §0 says payment / 5) | <= $1: pass |
 | E7 | relationship metrics on linked records (R1, R2, R4, R6, R7, R8) | max error **$0.00** (1,153 relationships) | <= $1: pass |
-| E7 | P-metrics (two rows against spec-on-truth, the rest against `portfolio_expected.json`) | max **0.669 pp**: P8 distressed-chain loss share, the only row above 0.5 | <= 0.5 pp: **FAIL** |
+| E7 | P-metrics (the D17-dependent rows against spec-on-truth, the rest against `portfolio_expected.json`) | max **0.2086 pp** (P5 resolved share with loss) | <= 0.5 pp: pass |
 | E7 | end to end (report-only) | deal max $15,400 (D6: the commission on tracker-missing deals, $197,717 in total); R7 max $127,165 (open tracker-missing deals with unknown RTR; 2 R5 status flips) | report |
 
 **E6 confusion matrix** (rows = truth, `active_stressed` mapped to `active`). On the diagonal: written_off 158/158, settled 61/61, paid_in_full 524/524, paid_in_full_early 25/25, renewed_healthy 564/567, refinanced_distressed 217/244, defaulted 64/71, active_modified 37/38, active 322/323. Off the diagonal:
@@ -398,15 +395,15 @@ re-base it without approval.
 - Relationships: 1,153 of 1,200 are in scope; 44 contain a tracker-missing deal, 2 have a different R5, 1 holds 2548.
 - The truth is adjusted to the as-of date first: the 41 ACH returns dated 2026-10-01/02 ($34,873.81, 32 deals) are removed, per METRICS.md §0.
 
-**E7 comparison basis (user decision 2026-11-04, recorded in `evals/thresholds.json` E7.comparison_basis; the 0.5 pp gate value is unchanged).**
-- The P4 economic bad rate and the P8 distressed share of renewals are gated against **spec-on-truth**: METRICS.md v1.2 D17 applied to the true deals and cash flows (`spec_d17_on_truth` in `evals/suites/e7_metrics.py`, which runs the pipeline's pure functions on truth inputs). On the truth, D17 flags 220 of 811 renewals; the simulator labels 244.
+**E7 comparison basis (user decisions 2026-11-04, recorded in `evals/thresholds.json` E7.comparison_basis; the 0.5 pp gate value is unchanged).**
+- Every D17-dependent P-metric (the P4 economic bad rate, the P8 distressed share of renewals and the P8 distressed-chain loss share) is gated against **spec-on-truth**: METRICS.md v1.2 D17 applied to the true deals and cash flows (`spec_d17_on_truth` in `evals/suites/e7_metrics.py`, which runs the pipeline's pure functions on truth inputs). On the truth, D17 flags 220 of 811 renewals; the simulator labels 244.
 - The gap to the simulator labels is report-only, split into two parts:
 
 | Metric | Pipeline | Spec-on-truth | Simulator label | Definition error | Pipeline error |
 |---|---|---|---|---|---|
 | P4 economic bad rate | 27.89% | 27.80% | 29.32% | -1.52 pp | +0.09 pp |
 | P8 distressed share of renewals | 27.13% | 27.13% | 30.09% | -2.96 pp | 0.00 pp |
-| P8 distressed-chain loss share (report-only spec-on-truth; still gated against the simulator label) | 40.45% (36/89) | 40.45% (89 chains) | 39.78% | +0.67 pp | 0.00 pp |
+| P8 distressed-chain loss share | 40.45% (36/89) | 40.45% (89 chains) | 39.78% | +0.67 pp | 0.00 pp |
 
 **Headline P-metrics** (pipeline, as of 2026-09-30, METRICS.md v1.2 defaults):
 | Metric | Pipeline | Expected | Difference |
@@ -417,14 +414,14 @@ re-base it without approval.
 | P4 bad rate naive / economic (closed) | **13.98% / 27.89%** | 13.87% / 27.80% (spec-on-truth; simulator 29.32%) | 0.11 / 0.09 pp |
 | P5 resolved relationships with loss; cash multiple | **21.43%** (165/770); 1.1449 | 21.22%; 1.1442 | 0.21 pp; 0.07 pp |
 | P6 economic exposure / contractual balance (open) | **$11.84M / $24.84M** | $11.95M / $25.24M | -0.94% / -1.56% (report-only, $) |
-| P8 distressed-chain loss share | **40.45%** | 39.78% (simulator) | **0.67 pp (fails)** |
+| P8 distressed-chain loss share | **40.45%** | 40.45% (spec-on-truth; simulator 39.78%) | 0.00 pp |
 | P8 distressed share of renewals | **27.13%** (220/811) | 27.13% (spec-on-truth; simulator 30.09%) | 0.00 pp |
 
 The P6 dollar gaps come from tracker-missing deals: R7 is unknown when the RTR is unknown, and R1 leaves out their unknown commissions.
 
 **Q6 (stale status)** is evaluated: 364 of 1,967 tracker statuses disagree with the §2.1 outcome. The biggest disagreements: paid_off->renewed_healthy 137, active->paid_in_full 93, paid_off->refinanced_distressed 57, active->renewed_healthy 39, active->written_off 17. 194 of 791 renewed deals are typed paid off.
 
-**Runtime**: `make clean all` takes **17-34 s** wall with no network (17.2 s on the final run; ledger about 4.7 s, metrics about 1.5-3 s). The SQL views run in about 0.5 s (deal) and 1 s (portfolio). `make test` takes about 2 min.
+**Runtime**: `make clean all` takes **14-34 s** wall with no network (14.4 s on the final run; ledger about 4.7 s, metrics about 1.5-3 s). The SQL views run in about 0.5 s (deal) and 1 s (portfolio). `make test` takes about 2 min.
 
 ### Known gaps
 - Tracker-missing deals (44): D1, D3 and D5 are NULL (`commission_known = false`), D6 and R1 are lower bounds, and `relationship_metrics.n_commission_unknown` counts them. RTR is inferred for 31 of them: 20 from internal payoff (exact) and 11 paid in full. The other 13 have no RTR, so D10-D12, R7 and P1 leave them out.
@@ -459,11 +456,7 @@ The P6 dollar gaps come from tracker-missing deals: R7 is unknown when the RTR i
 4. E6 maps the truth label `active_stressed` (27 deals; the simulator's latent "stressed" state) to `active`, because §2.1 has no such outcome. Strict accuracy is reported too (0.9597; 0.9677 with `attempt`).
 5. E7 compares the truth after removing the 41 returns dated after 2026-09-30 (METRICS.md §0). The adjustment is reported in the E7 output.
 6. E7 "$1 per record" is applied to the dollar metrics. Rates are reported per record (exact on linked records). P6 dollar totals are compared as relative error (report-only), because a pp gate does not apply to dollars.
-7. **Open (blocks the tag): the P8 distressed-chain loss share is also D17-dependent.**
-   - "Chains with at least one distressed refinance" are defined by D17 (R10). Under v1.2, D17 marks 89 resolved chains; the simulator labels mark 85.
-   - The pipeline gives 40.45%, against the simulator label of 39.78%, so it fails the 0.5 pp gate by 0.17 pp.
-   - Spec-on-truth for this metric is also 40.45% (89 chains), so the pipeline error is 0.00 pp and the whole gap is definition error (+0.67 pp). Under v1.1 `asof` this row was 0.22 pp off. The v1.2 change moved it.
-   - **Proposed fix:** add this row to the spec-on-truth comparison basis, alongside the other two D17-dependent rows. It is already computed in E7 as `spec_on_truth.chains_with_distressed_loss_share_report_only`. That needs your approval, because it changes this row's comparison basis.
+7. **Resolved (user decision 2026-11-04).** The P8 distressed-chain loss share is D17-dependent, because chains are defined by D17. Like every D17-dependent P-metric, it is compared with spec-on-truth (40.45%, 89 chains). Its pipeline error is 0.00 pp, and its gap to the simulator label (39.78%) is +0.67 pp of definition error, reported only.
 
 ## Part 5: Portfolio analytics
 _not started_

@@ -20,8 +20,8 @@ them). The size of the adjustment is reported (``truth_post_asof_events``).
   is correctly linked and has observed contract fields, and R5 agrees with the truth (R6 / R7 / R8
   switch on R5).
 
-**Comparison basis for the D17-dependent P-metrics** (user decision 2026-11-04): the P4 economic bad
-rate and the P8 distressed share of renewals are compared with METRICS.md D17 (v1.2) applied to the
+**Comparison basis for the D17-dependent P-metrics** (user decisions 2026-11-04): the P4 economic bad
+rate, the P8 distressed share of renewals and the P8 distressed-chain loss share are compared with METRICS.md D17 (v1.2) applied to the
 TRUE deals and cash flows (``spec_d17_on_truth``), not with the simulator's latent distressed labels,
 which no observable definition can reproduce exactly. The gap to the simulator labels is reported,
 split into definition error (spec-on-truth - simulator) and pipeline error (pipeline - spec-on-truth).
@@ -104,9 +104,10 @@ P_USD = {
 
 # P-metrics whose expected value comes from applying METRICS.md (v1.2) D17 to the true ledger, not
 # from the simulator's labels (user decision 2026-11-04; see thresholds.json E7.comparison_basis).
-SPEC_ON_TRUTH = {
+SPEC_ON_TRUTH = {  # every D17-dependent P-metric (user decisions 2026-11-04)
     "deal_level_bad_rate_economic_closed",
     "renewed_deals_with_distressed_refi/renewed_deals_total",
+    "distressed_refi_chains_ending_in_loss_share",
 }
 CLOSED_TRUTH = {
     "paid_in_full",
@@ -415,7 +416,7 @@ def run(ctx: EvalContext) -> SuiteOutput:
         "deal_level_bad_rate_economic_closed": (naive_t + n_sot) / len(cl_t),
         "renewed_deals_with_distressed_refi/renewed_deals_total": n_sot / len(sot),
     }
-    # report-only: the distressed-chain loss share (P8) with chains defined by spec D17 on the truth
+    # the distressed-chain loss share (P8) with chains defined by spec D17 on the truth
     mid_of = truth.set_index("deal_id").merchant_id
     chain_m = {mid_of[pid] for pid, v in sot.items() if v}
     res_t = rel_t[rel_t.status == "resolved"]
@@ -429,6 +430,7 @@ def run(ctx: EvalContext) -> SuiteOutput:
         if pv.get(("P8", "bad_rate_chains_with_distressed")) is None
         else round(pv[("P8", "bad_rate_chains_with_distressed")], 6),
     }
+    spec_exp["distressed_refi_chains_ending_in_loss_share"] = chain_sot["spec_on_truth"]
     p_rows = {}
     for key, mid in P_RATES.items():
         ours = pv.get(mid)
@@ -494,7 +496,7 @@ def run(ctx: EvalContext) -> SuiteOutput:
         "relationship_metrics_linked": _summ(rl_err),
         "portfolio_rates": p_rows,
         "spec_on_truth": {
-            "chains_with_distressed_loss_share_report_only": chain_sot,
+            "chains_with_distressed_loss_share": chain_sot,
             "d17_distressed_true_renewals": n_sot,
             "true_renewals": len(sot),
             "simulator_distressed_refis": int(expected["renewed_deals_with_distressed_refi"]),
