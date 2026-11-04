@@ -8,7 +8,7 @@ scores, known gaps, and the conventions later parts must follow. Gate rules: `CL
 | 1 Repo, ingestion, lineage | done | `part-1` |
 | 2 Standardization + DQ report | done | `part-2` |
 | 3 Entity resolution + linkage | done | `part-3` |
-| 4 Ledger + metrics library | not started | |
+| 4 Ledger + metrics library | built; **gate pending** (E6 D17 recall, E7 portfolio, M0219 commission): user decisions, see Part 4 open questions | |
 | 5 Portfolio analytics | not started | |
 | 6 Risk modeling | not started | |
 | 7 App, report, demo | not started | |
@@ -326,7 +326,139 @@ For comparison, with `MCARISK_L1_TRACKER_MISSING=strict` (v1.0): links P/R 1.0/0
 6. `plan.md` names the Anthropic SDK for the LLM. Per the user, the LLM is OpenRouter (`openai/gpt-6-luna`) through the `openai` client (Part 1 note 4).
 
 ## Part 4: Ledger and metrics library
-_not started_
+
+**Status: built, gate pending, not tagged.** Everything in the Part 4 scope is built and `make lint`
+is green. All tests pass except one strict `xfail` (listed below). Two gates fail, and one required test
+cannot pass on this data. In all three cases the cause is in METRICS.md or the data, not in the code
+(Open questions 1-3). Per CLAUDE.md nothing was loosened. The xfail is written up here and needs the
+user's decision.
+
+### What was built
+| Path | What it is |
+|---|---|
+| `src/mcarisk/ledger.py` | Stage `ledger` (`make ledger`). It builds the METRICS.md §1 event table. Every `payments_resolved` row becomes exactly one event: funding_out, debit, return, early_payoff_cash, internal_payoff or settlement. The ACH rows keep their `deal_id` after the L3 repair, plus `deal_id_posted` and `attribution` (`posted`/`l3_repair`). Each deal with a known advance and commission % above 0 gets one `commission_out` = -round_half_up(advance x rate), dated on the funding date, with the tracker row's lineage. Collections rows give `modification` events (amount 0, `new_payment_cents`) and `write_off` events (amount = the log's written-off Balance, positive, non-cash). Each return is paired with the debit it reverses (`matched_event_id` on both rows): same deal, same cents, earlier date, preferring a 2-business-day lag. All 7,636 returns are matched. It also writes `deal_status_events` (the collections `default`, `bankruptcy` and `settlement` rows, the last with its agreed amount), `ledger_rejects` (1 collections row with no Q4 deal, reason `collections_row_unlinked`), `ledger_accounting` and `cal_sched`. |
+| `src/mcarisk/metrics/schedule.py` | Scheduled payment days on the Fed ACH calendar, used by D12, D15 and D16. `daily` = every business day after funding. Weekly deals pay on one day a week: the weekday of the first business day after funding. If that day is a holiday, the deal pays on the last business day before it in the same week; if there is none, it skips that week. `cal_sched` (code, date, is_sched, n) is the same calendar as a table for the SQL. |
+| `src/mcarisk/metrics/deal.py` | D1-D19 and the §2.1 outcome as pure functions with an `as_of` date (default 2026-09-30). It never uses an event dated after `as_of`, and a debit counts as returned only once its return is dated on or before the evaluation date. Also D16 (default date + recognition date + trigger), D17 (all three triggers, the D14/D13 values at the renewal date, and the payment-ratio severity attribute) and the D17 return basis (`MCARISK_D17_RETURNS=asof|attempt`, see Open question 1). The docstrings cite their IDs. |
+| `src/mcarisk/metrics/relationship.py`, `portfolio.py` | R1-R10 and P1-P9. P4 is computed overall and by funding-quarter vintage. P7 gives the cumulative R2/R1 curves by first-funding quarter and month k, censored at the as-of date. P8 gives the distressed share of renewals and the R9 rate of chains with and without a D17 renewal. P9 gives the modification cure rate over all modified deals and over closed modified deals. P-metrics are stored long: `metric_id, metric, segment, k, value, numerator, denominator, unit`. |
+| `sql/metrics/01_deal_metrics.sql`, `02_relationship_metrics.sql`, `03_portfolio_metrics.sql` | DuckDB table macros `deal_metrics_sql(as_of, attempt_basis)`, `relationship_metrics_sql(...)` and `portfolio_metrics_sql(...)`. They mirror the Python line by line: cents use integer arithmetic, and D12 rounds half-up as `(2*n*p + k) // 2k`. The stage installs them and creates the views `v_deal_metrics`, `v_relationship_metrics` and `v_portfolio_metrics` at the build's as-of date and D17 basis. |
+| `src/mcarisk/metrics/stage.py` | Stage `metrics` (`make metrics`). It persists `deal_metrics` (2,011 rows), `relationship_metrics` (1,200) and `portfolio_metrics` (406), installs the SQL, sets `data_quality` Q6 to evaluated, regenerates `build/dq_report.md` (new sections: ledger accounting, derived outcomes, all table counts) and records the manifest stage `metrics` (`as_of`, `d17_basis`, outcomes, headline P-metrics, Q6 pairs, tracker-missing summary). |
+| `evals/suites/e6_definitions.py`, `e7_metrics.py` | E6 and E7 (details below). No threshold was changed. |
+| `Makefile` | `ledger` and `metrics` stages are real and wired into `make all`. |
+| `tests/test_metrics_unit.py`, `tests/test_metrics_build.py`, `tests/fixtures/m0219_*.csv`, `tests/conftest.py` (`metrics_build`) | See Tests. |
+
+### Tests: 346 passed + 1 strict xfail (`make lint test` green, about 2 min); the 304 from Parts 1-3 still pass
+- `test_metrics_unit.py` (25, on hand-built fixtures):
+  - **Schedule**: a Juneteenth Friday moves the payment to Thursday; a Labor Day Monday skips the week; schedule codes; commission rounding; return matching prefers the 2-bd lag.
+  - **D16**: daily rule fires on the 20th missed scheduled day, and 19 missed days followed by a good payment does not fire. **Weekly deal, 4 missed payments**: 3 is not enough and the 4th fires. **A collections-log default (and a bankruptcy) recognised before the 20-day rule fires**: the recognition date is the log date and the default date is the last good payment + 1 bd. **Balance 0**: a paid-off deal never defaults. No default after an internal payoff.
+  - **D17, each trigger alone**: returns (3 of the last 20 fires, 2 does not), pace < 0.85, modification (the payment ratio uses the modified payment). The `asof` vs `attempt` basis on a return that posts after the renewal date.
+  - **Outcome precedence**: a write-off event beats a settlement. Settled (within the 1-cent-per-instalment tolerance) beats default and the 180-day write-off. Default + 180 days becomes written_off (and an unfinished settlement does not stop it). Defaulted beats refinanced. Also paid_in_full_early, paid_in_full within $0.01, and active_modified. A deal funded after the as-of date is excluded.
+  - **Hypothesis**: shuffling the events and status rows leaves every deal and relationship metric unchanged.
+  - Relationship arithmetic; month clamping.
+  - **M0219 §7 hand-built fixture**: deals 1102 and 1150 with the §7 contract terms and the pipeline's own ledger events. Every number in the §7 table and the relationship view reproduces: RTR $40,960 / $31,720, factors 1.28 / 1.22, D6 $34,049 / $2,745, D7 $18,022 / $8,700, D8 $22,938 / 0, D10 100% / 27.4%, D11 44.0% / 27.4%, payment ratio 0.44, 175 days, outcomes refinanced_distressed / written_off ($23,020), R1 $36,794, R2 $26,723, **R3 0.73, loss $10,072**.
+- `test_metrics_build.py` (19 + 1 xfail, on the real build):
+  - **Ledger**: every ACH row is exactly one event (deal, amount, kind, date, lineage); kinds, signs, `is_cash` and lineage; commission_out = tracker commission % x advance, and no commission for tracker-missing deals; collections rows fully accounted; returns matched one to one.
+  - **Ledger identity per deal**: RTR - D7 - D8 = balance. It is 0 for all 811 renewals; 0 or 1 cent for paid in full; a discount > 0 and < 15% for early payoffs; exactly the log's written-off balance for written-off deals; >= 0 forgiven for settled deals. Open deals have balance > 0.
+  - **Python == SQL** for all 3 tables on the build (exact for cents, ids, dates, flags and labels; doubles to 1e-12 relative), plus as of 2025-06-30 and 2024-03-15 and with the `attempt` basis.
+  - **As of**: metrics as of 2025-06-30 are identical when every later event and deal is deleted.
+  - **Order invariance**: shuffled real ledger, deals and status rows give the same output.
+  - Outcome and flag consistency.
+  - **M0219 from the built tables**: every §7 number that raw/ supports is exact (see Open question 2). The commission-dependent numbers are a strict `xfail`.
+  - Q6, the DQ report and the manifest. E6 and E7 on the build, and both **detect** corrupted outcomes and amounts.
+- `test_evals_runner.py`: the all-suites run now uses the Part 4 build and checks that the exit code follows the gates. The "requested but not implemented" check now uses E8.
+
+### Eval scores (`make eval`, D17 basis `asof` = default): overall **fail** (E6, E7). E1-E5 and E9 pass unchanged.
+| Suite | Metric | Value | Gate |
+|---|---|---|---|
+| E6 | outcome accuracy (§2.1) | **0.9727** (strict, unmapped 0.9597) | >= 0.97: pass |
+| E6 | D17 precision / recall vs `renewal_type` | **0.9853 / 0.8238** (201 TP, 204 predicted, 244 true) | P >= 0.95 pass; **R >= 0.85 FAIL** |
+| E6 | default date within +/-25 bd (report-only, user decision) | 0.9930 (n=285; median abs error 1 bd, p90 3 bd) | report |
+| E6 | same with D17 basis `attempt` | outcome 0.9806, D17 P 0.9864 / **R 0.8893** | (would pass) |
+| E7 | deal metrics on correctly linked records (D1-D9, D12) | max error **$0.63** (D12, weekly deals only: the truth rounds rtr/term to the cent, §0 says payment / 5) | <= $1: pass |
+| E7 | relationship metrics on linked records (R1, R2, R4, R6, R7, R8) | max error **$0.00** (1,153 relationships) | <= $1: pass |
+| E7 | P-metrics vs `portfolio_expected.json` | max **4.93 pp** (D17-dependent rows) | <= 0.5 pp: **FAIL** |
+| E7 | end to end (report-only) | deal max $15,400 (D6: the commission on tracker-missing deals, $197,717 in total); R7 max $127,165 (open tracker-missing deals with unknown RTR; 2 R5 status flips) | report |
+
+**E6 confusion matrix** (rows = truth, `active_stressed` mapped to `active`). On the diagonal: written_off 158/158, settled 61/61, paid_in_full 524/524, paid_in_full_early 25/25, renewed_healthy 564/567, refinanced_distressed 201/244, defaulted 64/71, active_modified 37/38, active 322/323. Off the diagonal:
+- refinanced_distressed -> renewed_healthy 43 (D17 misses)
+- renewed_healthy -> refinanced_distressed 3
+- defaulted -> active / active_modified 5: true defaults within 20 bd of the as-of date with no log entry yet, so they are not observable
+- defaulted -> written_off 2: D16(b) fired months before the simulator's default (4 consecutive returned weekly payments); the deal paid again later
+- active -> defaulted 1: a name-only Q4 link (confidence 0.6) puts another merchant's default on deal 2548; it is in the exceptions queue
+- active_modified -> defaulted 1
+
+**E7 populations.**
+- Deals: 2,010 of 2,011 are correctly linked: right merchant cluster, right prior link, ledger events equal to the true cash flows, right collections links. The one exception is 2548 (above).
+  - Contract metrics (D1-D3, D5, D6, D10, D11) are compared where the tracker supplies them, which excludes the 44 tracker-missing deals.
+  - D12 is compared where the truth defines it (open active deals) and the outcome agrees.
+- Relationships: 1,153 of 1,200 are in scope; 44 contain a tracker-missing deal, 2 have a different R5, 1 holds deal 2548.
+- The truth is adjusted to the as-of date first: `cash_from_merchant` / `balance_asof` include **41 ACH returns dated 2026-10-01/02** ($34,873.81, 32 deals), which METRICS.md §0 excludes. Without that adjustment the linked deal error would be one payment on those 32 deals.
+
+**Headline P-metrics vs expected** (pipeline, as of 2026-09-30, `asof` basis; expected from `portfolio_expected.json`):
+| Metric | Pipeline | Expected | Difference |
+|---|---|---|---|
+| P1 reported / adjusted collection rate | **92.15% / 70.88%** | 92.08% / 70.84% | 0.07 / 0.04 pp |
+| P2 masking gap | **21.28 pp** | 21.24 pp | 0.04 pp |
+| P3 internal-payoff share | **20.22%** | 20.22% | 0.00 pp |
+| P4 bad rate naive / economic (closed) | **13.98% / 26.88%** | 13.87% / 29.32% | 0.11 / **2.44 pp** |
+| P5 resolved relationships with loss; cash multiple | **21.43%** (165/770); 1.1449 | 21.22%; 1.1442 | 0.21 pp; 0.07 pp |
+| P6 economic exposure / contractual balance (open) | **$11.84M / $24.84M** | $11.95M / $25.24M | -0.94% / -1.56% (report-only, $) |
+| P8 distressed-chain loss share | **40.0%** (34/85) | 39.78% | 0.22 pp |
+| P8 distressed share of renewals | **25.15%** (204/811) | 30.09% (244/811) | **4.93 pp** |
+| P5 capital-weighted loss rate; P9 cure rate | 6.54%; 32.8% all / 48.7% closed | (no expected value) | |
+
+With the `attempt` basis, P4 economic is 27.89% (1.43 pp off) and the distressed share is 27.13% (2.96 pp off). Both still fail. The P6 dollar gaps come from tracker-missing deals: R7 is unknown when the RTR is unknown, and R1 leaves out their unknown commissions.
+
+**Q6 (stale status)** is evaluated: 364 of 1,967 tracker statuses disagree with the §2.1 outcome. The biggest disagreements: paid_off->renewed_healthy 137, active->paid_in_full 93, paid_off->refinanced_distressed 57, active->renewed_healthy 39, active->written_off 17. 194 of 791 renewed deals are typed paid off.
+
+**Runtime**: `make clean all` takes **33.7 s** wall with no network (ingest 4.7, standardize 6.5, resolve 5.2, ledger 4.7, metrics 3.1). The SQL views run in about 0.5 s (deal) and 1 s (portfolio). `make test` takes about 2 min.
+
+### Known gaps
+- Tracker-missing deals (44): D1, D3 and D5 are NULL (`commission_known = false`), D6 and R1 are lower bounds, and `relationship_metrics.n_commission_unknown` counts them. RTR is inferred for 31 of them: 20 from internal payoff (exact) and 11 paid in full. The other 13 have no RTR, so D10-D12, R7 and P1 leave them out.
+- D16(b) has no cure: once 4 weekly or 20 daily scheduled payments are missed, the deal is in default even if it pays again, and the 180-day write-off follows (deals 2115, 2442). That is what METRICS.md says.
+- Settlement completion uses the agreed amount from the log's Amount column, with 1 cent of tolerance per instalment received. The instalment count in the notes is not used.
+- `deal_status_events` holds the log's default, bankruptcy and settlement rows. §1 lists only `modification` and `write_off` as ledger events, so these rows are not in `ledger`. Every log row is still accounted for in `ledger_accounting`.
+- `make app` and later stages are unchanged.
+
+### Conventions Part 5+ must follow
+- **Tables**:
+  - `ledger`: one row per event. Use `deal_id` and `is_cash`; `matched_event_id` pairs returns with debits.
+  - `deal_status_events`, `deal_metrics`, `relationship_metrics`.
+  - `portfolio_metrics`: long format. P7 rows have `k` = months since first funding and `segment` = first-funding quarter; P4 rows have `segment` = funding quarter or `all`.
+  - Money is cents (BIGINT). Rates are fractions, except P2, which is in pp (see the `unit` column).
+- **Never** recompute a metric outside `mcarisk.metrics.*` or the `*_sql` macros. For another as-of date, call `deal_metrics_sql(DATE 'yyyy-mm-dd', attempt_basis)` (and the R and P macros), or `mcarisk.metrics.stage.compute(con, as_of=..., d17_basis=...)` in Python. Python == SQL is enforced by tests.
+- Use the macros for vintage or as-of views. The T1 fixed horizon in Part 5 needs D19 as of funding + 180 bd.
+- **Closed** = written_off, settled, refinanced_distressed, renewed_healthy, paid_in_full_early, paid_in_full. `defaulted` is open.
+- **Part 6 (leakage)**: the prior-deal features "as of the renewal date" are `d17_d14_value`, `d17_d13_value` and `d17_payment_ratio`. Under the default `asof` basis they use only returns posted by the renewal date. The `attempt` basis looks 2 bd ahead and must not be used for features.
+- `MCARISK_D17_RETURNS=asof|attempt` (or `python -m mcarisk.metrics --d17-basis ...`; also `--as-of`). The build records its basis in the manifest (`stages.metrics.extra.d17_basis`), and E6 reports both bases.
+- METRICS.md interpretations used here are in the `deal.py` module docstring. Read them before changing a metric:
+  - scheduled payment days (`schedule.py`)
+  - good payment
+  - outcome dates and the D12 close date
+  - settlement completion
+  - the D16 balance tolerance ($0.01, as for paid_in_full; it changes 0 deals here)
+  - the tracker-missing RTR inference
+
+### Open questions / deviations (need the user)
+1. **D17 recall gate (E6) fails under the literal reading of "as of the renewal date"** (0.824 < 0.85).
+   - **Ambiguity:** "the prior deal, as of the renewal date, satisfies D14 >= 3/20 ...". Literally, a return that posts after the renewal date is not known on it. That is the implemented default `asof`. Distressed deals are usually refinanced 5-25 days into stress, so the returns of the last few debits (posted 2 bd later) fall after the renewal date.
+   - **Alternative:** count a debit attempted on or before the renewal date as returned if its return arrives later (`attempt`). That gives P 0.986 / R 0.889, and outcome accuracy rises to 0.981. METRICS.md's own "measured" P 0.98 / R 0.87 is close to this reading, so the spec author probably measured it this way.
+   - **Cost of `attempt`:** a 2-bd look-ahead. Part 6 must then not reuse these values as features.
+   - **Also unspecified:** "D14 >= 3/20 (3 or more returns ...)" when there are fewer than 20 attempts. The formula (a ratio) is implemented.
+   - **Proposed fix:** METRICS.md v1.2 adopts the `attempt` basis for D17 only (one line in §2, plus a changelog entry), then set the default to `attempt` and re-run. The alternative is to keep `asof` and ask whether the 0.85 gate still applies.
+2. **M0219 cannot be reproduced exactly from the built tables. Deal 1102 is one of the 44 tracker-missing deals** (`anomalies.csv`: deal_missing_from_tracker). Its advance ($32,000), factor (1.28), fee and commission ($3,424) appear nowhere in raw/.
+   - **What does reproduce exactly from the pipeline:** D4 $30,625, D7 $18,022, D8 $22,938, D9/RTR $40,960 (inferred from the ledger identity), D10 100%, D11 44.0%, payment $409.60, payment ratio 0.44, refinanced_distressed. Every number for deal 1150. R2 $26,723. The relationship is bad and resolved.
+   - **What does not:** D6 $34,049, R1 $36,794, R3 0.73 and loss $10,072 come out as **$30,625, $33,370, 0.80 and $6,648**, because the commission is unknown and flagged. The test for these numbers is a strict `xfail`. The hand-built fixture (§7 terms supplied) reproduces all of §7 exactly.
+   - **Proposed fix**, pick one:
+     - (a) Add a note to §7 that 1102 has no tracker row, so the pipeline shows a lower bound until its terms are recovered.
+     - (b) Use a fully tracked relationship as the worked example.
+     - (c) Supply 1102's terms as a documented manual override file (`mappings/overrides.yaml`), which the business would do in practice.
+3. **E7 portfolio gate fails on the two D17-dependent P-metrics:** P4 economic bad rate 26.88% vs 29.32% (2.44 pp) and the P8 distressed share 25.15% vs 30.09% (4.93 pp). Every other rate is within 0.22 pp.
+   - **Cause:** `portfolio_expected.json` counts the simulator's true distressed refinances (244). §2.1 counts D17-flagged ones, and D17 v1 has recall < 1 by design (METRICS.md itself says 0.87). The expected D19 rate can only be reached if D17 is perfect.
+   - Even with the `attempt` basis the gaps are 1.43 / 2.96 pp. **No change to the code can close this without changing D17.**
+   - **Proposed fix:** keep these two rows report-only in E7, with this reason. The alternative is an E7 expected value computed by applying §2.1 (with the spec's D17) to the true ledger. Changing the gate needs your approval.
+4. E6 maps the truth label `active_stressed` (27 deals; the simulator's latent "stressed" state) to `active`, because §2.1 has no such outcome. Strict accuracy is reported too (0.9597; 0.9677 with `attempt`).
+5. E7 compares the truth after removing the 41 returns dated after 2026-09-30 (METRICS.md §0). The adjustment is reported in the E7 output.
+6. E7 "$1 per record" is applied to the dollar metrics. Rates are reported per record (exact on linked records). P6 dollar totals are compared as relative error (report-only), because a pp gate does not apply to dollars.
 
 ## Part 5: Portfolio analytics
 _not started_

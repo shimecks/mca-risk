@@ -6,6 +6,8 @@
 #   make standardize    Part 2: raw_* -> *_std tables, data_quality, build/dq_report.md (mappings/*.yaml)
 #   make resolve        Part 3: merchants, renewal links, L1 payoffs, L3 repairs, Q3/Q4 links, exceptions
 #   make notes-llm      Part 3 (optional): fill cache/llm_notes.jsonl via OpenRouter
+#   make ledger         Part 4: ledger, deal_status_events, ledger_rejects, cal_sched (METRICS.md §1)
+#   make metrics        Part 4: deal/relationship/portfolio metrics, SQL views, Q6, dq report
 #   make test | lint    pytest | ruff check + ruff format --check
 #   make eval           all eval suites (unimplemented suites are reported, not failed)
 #   make eval SUITE=E1  one suite (fails if that suite is not implemented yet)
@@ -39,10 +41,12 @@ resolve:
 # + MODEL in the env or in $$MCARISK_DOTENV). `make all` never calls the network; it reads the cache.
 notes-llm:
 	$(PY) -m mcarisk.notes.extract --llm
+# Part 4: the METRICS.md §1 cash ledger, then D/R/P metrics + SQL views (sql/metrics/*.sql).
+# D17 return basis: MCARISK_D17_RETURNS=asof (default, literal) | attempt (see PROGRESS.md Part 4).
 ledger:
-	@echo "[ledger] not implemented until Part 4 -- skipped"
+	$(PY) -m mcarisk.ledger
 metrics:
-	@echo "[metrics] not implemented until Part 4 -- skipped"
+	$(PY) -m mcarisk.metrics
 analytics:
 	@echo "[analytics] not implemented until Part 5 -- skipped"
 model:

@@ -74,3 +74,25 @@ def resolve_build(std_build, tmp_path_factory: pytest.TempPathFactory):
     with run.stage("resolve"):
         res = resolve(db, dq_report_path=tmp / "dq_report.md", run=run, notes_mode="auto")
     return {"db": db, "manifest": manifest, "report": tmp / "dq_report.md", "result": res}
+
+
+@pytest.fixture(scope="session")
+def metrics_build(resolve_build, tmp_path_factory: pytest.TempPathFactory):
+    """A copy of the resolved build, then ledger + metrics (Part 4) in place, default D17 basis."""
+    import shutil
+
+    from mcarisk.ledger import run_ledger
+    from mcarisk.manifest import open_run
+    from mcarisk.metrics.stage import run_metrics
+
+    tmp = tmp_path_factory.mktemp("metrics")
+    db, manifest = tmp / "portfolio.duckdb", tmp / "run_manifest.json"
+    shutil.copy(resolve_build["db"], db)
+    shutil.copy(resolve_build["manifest"], manifest)
+    run = open_run(manifest)
+    with run.stage("ledger"):
+        led = run_ledger(db, run=run)
+    with run.stage("metrics"):
+        met = run_metrics(db, d17_basis="asof", dq_report_path=tmp / "dq_report.md", run=run)
+    run.write()
+    return {"db": db, "manifest": manifest, "report": tmp / "dq_report.md", "ledger": led, "metrics": met}

@@ -113,18 +113,21 @@ def test_runner_writes_reports_and_exit_codes(std_build, tmp_path, monkeypatch):
     rep = json.loads((tmp_path / "latest.json").read_text(encoding="utf-8"))
     assert rep["overall"] == "pass" and rep["suites"][0]["status"] == "pass"
     assert (tmp_path / "latest.md").exists()
-    assert runner.main(["--suite", "E6", "--reports-dir", str(tmp_path)]) == 2  # requested but not built yet
+    assert runner.main(["--suite", "E8", "--reports-dir", str(tmp_path)]) == 2  # requested but not built yet
 
 
-def test_runner_all_suites_on_resolved_build(resolve_build, tmp_path, monkeypatch):
-    monkeypatch.setattr(runner, "EvalContext", lambda: EvalContext(db_path=resolve_build["db"]))
+def test_runner_all_suites_on_metrics_build(metrics_build, tmp_path, monkeypatch):
+    """Every implemented suite runs on the Part 4 build; the exit code follows the gates."""
+    monkeypatch.setattr(runner, "EvalContext", lambda: EvalContext(db_path=metrics_build["db"]))
     code = runner.main(["--reports-dir", str(tmp_path)])
     rep = json.loads((tmp_path / "latest.json").read_text(encoding="utf-8"))
     status = {s["suite"]: s["status"] for s in rep["suites"]}
-    assert code == 0 and rep["overall"] == "pass"
     assert status["E8"] == "not_implemented"  # unimplemented suites don't fail the run
     for sid in ("E1", "E2", "E3", "E4", "E5", "E9"):
         assert status[sid] == "pass", sid
+    assert status["E6"] in ("pass", "fail") and status["E7"] in ("pass", "fail")  # no suite errors
+    failed = [s for s, v in status.items() if v in ("fail", "error")]
+    assert code == (1 if failed else 0) and rep["overall"] == ("fail" if failed else "pass")
 
 
 def test_e2_e3_pass_on_standardized_build(std_build):
