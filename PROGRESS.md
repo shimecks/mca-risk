@@ -7,7 +7,7 @@ scores, known gaps, and the conventions later parts must follow. Gate rules: `CL
 |---|---|---|
 | 1 Repo, ingestion, lineage | done | `part-1` |
 | 2 Standardization + DQ report | done | `part-2` |
-| 3 Entity resolution + linkage | built; gate blocked on E5 L1 (Part 3, Open question 1) | not tagged |
+| 3 Entity resolution + linkage | done | `part-3` |
 | 4 Ledger + metrics library | not started | |
 | 5 Portfolio analytics | not started | |
 | 6 Risk modeling | not started | |
@@ -128,7 +128,7 @@ run.write()
 
 ### Open questions / deviations
 1. **E1 extra metrics**: `value_fidelity_rate` and `lineage_nonnull_rate` are report-only (both 1.0), so the gate stays exactly as plan.md states ("100% accounted"). Gating them would be stricter, not looser. Say if you want that.
-2. **E6 default-date check**: plan.md §4 lists "default date within ±25 business days" as measured but gives no gate number. It is `report_only` (`default_date_within_25bd_rate`) in `thresholds.json`. Decide whether it needs a gate before Part 4.
+2. **E6 default-date check**: plan.md §4 lists "default date within ±25 business days" as measured but gives no gate number. It is `report_only` (`default_date_within_25bd_rate`) in `thresholds.json`. Decide whether it needs a gate before Part 4. **User decision (2026-11-03): E6 default-date-within-±25-business-days stays report-only.**
 3. **E7 "$1 per record"** is encoded as max absolute error ≤ $1.00 for deal and relationship metrics (`*_max_abs_err_usd <= 1.0`), and "±0.5 pp portfolio" as `portfolio_metric_max_abs_err_pp <= 0.5`. **E8 "main-driver signs correct"** is the boolean `main_driver_signs_correct == true`, and leakage tests are pytest-enforced (report-only in E8). **E9** is `optional` with `llm_minus_regex_accuracy >= 0`.
 4. **plan.md §1** names the Anthropic SDK for the optional LLM. Per the user's later choice, `openai` (for OpenRouter) is the declared dependency.
 5. **Blank-row policy**: fully blank rows are rejected with reason `blank_row` (not loaded and flagged), so `raw_*` tables hold only rows with content.
@@ -213,11 +213,10 @@ Report-only, also 1.0: fee, commission_rate, frequency (n=1,967); explicit prior
 
 ## Part 3: Entity resolution and linkage
 
-**Status: built, gate NOT passed, not tagged.** One gate fails: E5 `l1_payoff_accuracy >= 0.99` is
-0.9737. The cause is in the data and METRICS.md v1.0 does not cover it: 22 internal payoffs whose
-successor deal has no tracker row (Open question 1 below). Every other gate is met. One switch
-(`MCARISK_L1_TRACKER_MISSING=infer`) brings every E5 metric to 1.0. It extends the L1 definition, so it
-needs the user's decision before it becomes the default.
+**Status: done, tagged `part-3`.** A first run under METRICS.md v1.0 failed one gate: E5 L1 scored
+0.9737 because 22 renewals go into deals that have no tracker row. The user adopted **METRICS.md v1.1**
+(2026-11-03), which adds an L1 condition for that case (Open question 1, resolved). `infer` is now the
+default policy; `strict` reproduces v1.0 for comparison. All gates pass.
 
 ### What was built
 | Path | What it is |
@@ -225,7 +224,7 @@ needs the user's decision before it becomes the default.
 | `src/mcarisk/resolve/names.py` | Q1 normalizer: casefold, `&` -> `and`, `L.L.C.`/`Inc.` handling, punctuation stripped, trailing legal suffix split off and standardized (`llc inc corp co ltd lp llp pllc`). `name_score` = rapidfuzz `token_set_ratio` on the cores. It is **0 when both names carry different suffixes**: `Amber Physical Therapy Co` and `... Corp` are different merchants, and 159 legal-name cores in this book differ only by suffix. `compact_score` (space-free ratio >= 95) is a last-resort lookup tier for glued-word typos and is never used for merges. |
 | `src/mcarisk/resolve/merchants.py` | Q1 clustering. The atomic record is a **deal**. Every name seen on a deal belongs to its merchant: the tracker name, every ACH name posted to it, collections names that carry its deal #, and the 2023 DBA. The anchor is the deal's most frequent ACH name. Merge methods: `exact` (same normalized anchor), `ein` (same EIN), `fuzzy` (token-set >= 92 within the first-token block, vetoed when EINs or suffixes conflict). Each union is a `merchant_merges` row. `merchant_key` = `MK` + sha1(canonical normalized name)[:10], so it is stable from run to run. `AliasIndex` resolves name-only records tier by tier: `alias_exact` -> `alias_core`/`dba_alias` -> `fuzzy` (in block) -> `fuzzy_cross_block` (first-token typo; searches blocks whose first token is >= 75 similar) -> `fuzzy_compact`. One name can return several candidate merchants (a shared DBA, a suffix-dropped name); Q3/Q4 choose among them by date. |
 | `src/mcarisk/resolve/renewals.py` | Q2 in priority order: explicit field (confidence 1.0) -> notes regex (0.95; `renewal of NNNN`, `RENEWAL - paid off #NNNN`, `refi #NNNN`, `ren. prev deal NNNN`) -> `inferred` from L1 (carries the L1 confidence). Validation: an unknown or later prior is dropped and queued; a prior on another merchant is kept at 0.7 and queued. Also queued: explicit vs notes conflicts, one prior with several renewals, and notes saying "renewal"/"rnwl" with no link. |
-| `src/mcarisk/resolve/payoffs.py` | L1 as written. N must be the same resolved merchant and fund within 2 Fed-ACH business days of t. Then one of: a tracker link; \|payoff - N.payoff_amt\| <= $1; \|N.advance - N.fee - \|funding_out\| - payoff\| <= $1. The description is a hint only; disagreements are queued. Each row records the three criteria, the method, the confidence and the candidates. Policy for a tracker-missing successor: `strict` (default) or `infer` (opt-in). |
+| `src/mcarisk/resolve/payoffs.py` | L1 per METRICS.md v1.1. N must be the same resolved merchant and fund within 2 Fed-ACH business days of t. Then one of: a tracker link; \|payoff - N.payoff_amt\| <= $1; \|N.advance - N.fee - \|funding_out\| - payoff\| <= $1; or (v1.1) N has no tracker row (`inferred_tracker_missing`, confidence 0.6, queued). The description is a hint only; disagreements are queued. Each row records the criteria, the method, the confidence and the candidates. Policy: `infer` (default, v1.1) or `strict` (v1.0, for comparison). |
 | `src/mcarisk/resolve/misposting.py` | L3: a DEBIT posted to P strictly after P's internal payoff date, while N is funded and not yet paid off, is reassigned to N and logged in `misposting_repairs`. A debit after a payoff that cannot be reassigned stays as posted and is queued. |
 | `src/mcarisk/resolve/matching.py` | Q3 (scorecard <-> deal): candidate merchants from the name; the deal must fund 0-10 calendar days after the app date; the closest wins. Ties go to the higher name score, then the lower deal id, and are queued; a deal claimed twice is queued. Q4 (collections <-> deal): the deal # if present. Otherwise the candidate merchants' deal that is open on the log date: funded on or before the date and not closed before it (close = payoff date, or the date cumulative cash reached RTR - 1 cent). Several open: the most recent, queued. None open: the latest funded, at confidence 0.5, queued. The name tiers are walked until one yields an eligible deal. |
 | `src/mcarisk/resolve/completeness.py` | Q5: the 44 deals with ACH rows and no tracker row are reconstructed. They get the funding date and net funding from the FUNDING row (with its lineage), the anchor name, the modal debit amount (`payment_cents_ach`) and the frequency from `DAILY/WEEKLY REMIT`. Contract fields stay NULL. Flag: `tracker_missing`. |
@@ -235,8 +234,8 @@ needs the user's decision before it becomes the default.
 | `evals/suites/e4_entity_resolution.py`, `e5_linkage.py`, `e9_notes.py`, `evals/truth.py` | E4, E5, E9. `ground_truth/` has no row key for scorecards or collections rows, so `evals/truth.py` reconstructs their true deal. Scorecards: the deal with identical underwriting features, funded 1-7 days after the app date. Collections rows: the deal # if present, else the event-date rule plus the name. `thresholds.json`: report-only lists extended; **no gate changed**. |
 | `Makefile` | `resolve` stage is real; new `notes-llm` target. `.gitattributes`: `*.jsonl` stored with LF. |
 
-### Tests: 299 passing (`make lint test` green; the 212 from Parts 1-2 still pass)
-- `test_resolve_unit.py` (48, counting parametrized cases):
+### Tests: 304 passing (`make lint test` green; the 212 from Parts 1-2 still pass)
+- `test_resolve_unit.py` (53, counting parametrized cases; includes the v1.1 default-policy test, both policies keeping a cash payoff cash when the same-day tracker-missing deal belongs to *another* merchant, and a tracker-missing deal outside the window):
   - **Normalizer, every variant pattern:** upper case, `L.L.C.`/`L.L.C`, `, Inc.`, `&`/`and`, whitespace, Incorporated/Company, suffix dropped, one-char typos (including inside the suffix and `LCL`), suffix conflict, `Keystone Market` vs `Marketing`, empty name.
   - **Clustering:** exact merge with DBA alias kinds, EIN merge across a DBA anchor, fuzzy merge of a typo anchor, EIN veto, a suffix conflict never merges, stable keys.
   - **Alias tiers:** exact; an ambiguous suffix-dropped name returns two merchants; cross-block first-token typo; compact glued words.
@@ -261,31 +260,31 @@ needs the user's decision before it becomes the default.
   - DQ rows are evaluated, the manifest stage is recorded, std tables are untouched, and the run is deterministic.
 - `test_evals_runner.py` (+2 new, 1 updated): all suites on the resolved build (E1-E4 pass, E8 not_implemented, exit code consistent). E4/E5 run on the build and **detect** a merged cluster, dropped regex links, unrepaired mispostings and flipped payoff classes.
 
-### Eval scores (`make eval`, default `strict` policy): **overall fail (E5 L1 only)**
+### Eval scores (`make eval`, METRICS.md v1.1, default `infer` policy): **overall pass**
 | Suite | Metric | Value | Gate |
 |---|---|---|---|
 | E1-E3 | (unchanged) | pass | |
 | E4 | pairwise F1 / P / R | **1.0** / 1.0 / 1.0 (2,011 deals -> 1,200 clusters = 1,200 merchants) | F1 >= 0.98: pass |
 | E4 | deal -> merchant accuracy | 1.0 | report |
 | E4 | scorecard merchant accuracy; collections merchant accuracy (deal # / name only) | 1.0; 1.0 / 0.989 (86/87) | report |
-| E5 | renewal link precision / recall | **1.0 / 0.9729** (789 of 811) | P >= 0.98, R >= 0.97: pass |
-| E5 | by method (links, precision, share of true) | explicit 634, 1.0, 0.782; regex 44, 1.0, 0.054; inferred 111, 1.0, 0.137 | report |
-| E5 | **L1 accuracy** | **0.9737** (814/836) | >= 0.99: **FAIL** |
-| E5 | L1 by method | tracker_link 678/678; funding_formula 111/111; no_successor 25/25; l1_unevaluable_tracker_missing 0/22 | report |
+| E5 | renewal link precision / recall | **1.0 / 1.0** (811 of 811) | P >= 0.98, R >= 0.97: pass |
+| E5 | by method (links, precision, share of true) | explicit 634, 1.0, 0.782; regex 44, 1.0, 0.054; inferred 133, 1.0, 0.164 (111 via the funding formula + 22 `inferred_tracker_missing`) | report |
+| E5 | **L1 accuracy** | **1.0** (836/836) | >= 0.99: pass |
+| E5 | L1 by method | tracker_link 678/678; funding_formula 111/111; no_successor 25/25; inferred_tracker_missing 22/22 | report |
 | E5 | L1 successor accuracy; description hint alone | 1.0; 0.505 | report |
-| E5 | L3 recall / precision | **0.9604** (218/227) / 1.0 | R >= 0.95: pass |
-| E5 | rows on the wrong deal: as posted -> after repair | 227 -> 9 | report |
+| E5 | L3 recall / precision | **1.0** (227/227) / 1.0 | R >= 0.95: pass |
+| E5 | rows on the wrong deal: as posted -> after repair | 227 -> 0 | report |
 | E5 | scorecard match rate (Q3) | 1.0 (496/496) | report |
 | E5 | collections link accuracy (deal # / name only) | 1.0 / 0.989 | report |
 | E9 | regex / LLM accuracy | 0.8815 / 0.8815 (253/287 each). Both are **1.0 on notes that state an amount**; the 34 misses are "Settled - see agreement in drive", which states no amount | LLM - regex >= 0: pass (0.0) |
 | E9 | LLM cost | $0.005774 (13 calls, 10,928 input + 9,363 output tokens, `openai/gpt-6-luna`) | report |
 
-With `MCARISK_L1_TRACKER_MISSING=infer`: renewal links P/R 1.0/1.0, L1 1.0 (all 22 inferred correctly), L3 recall 1.0 (227/227), 0 rows on the wrong deal after repair. Every other number is unchanged.
+For comparison, with `MCARISK_L1_TRACKER_MISSING=strict` (v1.0): links P/R 1.0/0.9729, L1 0.9737 (FAIL), L3 recall 0.9604 (218/227), 9 rows left on the wrong deal. Every other number is the same.
 
-**Runtime**: `make clean all` takes **about 21 s** wall with no key and no network (ingest 4.3 s, standardize 6.2 s, resolve 5.3 s). `make test` takes about 53 s.
+**Runtime**: `make clean all` takes **about 22 s** wall with no key and no network (ingest 3.1 s, standardize 7.3 s, resolve 6.2 s). `make test` takes about 74 s.
 
 ### Known gaps
-- Under the default policy, 22 payoffs whose successor has no tracker row are misclassified. That also drops 22 links and leaves 9 misposted debits unrepaired. See Open question 1.
+- The 22 `inferred_tracker_missing` payoffs rest on merchant + timing alone (confidence 0.6). All 22 are in the review queue.
 - Q4 has one unresolved name-only collections row. `Crescent Dental` is a DBA never seen on any of its merchant's deals; it is queued. There is also one open-deal tie, queued. Q4's "open" uses Part 3's close date (payoff, or cash reaching RTR); Part 4's outcome derivation may refine it.
 - Reconstructed deals have no advance, factor, RTR, fee or commission, because ACH does not carry them. Part 4 must treat their D1-D6 as unknown, or estimate and flag them. Their cash events are complete.
 - On this book the LLM adds nothing over regex because the notes are templated; E9 shows parity, not lift.
@@ -308,18 +307,18 @@ With `MCARISK_L1_TRACKER_MISSING=infer`: renewal links P/R 1.0/1.0, L1 1.0 (all 
 | `collections_terms` | one per collections row | The chosen extractor's terms in cents, plus `deal_id` (Q4), `event_type`, `amount_cents` (the Amount column), `notes_raw` and lineage. **Part 4 takes modification payments from here** (`new_payment_cents`, `payment_period`). |
 | `exceptions` | the review queue | `rule_id`, `entity` (deal/payment/scorecard/collection/merchant), `entity_id, reason, detail`, plus lineage when the entity has one |
 
-- Every link stores `method` and `confidence`. Low-confidence or conflicting links are in `exceptions` with a reason. There are 42 rows now: L1 22 + 8 hint disagreements, L3 9, Q4 3.
+- Every link stores `method` and `confidence`. Low-confidence or conflicting links are in `exceptions` with a reason. There are 25 rows now: L1 22 (`l1_successor_tracker_missing_inferred_internal`), Q4 3.
 - Manifest stage `resolve`: the tables above (`payments_resolved.repaired` = L3 repairs, `deals_resolved.repaired` = Q5 reconstructions). `extra` holds `data_quality`, `exceptions_by_reason`, `payoff_classes`, `deal_links_by_method`, `l1_tracker_missing_policy` and `notes_extraction`. LLM usage goes into the top-level `llm` block; a cached run shows 258 `cache_hits` and 0 calls.
 - Notes extractor: `MCARISK_NOTES_EXTRACTOR=auto|regex|llm`. The default `auto` uses the LLM cache if it covers every note, else regex, and never calls the network. The committed cache covers all 258 distinct notes, so `make all` uses the LLM results. If a later change alters the notes or the model, `auto` falls back to regex until `make notes-llm` is run with a key.
-- L1 policy: `MCARISK_L1_TRACKER_MISSING=strict|infer`, or `python -m mcarisk.resolve --l1-policy ...`. Default `strict`.
+- L1 policy: `MCARISK_L1_TRACKER_MISSING=infer|strict`, or `python -m mcarisk.resolve --l1-policy ...`. Default `infer` (METRICS.md v1.1); `strict` = v1.0, for comparison only.
+- `build/run_manifest.json` `metrics_md.version` is now `v1.1`.
+- **User decision for Part 4 (2026-11-03): E6 default-date-within-±25-business-days stays report-only.**
 
 ### Open questions / deviations
-1. **(Blocks the gate.) L1 when the new deal has no tracker row.**
-   - **What happens:** 22 PAYOFF rows are true internal payoffs whose successor N is one of the 44 tracker-missing deals. L1's third bullet needs a tracker link, N's `payoff_amt`, or N's advance and fee. A tracker-missing N has none of these; ACH carries only the net funding. So L1 as written makes these 22 `early_payoff_cash`.
-   - **Effect:** L1 accuracy 0.9737 (< 0.99). It also drops 22 renewal links (recall 0.9729, still >= 0.97) and leaves 9 misposted debits unrepaired (L3 recall 0.9604, still >= 0.95).
-   - **Current behaviour:** the code applies METRICS.md as written by default and queues all 22 (`l1_successor_tracker_missing_classified_cash`).
-   - **Proposed L1 v1.1 clause:** *"If N has no tracker row (Q5 `tracker_missing`), so the amount criteria cannot be evaluated, the payoff is internal when N is the same resolved merchant and funds within the window; method `inferred_tracker_missing`, confidence 0.6, always queued for review."* This is the `infer` policy, which scores 1.0 on all E5 metrics. It requires a METRICS.md change (version bump + changelog), so it has not been applied.
-   - **Decision needed:** adopt v1.1 (make `infer` the default and edit METRICS.md), or keep v1.0 and accept the gate miss.
+1. **Resolved (user decision, 2026-11-03: adopt METRICS.md v1.1).** L1 when the new deal has no tracker row.
+   - **Problem:** 22 PAYOFF rows are true internal payoffs whose successor N is one of the 44 tracker-missing deals. Under v1.0 they could not be classified: N has no tracker link, no `payoff_amt` and no advance or fee. As a result L1 scored 0.9737, below its 0.99 gate.
+   - **Fix:** v1.1 adds a fourth L1 condition. If N has no tracker row, the payoff is internal when N is the same resolved merchant and funds within 0-2 business days of t. Method `inferred_tracker_missing`, confidence 0.6, always routed to `exceptions`. A changelog entry was added; nothing else in METRICS.md changed.
+   - **Code:** `infer` is the default policy; `strict` keeps v1.0 for comparison.
 2. "N funds within 0-2 business days of t" is read as either side of t (`|bd| <= 2`). The true lag is always 0 here, so both readings give the same result.
 3. Q3's "0-10 days" is calendar days, with the app date on or before funding. Q4's "open" means funded on or before the log date and not closed before it (definition in `matching.py`).
 4. E9 counts a value as correct within `max($1, 0.5%)`, because the notes round amounts (`new pmt 248/day`, `35.7k`). A missing value counts as wrong.

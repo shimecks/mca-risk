@@ -190,7 +190,7 @@ def test_manifest_stage(resolve_build) -> None:
     assert st["status"] == "ok"
     assert st["tables"]["payments_resolved"]["repaired"] > 200
     assert st["tables"]["deals_resolved"]["reasons"]["repaired"] == {"tracker_missing": 44}
-    assert st["extra"]["l1_tracker_missing_policy"] == "strict"
+    assert st["extra"]["l1_tracker_missing_policy"] == "infer"
     assert m["llm"]["calls"] == 0  # cached run: no network
 
 
@@ -212,7 +212,7 @@ def test_resolution_is_deterministic(resolve_build, std_build, tmp_path) -> None
 
     db = tmp_path / "p.duckdb"
     shutil.copy(std_build["db"], db)
-    resolve(db, dq_report_path=None, l1_policy="strict", notes_mode="auto")
+    resolve(db, dq_report_path=None, notes_mode="auto")
     q = (
         "SELECT string_agg(deal_id || ':' || merchant_key || ':' || coalesce(prior_deal_id, 0), ',' "
         "ORDER BY deal_id) FROM deals_resolved"

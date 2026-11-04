@@ -852,7 +852,12 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--db", type=Path, default=paths.DB_PATH)
     ap.add_argument("--manifest", type=Path, default=paths.MANIFEST_PATH)
     ap.add_argument("--dq-report", type=Path, default=paths.DQ_REPORT_PATH)
-    ap.add_argument("--l1-policy", choices=[payoffs.POLICY_STRICT, payoffs.POLICY_INFER], default=None)
+    ap.add_argument(
+        "--l1-policy",
+        choices=[payoffs.POLICY_STRICT, payoffs.POLICY_INFER],
+        default=None,
+        help="L1 tracker-missing successor: infer (default, METRICS.md v1.1) or strict (v1.0)",
+    )
     args = ap.parse_args(argv)
     if not args.db.exists():
         print(f"[resolve] {args.db} not found; run `make ingest standardize` first", file=sys.stderr)

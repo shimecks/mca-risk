@@ -72,5 +72,5 @@ def resolve_build(std_build, tmp_path_factory: pytest.TempPathFactory):
     shutil.copy(std_build["manifest"], manifest)
     run = open_run(manifest)
     with run.stage("resolve"):
-        res = resolve(db, dq_report_path=tmp / "dq_report.md", run=run, l1_policy="strict", notes_mode="auto")
+        res = resolve(db, dq_report_path=tmp / "dq_report.md", run=run, notes_mode="auto")
     return {"db": db, "manifest": manifest, "report": tmp / "dq_report.md", "result": res}

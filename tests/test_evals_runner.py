@@ -121,9 +121,9 @@ def test_runner_all_suites_on_resolved_build(resolve_build, tmp_path, monkeypatc
     code = runner.main(["--reports-dir", str(tmp_path)])
     rep = json.loads((tmp_path / "latest.json").read_text(encoding="utf-8"))
     status = {s["suite"]: s["status"] for s in rep["suites"]}
-    assert code == (0 if rep["overall"] == "pass" else 1)
+    assert code == 0 and rep["overall"] == "pass"
     assert status["E8"] == "not_implemented"  # unimplemented suites don't fail the run
-    for sid in ("E1", "E2", "E3", "E4"):
+    for sid in ("E1", "E2", "E3", "E4", "E5", "E9"):
         assert status[sid] == "pass", sid
 
 

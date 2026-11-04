@@ -1,4 +1,4 @@
-# MCA Risk Metric Definitions (v1.0)
+# MCA Risk Metric Definitions (v1.1)
 
 This is the single source of truth for every number the pipeline produces. Code implements these definitions. When a definition changes, the version and the changelog change with it.
 
@@ -39,6 +39,7 @@ Every ACH or log row maps to exactly one ledger event.
 - *N* belongs to the same resolved merchant;
 - *N* funds within 0–2 business days of *t*;
 - either the tracker links *N* to *P* (`renewal_of` / `Prior Deal` / notes), **or** the payoff amount is within ±$1 of *N*'s `payoff_amt`, **or** *N*'s funding row satisfies `advance − fee − funding_out ≈ payoff amount` (±$1).
+- **or** *N* has no tracker row (Q5 `tracker_missing`), so the three checks above cannot be evaluated. The payoff is still internal when *N* belongs to the same resolved merchant and funds within 0–2 business days of *t*. Such a link is recorded with method `inferred_tracker_missing` and confidence 0.6, and is always routed to `exceptions` for review.
 
 Otherwise the payoff is `early_payoff_cash`. The description text ("RENEWAL PAYOFF" or "PAYOFF") is a hint only. About 40% of internal payoffs are labelled plain "PAYOFF".
 
@@ -193,3 +194,4 @@ R1 includes commissions. A relationship can collect more than the advances paid 
 
 ## Changelog
 - **v1.0** — initial definitions. D17 uses prior-deal stress signals; payment ratio is a severity attribute.
+- **v1.1** (2026-11-03) — L1 gains a fourth condition for a successor deal *N* with no tracker row (`inferred_tracker_missing`, confidence 0.6, always queued for review). Reason: 22 renewals into tracker-missing deals could not be classified under v1.0. Approved by the user.

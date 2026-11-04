@@ -290,11 +290,36 @@ def test_l1_tracker_missing_successor_policy() -> None:
     assert exc[0]["reason"] == "l1_successor_tracker_missing_inferred_internal"
 
 
+def test_l1_default_policy_is_v11_infer() -> None:
+    deals = {1: _deal(1, f=date(2024, 3, 1)), 2: _deal(2, net=1_000_000, missing=True)}
+    rows, exc = payoffs.classify_payoffs([_po()], deals, {})  # no policy argument
+    assert rows[0]["payoff_class"] == payoffs.INTERNAL and rows[0]["method"] == "inferred_tracker_missing"
+    assert rows[0]["successor_deal_id"] == 2 and [e["reason"] for e in exc] == [
+        "l1_successor_tracker_missing_inferred_internal"
+    ]
+
+
+@pytest.mark.parametrize("policy", [payoffs.POLICY_STRICT, payoffs.POLICY_INFER])
+def test_l1_cash_payoff_with_other_merchants_tracker_missing_deal_stays_cash(policy) -> None:
+    # a tracker-missing deal of ANOTHER merchant funds the same day: never a successor
+    deals = {1: _deal(1, f=date(2024, 3, 1)), 2: _deal(2, key="B", net=1_000_000, missing=True)}
+    rows, exc = payoffs.classify_payoffs([_po(desc="EARLY PAYOFF")], deals, {}, policy)
+    assert rows[0]["payoff_class"] == payoffs.CASH and rows[0]["method"] == "no_successor"
+    assert rows[0]["n_candidates"] == 0 and exc == []
+
+
+@pytest.mark.parametrize("policy", [payoffs.POLICY_STRICT, payoffs.POLICY_INFER])
+def test_l1_tracker_missing_outside_window_stays_cash(policy) -> None:
+    deals = {1: _deal(1, f=date(2024, 3, 1)), 2: _deal(2, f=date(2024, 9, 5), net=1_000_000, missing=True)}
+    rows, _ = payoffs.classify_payoffs([_po()], deals, {}, policy)  # 3 bd after Fri 8/30 (Labor Day)
+    assert rows[0]["payoff_class"] == payoffs.CASH
+
+
 def test_l1_policy_env(monkeypatch) -> None:
     monkeypatch.delenv(payoffs.POLICY_ENV, raising=False)
+    assert payoffs.policy_from_env() == "infer" == payoffs.DEFAULT_POLICY  # METRICS.md v1.1
+    monkeypatch.setenv(payoffs.POLICY_ENV, "strict")
     assert payoffs.policy_from_env() == "strict"
-    monkeypatch.setenv(payoffs.POLICY_ENV, "infer")
-    assert payoffs.policy_from_env() == "infer"
     monkeypatch.setenv(payoffs.POLICY_ENV, "maybe")
     with pytest.raises(ValueError):
         payoffs.policy_from_env()

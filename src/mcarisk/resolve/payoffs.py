@@ -1,11 +1,14 @@
 """Internal vs cash payoff classification (METRICS.md §1 rule L1).
 
-L1: "A PAYOFF row on deal P dated t is an internal_payoff if a deal N exists that satisfies all of:
+L1 (METRICS.md v1.1): "A PAYOFF row on deal P dated t is an internal_payoff if a deal N exists that
+satisfies all of:
   * N belongs to the same resolved merchant;
   * N funds within 0-2 business days of t;
   * either the tracker links N to P (renewal_of / Prior Deal / notes), or the payoff amount is within
     +-$1 of N's payoff_amt, or N's funding row satisfies advance - fee - funding_out ~= payoff amount
-    (+-$1).
+    (+-$1), or N has no tracker row (Q5 tracker_missing), so these checks cannot be evaluated: then the
+    payoff is internal when N is the same merchant and funds within the window (method
+    inferred_tracker_missing, confidence 0.6, always routed to exceptions).
 Otherwise the payoff is early_payoff_cash. The description text is a hint only."
 
 Implementation notes
@@ -18,11 +21,12 @@ Implementation notes
 * The description ("RENEWAL PAYOFF", "PAYOFF", "EARLY PAYOFF", "PAYOFF - DISC") never decides the class.
   A disagreement between the hint and the class goes to the review queue.
 * A candidate N with **no tracker row** (Q5 ``tracker_missing``) has no ``payoff_amt``, ``advance`` or
-  ``fee`` and no tracker link, so L1's third bullet cannot be evaluated for it. Policy
-  ``strict`` (default, METRICS.md as written) classifies the payoff ``early_payoff_cash`` and queues an
-  exception; policy ``infer`` (an extension that is *not* in METRICS.md v1.0; opt-in via
-  ``MCARISK_L1_TRACKER_MISSING=infer``) classifies it ``internal_payoff`` with method
-  ``inferred_tracker_missing`` and confidence 0.6, also queued for review.
+  ``fee`` and no tracker link. Policy ``infer`` (the **default**, METRICS.md v1.1) applies the
+  tracker-missing condition: ``internal_payoff``, method ``inferred_tracker_missing``, confidence 0.6,
+  queued for review. Policy ``strict`` (``MCARISK_L1_TRACKER_MISSING=strict``) reproduces v1.0 for
+  comparison: the payoff is ``early_payoff_cash`` and an exception is queued.
+* Only a same-merchant N counts: a tracker-missing deal of another merchant funding the same day never
+  makes a payoff internal.
 """
 
 from __future__ import annotations
@@ -41,13 +45,14 @@ AMOUNT_TOL_CENTS = 100  # +-$1
 POLICY_STRICT = "strict"
 POLICY_INFER = "infer"
 POLICY_ENV = "MCARISK_L1_TRACKER_MISSING"
+DEFAULT_POLICY = POLICY_INFER  # METRICS.md v1.1
 
 HINT_INTERNAL = {"RENEWAL PAYOFF"}
 HINT_CASH = {"EARLY PAYOFF", "PAYOFF - DISC"}
 
 
 def policy_from_env() -> str:
-    p = os.environ.get(POLICY_ENV, POLICY_STRICT).strip().lower() or POLICY_STRICT
+    p = os.environ.get(POLICY_ENV, DEFAULT_POLICY).strip().lower() or DEFAULT_POLICY
     if p not in (POLICY_STRICT, POLICY_INFER):
         raise ValueError(f"{POLICY_ENV} must be '{POLICY_STRICT}' or '{POLICY_INFER}', got {p!r}")
     return p
@@ -104,7 +109,7 @@ def classify_payoffs(
     payoffs: list[Payoff],
     deals: Mapping[int, DealInfo],
     tracker_links: Mapping[int, int],
-    policy: str = POLICY_STRICT,
+    policy: str = DEFAULT_POLICY,
 ) -> tuple[list[dict], list[dict]]:
     """Classify every PAYOFF row (L1). Returns (rows, exceptions)."""
     by_key: dict[str, list[DealInfo]] = {}

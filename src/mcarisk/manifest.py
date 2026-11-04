@@ -21,7 +21,7 @@ Layout (top-level keys are a contract; ``tests/test_manifest.py`` checks them)::
       "run_id": "20261103T153000Z-ab12cd3",
       "created_at" / "updated_at": ISO-8601 UTC,
       "git": {"sha": str | null, "dirty": bool | null},
-      "metrics_md": {"version": "v1.0", "sha256": str},
+      "metrics_md": {"version": "v1.1", "sha256": str},
       "inputs": {"raw/deal_tracker_2023.xlsx": {"sha256": str, "bytes": int}, ...},
       "stages": {
         "<stage>": {"status": "ok" | "failed", "started_at", "finished_at", "seconds",
