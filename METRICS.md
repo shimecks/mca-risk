@@ -1,4 +1,4 @@
-# MCA Risk Metric Definitions (v1.1)
+# MCA Risk Metric Definitions (v1.2)
 
 This is the single source of truth for every number the pipeline produces. Code implements these definitions. When a definition changes, the version and the changelog change with it.
 
@@ -94,6 +94,8 @@ The default date is the last good payment date plus one business day. The defaul
 - **D13 < 0.85** (more than 15% behind schedule), **or**
 - a modification event.
 
+*Returns at the renewal date (v1.2):* a debit attempted on or before the renewal date counts as returned if its return posts after that date (typically within 2 business days). With fewer than 20 attempts, D14 is returns ÷ attempts, as in D14's definition. Because of this look-ahead of up to 2 business days, D17 values must not be used as model features: Part 6 uses as-of-renewal D13 / D14 computed without look-ahead.
+
 *Severity attribute, not part of the test:* payment ratio = new daily equivalent ÷ prior effective daily equivalent. Values ≤ 0.75 match the "refinance to a lower payment" pattern.
 *Measured on the synthetic book:* precision 0.98, recall 0.87 against the true labels. Requiring a lower payment as well would drop recall to 0.64, because chained refinances often can't lower the payment further.
 
@@ -188,6 +190,8 @@ R1 includes commissions. A relationship can collect more than the advances paid 
 | Adjusted collection rate (D11) | **44.0%** | 27.4% |
 | Outcome | `refinanced_distressed` | `written_off` ($23,020) |
 
+*Data note (v1.2):* deal 1102 has no tracker row in `raw/` (Q5), so the pipeline sees no advance, fee or commission for it. The numbers above use the full contract terms. From the spreadsheets alone the pipeline's D6, R1, R3 and R8 are lower bounds: D6 $30,625, R1 $33,370, R3 **0.80**, realized loss **$6,648**. Every other number in the table reproduces exactly.
+
 **Deal view:** one deal paid in full and one loss. **Relationship view:** cash out was $36,794 and cash in was $26,723, so the cash multiple (R3) is **0.73** and the realized loss is **$10,072**. Deal 1102 was never a success.
 
 ---
@@ -195,3 +199,4 @@ R1 includes commissions. A relationship can collect more than the advances paid 
 ## Changelog
 - **v1.0** — initial definitions. D17 uses prior-deal stress signals; payment ratio is a severity attribute.
 - **v1.1** (2026-11-03) — L1 gains a fourth condition for a successor deal *N* with no tracker row (`inferred_tracker_missing`, confidence 0.6, always queued for review). Reason: 22 renewals into tracker-missing deals could not be classified under v1.0. Approved by the user.
+- **v1.2** (2026-11-04): D17 counts a debit attempted on or before the renewal date as returned when its return posts afterwards (look-ahead of up to 2 business days), and D14 with fewer than 20 attempts is returns ÷ attempts. D17 values are not model features. §7 gains a note that deal 1102 has no tracker row, so the pipeline's D6 / R1 / R3 / R8 for M0219 are lower bounds. Approved by the user.

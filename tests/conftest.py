@@ -78,7 +78,7 @@ def resolve_build(std_build, tmp_path_factory: pytest.TempPathFactory):
 
 @pytest.fixture(scope="session")
 def metrics_build(resolve_build, tmp_path_factory: pytest.TempPathFactory):
-    """A copy of the resolved build, then ledger + metrics (Part 4) in place, default D17 basis."""
+    """A copy of the resolved build, then ledger + metrics (Part 4) in place, default D17 basis (attempt, v1.2)."""
     import shutil
 
     from mcarisk.ledger import run_ledger
@@ -93,6 +93,6 @@ def metrics_build(resolve_build, tmp_path_factory: pytest.TempPathFactory):
     with run.stage("ledger"):
         led = run_ledger(db, run=run)
     with run.stage("metrics"):
-        met = run_metrics(db, d17_basis="asof", dq_report_path=tmp / "dq_report.md", run=run)
+        met = run_metrics(db, d17_basis="attempt", dq_report_path=tmp / "dq_report.md", run=run)
     run.write()
     return {"db": db, "manifest": manifest, "report": tmp / "dq_report.md", "ledger": led, "metrics": met}

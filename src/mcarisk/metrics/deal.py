@@ -73,18 +73,20 @@ D17_RETURNS_NUM, D17_RETURNS_DEN = 3, 20  # D14 >= 3/20
 D17_PACE = Fraction(85, 100)  # D13 < 0.85
 PIF_TOLERANCE_CENTS = 1  # §2.1 paid_in_full: CFM >= RTR - $0.01
 
-# D17 return basis (METRICS.md is ambiguous; see PROGRESS.md Part 4 open questions):
-#   asof    (default, literal): only returns posted on or before the renewal date are known then.
-#   attempt : a debit attempted on or before the renewal date counts as returned if its return posts
-#             later (normally 2 business days), up to the metric as-of date.
+# D17 return basis (METRICS.md v1.2, D17 "Returns at the renewal date"):
+#   attempt (default, v1.2): a debit attempted on or before the renewal date counts as returned if its
+#             return posts later (normally within 2 business days), up to the metric as-of date. This
+#             look-ahead means D17 values are never model features (Part 6).
+#   asof    : only returns posted on or before the renewal date (the v1.1 literal reading; comparison).
 D17_BASES = ("asof", "attempt")
+D17_DEFAULT_BASIS = "attempt"
 D17_BASIS_ENV = "MCARISK_D17_RETURNS"
 
 
 def d17_basis_from_env() -> str:
     import os
 
-    b = os.environ.get(D17_BASIS_ENV, "asof").strip().lower() or "asof"
+    b = os.environ.get(D17_BASIS_ENV, D17_DEFAULT_BASIS).strip().lower() or D17_DEFAULT_BASIS
     if b not in D17_BASES:
         raise ValueError(f"{D17_BASIS_ENV} must be one of {D17_BASES}, got {b!r}")
     return b
@@ -276,7 +278,7 @@ def distressed_refinance(
     successor: Deal | None,
     cal: CalIndex,
     *,
-    basis: str = "asof",
+    basis: str = D17_DEFAULT_BASIS,
     as_of: date = AS_OF_DEFAULT,
 ) -> dict[str, Any]:
     """D17 (v1): the renewal of this (prior) deal on ``renewal_date`` is distressed when, as of that
@@ -349,7 +351,7 @@ def deal_metrics(
     as_of: date = AS_OF_DEFAULT,
     successors: dict[int, Deal] | None = None,
     cal: CalIndex | None = None,
-    d17_basis: str = "asof",
+    d17_basis: str = D17_DEFAULT_BASIS,
 ) -> dict[str, Any] | None:
     """All deal metrics (D1-D19) and the §2.1 outcome for one deal as of ``as_of``.
 
@@ -500,7 +502,7 @@ def all_deal_metrics(
     status: Iterable[StatusEvent] = (),
     *,
     as_of: date = AS_OF_DEFAULT,
-    d17_basis: str = "asof",
+    d17_basis: str = D17_DEFAULT_BASIS,
 ) -> list[dict[str, Any]]:
     """``deal_metrics`` for every deal (deals funded after ``as_of`` are skipped)."""
     deals = list(deals)

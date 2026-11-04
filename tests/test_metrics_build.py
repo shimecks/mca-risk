@@ -184,7 +184,7 @@ def test_python_equals_sql_other_as_of_and_basis(metrics_build, tmp_path):
         install_sql(c)
         for as_of, basis in (
             (date(2025, 6, 30), "asof"),
-            (date(2026, 9, 30), "attempt"),
+            (date(2026, 9, 30), "asof"),
             (date(2024, 3, 15), "attempt"),
         ):
             dm, rm, pm = compute(c, as_of=as_of, d17_basis=basis)
@@ -276,15 +276,18 @@ def test_m0219_from_the_built_tables_observable_numbers(con):
     assert not m1102["commission_known"] and rel["n_commission_unknown"] == 1
 
 
-@pytest.mark.xfail(
-    strict=True,
-    reason="Deal 1102 has no tracker row in raw/ (Q5): its advance, factor and $3,424 commission are "
-    "not observable, so D6 / R1 / R3 / R8 are lower bounds (R3 0.80, loss $6,648). PROGRESS.md Part 4 "
-    "open question 2; the hand-built fixture test reproduces §7 exactly.",
-)
-def test_m0219_from_the_built_tables_commission_dependent_numbers(con):
-    m1102, m1150, rel = _m0219(con)
-    assert_m0219_section7(m1102, m1150, rel, check_commission=True)
+def test_m0219_from_the_built_tables_commission_dependent_lower_bounds(con):
+    """METRICS.md v1.2 §7 data note: deal 1102 has no tracker row, so its commission is unknown and the
+    pipeline's D6 / R1 / R3 / R8 are the documented lower bounds (R3 0.80, loss $6,648)."""
+    m1102, _m1150, rel = _m0219(con)
+    assert m1102["d1_advance_cents"] is None and m1102["d5_commission_cents"] is None
+    assert round(m1102["d6_funder_cash_out_cents"] / 100) == 30_625  # D6 = D4 + unknown commission
+    assert round(rel["r1_funder_cash_out_cents"] / 100) == 33_370
+    assert round(rel["r3_cash_multiple"], 2) == 0.80
+    assert round(rel["r8_realized_loss_cents"] / 100) == 6_648
+    # each lower bound sits below the §7 full-terms value by exactly 1102's $3,424 commission
+    assert rel["r1_funder_cash_out_cents"] + 342_400 == 3_679_440  # §7: $36,794.40
+    assert rel["r8_realized_loss_cents"] + 342_400 == 1_007_152  # §7: $10,071.52 -> $10,072
 
 
 # ------------------------------------------------------------------------------------------ Q6, report, manifest
@@ -299,7 +302,7 @@ def test_q6_dq_report_and_manifest(metrics_build, con):
     assert man["stages"]["ledger"]["status"] == "ok" and man["stages"]["metrics"]["status"] == "ok"
     t = man["stages"]["metrics"]["tables"]
     assert t["deal_metrics"]["accepted"] == 2011 and t["relationship_metrics"]["accepted"] == 1200
-    assert man["stages"]["metrics"]["extra"]["d17_basis"] == "asof"
+    assert man["stages"]["metrics"]["extra"]["d17_basis"] == "attempt"
     assert man["stages"]["ledger"]["tables"]["ledger_rejects"]["rejected"] == 1
 
 
@@ -308,7 +311,7 @@ def test_e6_e7_on_the_build(metrics_build):
     ctx = EvalContext(db_path=metrics_build["db"])
     e6 = e6_definitions.run(ctx).metrics
     assert e6["outcome_accuracy"] >= 0.97 and e6["d17_precision"] >= 0.95
-    assert e6["d17_basis_of_build"] == "asof" and set(e6["by_d17_basis"]) == {"asof", "attempt"}
+    assert e6["d17_basis_of_build"] == "attempt" and set(e6["by_d17_basis"]) == {"asof", "attempt"}
     assert e6["default_date_within_25bd_rate"] > 0.95
     e7 = e7_metrics.run(ctx).metrics
     assert e7["deal_metric_max_abs_err_usd"] <= 1.0 and e7["relationship_metric_max_abs_err_usd"] <= 1.0

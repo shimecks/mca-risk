@@ -20,6 +20,12 @@ them). The size of the adjustment is reported (``truth_post_asof_events``).
   is correctly linked and has observed contract fields, and R5 agrees with the truth (R6 / R7 / R8
   switch on R5).
 
+**Comparison basis for the D17-dependent P-metrics** (user decision 2026-11-04): the P4 economic bad
+rate and the P8 distressed share of renewals are compared with METRICS.md D17 (v1.2) applied to the
+TRUE deals and cash flows (``spec_d17_on_truth``), not with the simulator's latent distressed labels,
+which no observable definition can reproduce exactly. The gap to the simulator labels is reported,
+split into definition error (spec-on-truth - simulator) and pipeline error (pipeline - spec-on-truth).
+
 Gated: ``deal_metric_max_abs_err_usd`` (D1-D9, D12) and ``relationship_metric_max_abs_err_usd`` (R1,
 R2, R4, R6, R7, R8) over linked records; ``portfolio_metric_max_abs_err_pp`` over every rate in
 ``portfolio_expected.json`` that has a P-metric counterpart. Report-only: rates per record, dollar
@@ -30,6 +36,7 @@ from __future__ import annotations
 
 import json
 from collections import Counter, defaultdict
+from datetime import date
 
 import duckdb
 import numpy as np
@@ -93,6 +100,110 @@ P_USD = {
     "open_economic_exposure_total": ("P6", "economic_exposure_cents"),
     "open_contractual_balance_total": ("P6", "contractual_balance_cents"),
 }
+
+
+# P-metrics whose expected value comes from applying METRICS.md (v1.2) D17 to the true ledger, not
+# from the simulator's labels (user decision 2026-11-04; see thresholds.json E7.comparison_basis).
+SPEC_ON_TRUTH = {
+    "deal_level_bad_rate_economic_closed",
+    "renewed_deals_with_distressed_refi/renewed_deals_total",
+}
+CLOSED_TRUTH = {
+    "paid_in_full",
+    "paid_in_full_early",
+    "renewed_healthy",
+    "refinanced_distressed",
+    "settled",
+    "written_off",
+}
+
+
+def spec_d17_on_truth(truth: pd.DataFrame, cf: pd.DataFrame, as_of: date) -> dict[int, bool]:
+    """D17 (METRICS.md v1.2, default ``attempt`` basis) applied to the TRUE deals and cash flows.
+
+    Returns prior deal id -> distressed, for every true renewal. It uses the pipeline's own pure
+    functions (``distressed_refinance``, ``match_returns``) on truth inputs, so it measures the
+    definition, not the pipeline's linkage."""
+    from mcarisk.ledger import KIND_ORDER, match_returns
+    from mcarisk.metrics.deal import D17_DEFAULT_BASIS, Deal, Event, distressed_refinance
+    from mcarisk.metrics.schedule import cal_index
+
+    def cents(x) -> int:
+        return round(float(x) * 100)
+
+    deals = {}
+    for r in truth.itertuples():
+        deals[int(r.deal_id)] = Deal(
+            int(r.deal_id),
+            str(r.merchant_id),
+            date.fromisoformat(str(r.funding_date)),
+            cents(r.advance),
+            cents(r.rtr),
+            cents(r.fee),
+            float(r.commission_pct),
+            cents(r.payment),
+            str(r.frequency),
+        )
+    rolled = {
+        int(r.deal_id): int(r.rolled_to_deal_id)
+        for r in truth.itertuples()
+        if not pd.isna(r.rolled_to_deal_id)
+    }
+    rows = []
+    for r in cf[cf.kind != "commission_out"].itertuples():
+        rows.append(
+            {
+                "deal_id": int(r.deal_id),
+                "event_date": date.fromisoformat(str(r.date)[:10]),
+                "kind": r.kind,
+                "amount_cents": cents(r.amount),
+                "matched_event_id": None,
+            }
+        )
+    for r in truth.itertuples():
+        if not pd.isna(r.modified_date):
+            rows.append(
+                {
+                    "deal_id": int(r.deal_id),
+                    "event_date": date.fromisoformat(str(r.modified_date)),
+                    "kind": "modification",
+                    "amount_cents": 0,
+                    "matched_event_id": None,
+                    "new_payment_cents": cents(r.modified_payment),
+                }
+            )
+    rows.sort(key=lambda x: (x["deal_id"], x["event_date"], KIND_ORDER[x["kind"]], x["amount_cents"]))
+    for i, x in enumerate(rows, start=1):
+        x["event_id"] = i
+    match_returns(rows)
+    by: dict[int, list] = {}
+    for x in rows:
+        succ = rolled.get(x["deal_id"]) if x["kind"] == "internal_payoff" else None
+        by.setdefault(x["deal_id"], []).append(
+            Event(
+                x["event_id"],
+                x["deal_id"],
+                x["event_date"],
+                x["kind"],
+                x["amount_cents"],
+                x["matched_event_id"],
+                x.get("new_payment_cents"),
+                succ,
+            )
+        )
+    ci = cal_index()
+    out = {}
+    for pid, nid in rolled.items():
+        evs = [e for e in by.get(pid, []) if e.event_date <= as_of]
+        ipo = [e for e in evs if e.kind == "internal_payoff"]
+        if not ipo:
+            continue
+        d = deals[pid]
+        res = distressed_refinance(
+            d, evs, d.rtr_cents, ipo[0].event_date, deals.get(nid), ci, basis=D17_DEFAULT_BASIS, as_of=as_of
+        )
+        out[pid] = res["distressed"]
+    return out
 
 
 def _usd_err(p, t) -> float | None:
@@ -295,17 +406,49 @@ def run(ctx: EvalContext) -> SuiteOutput:
         expected["closed_deals_reported_collection_rate_rtr_weighted"]
         - expected["closed_deals_renewal_adjusted_collection_rate_rtr_weighted"]
     )
+    # spec-on-truth expected values for the D17-dependent rates
+    sot = spec_d17_on_truth(truth, cf, date.fromisoformat(AS_OF))
+    n_sot = sum(sot.values())
+    cl_t = truth[truth.outcome.isin(CLOSED_TRUTH)]
+    naive_t = int(cl_t.outcome.isin(["settled", "written_off"]).sum())
+    spec_exp = {
+        "deal_level_bad_rate_economic_closed": (naive_t + n_sot) / len(cl_t),
+        "renewed_deals_with_distressed_refi/renewed_deals_total": n_sot / len(sot),
+    }
+    # report-only: the distressed-chain loss share (P8) with chains defined by spec D17 on the truth
+    mid_of = truth.set_index("deal_id").merchant_id
+    chain_m = {mid_of[pid] for pid, v in sot.items() if v}
+    res_t = rel_t[rel_t.status == "resolved"]
+    bad_t = res_t.cash_from_merchant / res_t.funder_cash_out < 1.0
+    in_chain = res_t.index.isin(list(chain_m))
+    chain_sot = {
+        "spec_on_truth": round(float(bad_t[in_chain].mean()), 6),
+        "chains": int(in_chain.sum()),
+        "simulator_label": expected["distressed_refi_chains_ending_in_loss_share"],
+        "pipeline": None
+        if pv.get(("P8", "bad_rate_chains_with_distressed")) is None
+        else round(pv[("P8", "bad_rate_chains_with_distressed")], 6),
+    }
     p_rows = {}
     for key, mid in P_RATES.items():
         ours = pv.get(mid)
         if mid[1] == "renewal_masking_gap_pp" and ours is not None:
             ours = ours / 100.0
+        on_truth = key in SPEC_ON_TRUTH
+        ref = spec_exp[key] if on_truth else exp[key]
         p_rows[key] = {
             "metric": f"{mid[0]} {mid[1]}",
-            "expected": round(exp[key], 6),
+            "comparison_basis": "spec_on_truth" if on_truth else "portfolio_expected.json",
+            "expected": round(ref, 6),
             "pipeline": None if ours is None else round(ours, 6),
-            "abs_err_pp": None if ours is None else round(abs(ours - exp[key]) * 100, 4),
+            "abs_err_pp": None if ours is None else round(abs(ours - ref) * 100, 4),
         }
+        if on_truth:
+            p_rows[key].update(
+                simulator_label=round(exp[key], 6),
+                definition_error_pp=round((ref - exp[key]) * 100, 4),  # spec-on-truth - simulator
+                pipeline_error_pp=None if ours is None else round((ours - ref) * 100, 4),  # pipeline - spec
+            )
     p_usd = {}
     for key, mid in P_USD.items():
         ours = pv.get(mid)
@@ -350,6 +493,19 @@ def run(ctx: EvalContext) -> SuiteOutput:
         "deal_metrics_linked": _summ(lk_err),
         "relationship_metrics_linked": _summ(rl_err),
         "portfolio_rates": p_rows,
+        "spec_on_truth": {
+            "chains_with_distressed_loss_share_report_only": chain_sot,
+            "d17_distressed_true_renewals": n_sot,
+            "true_renewals": len(sot),
+            "simulator_distressed_refis": int(expected["renewed_deals_with_distressed_refi"]),
+            "gap_to_simulator_labels_pp": {
+                k: {
+                    "definition_error_pp": p_rows[k]["definition_error_pp"],
+                    "pipeline_error_pp": p_rows[k]["pipeline_error_pp"],
+                }
+                for k in sorted(SPEC_ON_TRUTH)
+            },
+        },
         "portfolio_usd": p_usd,
         "portfolio_rates_failing": p_fail,
         "missing_values": {

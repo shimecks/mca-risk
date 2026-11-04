@@ -33,6 +33,7 @@ from mcarisk.manifest import RunManifest, StageRecorder, open_run
 from mcarisk.metrics.deal import (
     AS_OF_DEFAULT,
     D17_BASES,
+    D17_DEFAULT_BASIS,
     Deal,
     Event,
     StatusEvent,
@@ -184,7 +185,7 @@ def load_model(con: duckdb.DuckDBPyConnection) -> dict[str, Any]:
 
 
 def compute(
-    con: duckdb.DuckDBPyConnection, *, as_of: date = AS_OF_DEFAULT, d17_basis: str = "asof"
+    con: duckdb.DuckDBPyConnection, *, as_of: date = AS_OF_DEFAULT, d17_basis: str = D17_DEFAULT_BASIS
 ) -> tuple[list[dict], list[dict], list[dict]]:
     m = load_model(con)
     dm = all_deal_metrics(m["deals"], m["events"], m["status"], as_of=as_of, d17_basis=d17_basis)
@@ -195,7 +196,7 @@ def compute(
 
 # ------------------------------------------------------------------------------------------ SQL
 def install_sql(
-    con: duckdb.DuckDBPyConnection, *, as_of: date = AS_OF_DEFAULT, d17_basis: str = "asof"
+    con: duckdb.DuckDBPyConnection, *, as_of: date = AS_OF_DEFAULT, d17_basis: str = D17_DEFAULT_BASIS
 ) -> list[str]:
     """Create the table macros from ``sql/metrics/*.sql`` and the ``v_*`` views at ``as_of``."""
     files = sorted(SQL_DIR.glob("*.sql"))

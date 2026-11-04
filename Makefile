@@ -42,7 +42,7 @@ resolve:
 notes-llm:
 	$(PY) -m mcarisk.notes.extract --llm
 # Part 4: the METRICS.md §1 cash ledger, then D/R/P metrics + SQL views (sql/metrics/*.sql).
-# D17 return basis: MCARISK_D17_RETURNS=asof (default, literal) | attempt (see PROGRESS.md Part 4).
+# D17 return basis: MCARISK_D17_RETURNS=attempt (default, METRICS.md v1.2) | asof (v1.1 literal reading).
 ledger:
 	$(PY) -m mcarisk.ledger
 metrics:
