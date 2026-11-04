@@ -236,7 +236,7 @@ def _render(t: dict[str, str], picks: dict[str, Any], as_of: str) -> str:
     a("# Findings: cash-based risk on the synthetic MCA book")
     a("")
     a(
-        f"As of **{as_of}**, METRICS.md v1.2 (D17 `attempt` basis). Every number below is read from the "
+        f"As of **{as_of}**, METRICS.md v1.3 (D17 `attempt` basis). Every number below is read from the "
         "persisted metric tables (`portfolio_metrics`, `target_metrics`, `relationship_metrics`, "
         "`deal_metrics`) and cites its metric IDs; `build/findings_numbers.json` holds the query behind each "
         "one. Figures: `build/figures/*.png` (interactive: `*.plotly.json`, data: `build/figures/data/*.csv`)."

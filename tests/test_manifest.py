@@ -12,7 +12,7 @@ def test_ingest_manifest_has_required_keys(raw_ingest):
     m = json.loads(raw_ingest["manifest"].read_text(encoding="utf-8"))
     for k in REQUIRED_KEYS:
         assert k in m, k
-    assert m["metrics_md"]["version"] == "v1.2"
+    assert m["metrics_md"]["version"] == "v1.3"
     assert len(m["metrics_md"]["sha256"]) == 64
     assert "sha" in m["git"] and "dirty" in m["git"]
     assert len([k for k in m["inputs"] if k.startswith("raw/ach_exports/")]) == 46
@@ -56,4 +56,4 @@ def test_rejected_rows_need_reasons(tmp_path):
 
 
 def test_metrics_md_version():
-    assert metrics_md_info(paths.METRICS_MD)["version"] == "v1.2"
+    assert metrics_md_info(paths.METRICS_MD)["version"] == "v1.3"

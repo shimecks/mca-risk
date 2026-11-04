@@ -36,7 +36,7 @@ FIGURE_METRICS: dict[str, list[str]] = {
 
 
 def _cite(name: str) -> str:
-    return "Metrics: " + ", ".join(FIGURE_METRICS[name]) + " (METRICS.md v1.2)"
+    return "Metrics: " + ", ".join(FIGURE_METRICS[name]) + " (METRICS.md v1.3)"
 
 
 def _style(ax) -> None:

@@ -45,7 +45,7 @@ MODEL_LABELS = {
 
 
 def _cite(name: str) -> str:
-    return "Metrics: " + ", ".join(MODEL_FIGURE_METRICS[name]) + " (METRICS.md v1.2)"
+    return "Metrics: " + ", ".join(MODEL_FIGURE_METRICS[name]) + " (METRICS.md v1.3)"
 
 
 def _foot(fig, name: str, extra: str = "") -> None:
