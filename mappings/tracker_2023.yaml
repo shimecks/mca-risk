@@ -1,0 +1,34 @@
+# raw_tracker_2023 (raw/deal_tracker_2023.xlsx, sheet "Funded") -> deals_std
+#
+# Field spec: {column: <raw header text>, parser: <name in mcarisk.mapping.PARSERS>, ...options}
+#   required: true -> a parse failure or a missing value REJECTS the row (std_rejects). Otherwise the
+#                     field is set NULL and the failure is logged in std_log (action = nulled).
+#   from_hints     -> value taken from hints other parsers returned (e.g. "wkly" suffix -> weekly).
+# Canonical fields that are not listed are NULL for this source (e.g. there is no EIN in 2023).
+source_table: raw_tracker_2023
+target: deals_std
+source_family: tracker_2023
+fields:
+  deal_id:           {column: "Deal #", parser: int, required: true}
+  merchant_name_raw: {column: "Merchant", parser: text}
+  dba_raw:           {column: "DBA", parser: text}
+  funding_date:      {column: "Fund Date", parser: date, required: true}   # MM/DD/YY text
+  advance_cents:     {column: "Advance Amount", parser: money}            # "$38,500.00" / "$60,500"
+  factor:            {column: "Factor", parser: factor}
+  rtr_cents:         {column: "RTR", parser: money}
+  payment_cents:     {column: "Daily Pmt", parser: payment}               # "$410.67" or "$2,812.14 wkly"
+  term_bdays:        {column: "Term (days)", parser: term}                # "120" or "24 wks" (-> 120)
+  frequency:         {from_hints: [payment_cents, term_bdays], default: daily}
+  fee_cents:         {column: "Orig Fee", parser: money}
+  commission_rate:   {column: "Commission %", parser: rate, unit: percent, max_fraction: 0.5}  # "9.9%"
+  iso_name:          {column: "ISO", parser: text}
+  status_raw:        {column: "Status", parser: text}
+  status_norm:       {column: "Status", parser: lookup, table: status}
+  notes_raw:         {column: "Notes", parser: text}                      # renewal links live only here (Part 3)
+repairs:
+  # About 15% of money cells were typed as whole dollars ("$411"). That is lossless for advance, RTR and
+  # fee (whole-dollar amounts in this book) but not for the installment, so the installment is rebuilt
+  # from RTR / term when the whole-dollar text is within $0.50 of it. Logged (action = repaired).
+  - payment_whole_dollar_from_rtr_term
+checks:
+  funding_year: 2023

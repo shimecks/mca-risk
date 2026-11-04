@@ -1,0 +1,12 @@
+# Free-text industry -> canonical industry. Matching is case-insensitive with whitespace collapsed
+# (mcarisk.parse.norm_lookup_key). Unknown text -> industry NULL + std_log entry (industry_unmapped).
+Restaurant: [Restaurant, restaurant/bar, Food Service, REST]
+Retail: [Retail, retail store]
+Auto Repair: [Auto Repair, auto, Automotive Svc]
+Construction: [Construction, contractor, GC/Construction]
+Trucking: [Trucking, transportation, Freight/Logistics]
+Medical/Dental: [Medical, dental office, Healthcare]
+Beauty/Salon: [Salon, beauty, Personal Care]
+Landscaping: [Landscaping, lawn care, Landscape]
+E-commerce: [Ecommerce, e-comm, Online Retail]
+Professional Services: [Prof Services, professional svcs, Services]

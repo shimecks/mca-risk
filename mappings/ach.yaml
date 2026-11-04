@@ -1,0 +1,17 @@
+# raw_ach (46 monthly raw/ach_exports/ach_YYYY_MM.csv, unioned) -> payments_std (+ payments_dupes)
+# The deal on each row is kept AS POSTED (deal_id_posted). Misposting repair (L3) is Part 3.
+source_table: raw_ach
+target: payments_std
+fields:
+  txn_date:          {column: "Trans Date", parser: date, required: true, format_to: date_format_raw}  # MM/DD/YYYY to 2024-06, ISO from 2024-07
+  deal_id_posted:    {column: "Deal", parser: int, required: true}
+  merchant_name_raw: {column: "Merchant Name", parser: text}
+  amount_cents:      {column: "Amount", parser: money, allow_negative: true, required: true}  # funder view: out < 0, in > 0
+  txn_type:          {column: "Type", parser: code, required: true, allowed: [FUNDING, DEBIT, RETURN, PAYOFF, SETTLEMENT]}
+  return_code:       {column: "Return Code", parser: code}
+  batch_id:          {column: "Batch ID", parser: code, required: true}
+  description:       {column: "Description", parser: text}
+# METRICS.md L2. The key is built from PARSED values, so dates are normalized before deduplicating.
+dedupe_key: [txn_date, deal_id_posted, amount_cents, txn_type, batch_id]
+# Expected sign per type (funder perspective, METRICS.md §0). Violations are counted in data_quality, never changed.
+sign_by_type: {FUNDING: negative, DEBIT: positive, RETURN: negative, PAYOFF: positive, SETTLEMENT: positive}

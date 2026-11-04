@@ -3,6 +3,7 @@
 #
 #   make all            full pipeline (stages not built yet print "not implemented until Part N")
 #   make ingest         Part 1: raw/ -> build/portfolio.duckdb raw_* tables + build/run_manifest.json
+#   make standardize    Part 2: raw_* -> *_std tables, data_quality, build/dq_report.md (mappings/*.yaml)
 #   make test | lint    pytest | ruff check + ruff format --check
 #   make eval           all eval suites (unimplemented suites are reported, not failed)
 #   make eval SUITE=E1  one suite (fails if that suite is not implemented yet)
@@ -26,7 +27,7 @@ ingest:
 
 # ---- later stages: explicit stubs, replaced part by part (never fail silently) ----
 standardize:
-	@echo "[standardize] not implemented until Part 2 -- skipped"
+	$(PY) -m mcarisk.standardize
 resolve:
 	@echo "[resolve] not implemented until Part 3 -- skipped"
 ledger:
@@ -61,4 +62,4 @@ clean:
 	rm -rf $(BUILD)
 
 help:
-	@sed -n '1,12p' Makefile
+	@sed -n '1,13p' Makefile

@@ -1,0 +1,10 @@
+# Tracker status text -> status_norm: what a person TYPED, normalized. Tracker status is never trusted
+# for outcomes (METRICS.md Q6); outcomes come from the ledger in Part 4. "Paid Off" is typed for cash
+# payoffs AND for renewals, so status_norm = paid_off says nothing about cash.
+active: [Active, Current]
+modified: [Modified, Recon]
+paid_off: [Paid Off, PIF, paid, Paid in Full, PIF - early]
+renewed: [Renewed, Paid Off - Renewal, Refi]
+defaulted: [Default, Collections]
+settled: [Settled, Settlement, Closed - Settled]
+written_off: [Written Off, W/O, Charged Off]

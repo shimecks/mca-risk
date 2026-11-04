@@ -15,7 +15,7 @@
     "gates": {
       "field_accuracy": {"op": ">=", "value": 0.995}
     },
-    "report_only": ["field_accuracy_by_field"]
+    "report_only": ["field_accuracy_by_field", "field_accuracy_by_file", "extra_field_accuracy", "deals_std_rows", "truth_deals", "coverage", "unknown_deal_ids", "mismatch_count"]
   },
   "E3": {
     "name": "Dedupe",
@@ -24,7 +24,7 @@
       "payments_count_abs_diff": {"op": "==", "value": 0},
       "payments_sum_abs_diff_cents": {"op": "==", "value": 0}
     },
-    "report_only": ["payments_count", "true_ledger_count"]
+    "report_only": ["payments_count", "true_ledger_count", "payments_sum_cents", "true_ledger_sum_cents", "raw_ach_rows", "l2_duplicates_dropped", "by_type", "multiset_unmatched_ignoring_deal", "rows_on_a_different_deal_than_truth", "count_if_deduped_on_raw_date_text"]
   },
   "E4": {
     "name": "Entity resolution",

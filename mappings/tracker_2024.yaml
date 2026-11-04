@@ -1,0 +1,27 @@
+# raw_tracker_2024 (raw/deal_tracker_2024.xlsx, sheet "2024 Deals") -> deals_std
+# Field spec: see tracker_2023.yaml.
+source_table: raw_tracker_2024
+target: deals_std
+source_family: tracker_2024
+fields:
+  deal_id:           {column: "Deal ID", parser: int, required: true}
+  merchant_name_raw: {column: "Business Name", parser: text}
+  funding_date:      {column: "Funded", parser: date, required: true}     # real Excel date (ISO text after ingest)
+  advance_cents:     {column: "Purchase Price", parser: money}
+  factor:            {column: "Factor Rate", parser: factor}              # "1.30x"
+  rtr_cents:         {column: "Payback", parser: money}
+  payment_cents:     {column: "Pmt Amt", parser: payment}
+  frequency:         {column: "Freq", parser: frequency}                  # Daily / Weekly
+  fee_cents:         {column: "Fees", parser: money}
+  commission_rate:   {column: "Comm", parser: rate, unit: fraction, max_fraction: 0.5}  # 0.109 = 10.9%
+  iso_name:          {column: "Broker", parser: text}
+  prior_deal_id:     {column: "Prior Deal", parser: int}                  # explicit link; blank for ~25% of renewals
+  status_raw:        {column: "Status", parser: text}
+  status_norm:       {column: "Status", parser: lookup, table: status}
+  notes_raw:         {column: "Notes", parser: text}
+derivations:
+  # The 2024 sheet has no term column. term = RTR / installment (x5 for weekly). Accepted only when the
+  # installment implied by that term round-trips to the stated payment to the cent. Logged (action = derived).
+  term_bdays: rtr_over_payment
+checks:
+  funding_year: 2024

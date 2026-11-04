@@ -1,0 +1,14 @@
+# raw_collections (raw/collections_log.xlsx) -> collections_std
+# "Deal #" is missing about 25% of the time; matching those rows to a deal is Part 3 (Q4). Notes (new
+# payment amounts, settlement terms) are kept verbatim for the Part 3 notes extractor.
+source_table: raw_collections
+target: collections_std
+fields:
+  log_date:          {column: "Date", parser: date, required: true}       # MM/DD/YYYY
+  merchant_name_raw: {column: "Merchant", parser: text}
+  deal_id_raw:       {column: "Deal #", parser: int}
+  event_raw:         {column: "Event", parser: text, required: true}
+  event_type:        {column: "Event", parser: lookup, table: collection_events, required: true}
+  balance_cents:     {column: "Balance", parser: money}
+  amount_cents:      {column: "Amount", parser: money}
+  notes_raw:         {column: "Notes", parser: text}

@@ -1,0 +1,17 @@
+# raw_scorecards (raw/underwriting_scorecards_2023_2024.xlsx) -> scorecards_std
+# Keyed by merchant name + application date only. Matching scorecards to deals is Part 3 (Q3).
+source_table: raw_scorecards
+target: scorecards_std
+fields:
+  business_name_raw:     {column: "Business", parser: text, required: true}
+  app_date:              {column: "App Date", parser: date, required: true}
+  requested_cents:       {column: "Requested", parser: money}
+  fico:                  {column: "FICO", parser: int}
+  avg_monthly_rev_cents: {column: "Avg Mo Rev", parser: money}            # "$4,984"
+  nsf_90d:               {column: "NSFs (90d)", parser: int}
+  positions:             {column: "# Positions", parser: int}
+  tib_years:             {column: "TIB (yrs)", parser: decimal}           # years with 1 decimal, kept as given
+  industry_raw:          {column: "Industry", parser: text}
+  industry:              {column: "Industry", parser: lookup, table: industry}
+  state:                 {column: "State", parser: state}
+  uw_notes_raw:          {column: "UW Notes", parser: text}

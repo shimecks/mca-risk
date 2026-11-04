@@ -1,0 +1,6 @@
+# Collections-log "Event" text -> event_type (METRICS.md §1 event taxonomy and D16).
+default: [Default]
+bankruptcy: [Bankruptcy]
+modification: [Recon, Reconciliation, Modification]
+settlement: [Settlement]
+write_off: [Write-off, W/O, Charge off, Charge-off, Written Off]

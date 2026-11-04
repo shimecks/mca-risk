@@ -1,0 +1,37 @@
+# raw_tracker_2025 (raw/deal_tracker_2025.xlsx + raw/deal_tracker_2026_YTD.xlsx; same snake_case schema) -> deals_std
+# Field spec: see tracker_2023.yaml.
+source_table: raw_tracker_2025
+target: deals_std
+source_family: tracker_2025
+fields:
+  deal_id:           {column: deal_id, parser: int, required: true}
+  merchant_name_raw: {column: legal_name, parser: text}
+  ein:               {column: ein, parser: ein}                            # ~70% populated
+  funding_date:      {column: funding_date, parser: date, required: true}  # ISO text
+  advance_cents:     {column: advance, parser: money}
+  factor:            {column: factor, parser: factor}
+  rtr_cents:         {column: rtr, parser: money}
+  payment_cents:     {column: payment, parser: payment}
+  frequency:         {column: frequency, parser: frequency}                # D / W
+  term_bdays:        {column: term, parser: term}                          # business days
+  fee_cents:         {column: orig_fee, parser: money}
+  commission_rate:   {column: iso_comm_pct, parser: rate, unit: percent, max_fraction: 0.5}  # 10.1 = 10.1%
+  iso_name:          {column: iso_name, parser: text}
+  prior_deal_id:     {column: renewal_of, parser: int}                    # explicit link; blank for ~15% of renewals
+  payoff_amt_cents:  {column: payoff_amt, parser: money}
+  status_raw:        {column: status, parser: text}
+  status_norm:       {column: status, parser: lookup, table: status}
+  notes_raw:         {column: notes, parser: text}
+  # inline underwriting features (2025+ only; ~6% blank each)
+  fico:              {column: fico, parser: int}
+  avg_monthly_rev_cents: {column: avg_monthly_rev, parser: money}
+  tib_months:        {column: tib_months, parser: int}
+  industry_raw:      {column: industry, parser: text}
+  industry:          {column: industry, parser: lookup, table: industry}
+  state:             {column: state, parser: state}
+  positions:         {column: positions, parser: int}
+  nsf_90d:           {column: nsf_90d, parser: int}
+checks:
+  funding_year_by_file:
+    raw/deal_tracker_2025.xlsx: 2025
+    raw/deal_tracker_2026_YTD.xlsx: 2026
