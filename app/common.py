@@ -1,9 +1,10 @@
-"""Shared helpers for the Streamlit app: data access, formatting and links to METRICS.md definitions.
+"""Shared helpers for the Streamlit app: data access, plain-English formatting, the chart style and cards.
 
 The app reads only the data snapshot in ``app/data/`` (refreshed by ``make app-data`` from ``build/``),
 plus ``METRICS.md`` and ``evals/thresholds.json`` from the repository. It opens the DuckDB file read-only,
-never calls the network and needs no API key. It displays numbers from the metric tables; it does not
-recompute any METRICS.md definition. Set ``MCARISK_APP_DATA`` to point it at another snapshot.
+never calls the network and needs no API key. It displays numbers from the metric tables and the findings
+registry; it formats, rounds and relabels them but never recomputes a METRICS.md definition. Set
+``MCARISK_APP_DATA`` to point it at another snapshot.
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ from typing import Any
 
 import duckdb
 import pandas as pd
+import plotly.graph_objects as go
 import plotly.io as pio
 import streamlit as st
 
@@ -29,9 +31,21 @@ EVAL_LATEST = ROOT / "evals" / "reports" / "latest.json"
 # METRICS.md §7 worked example: relationship M0219 is merchant key MK1A8B5FBF55 in the pipeline
 # (the same constant as mcarisk.analytics.findings.M0219).
 M0219_KEY = "MK1A8B5FBF55"
-DEFINITIONS_PAGE = "Definitions"
+DEFINITIONS_PAGE = "Behind_the_numbers"
 
 ID_RE = re.compile(r"\b([DRPTQL])([1-9]\d?)\b")  # not R01 / R08 (return codes)
+
+# ------------------------------------------------------------------------------------------ colours
+# One meaning per colour, on every page: grey = what the tracker / spreadsheets report, blue = what the
+# cash says (the economic view), red = losses only. Light blue / light grey are quieter steps of the same.
+TRACKER = "#8c8b86"
+CASH = "#2a78d6"
+CASH_LIGHT = "#9ec5f4"
+LOSS = "#d03b3b"
+MUTED = "#d6d5d0"
+INK = "#1f1f1d"
+INK_2 = "#5c5b57"
+GRID = "#ecebe7"
 
 
 # ---------------------------------------------------------------------------------------------- data
@@ -92,20 +106,37 @@ def figure(name: str):
 
 
 def show_figure(name: str, caption: str | None = None) -> None:
+    """Show a committed pipeline figure as is (used only inside 'more detail' expanders)."""
     fig = figure(name)
     if fig is None:
         st.warning(f"Figure `{name}` is missing from the snapshot.")
         return
     st.plotly_chart(fig, width="stretch", key=f"fig_{name}")
-    ids = app_meta().get("figure_metric_ids", {}).get(name, [])
-    cite = f"Metrics: {links(ids)}" if ids else ""
-    st.caption(" · ".join(x for x in (cite, caption) if x))
+    if caption:
+        st.caption(caption)
 
 
 @st.cache_data(show_spinner=False)
 def findings_numbers() -> dict[str, dict]:
     """The Part 5 findings registry: key -> {metric_ids, sql, value, text}. Every value is a metric-table query."""
     return {n["key"]: n for n in (read_json("findings_numbers.json") or [])}
+
+
+def portfolio() -> pd.DataFrame:
+    return query(
+        "SELECT metric_id, metric, segment, value, numerator, denominator, as_of FROM portfolio_metrics"
+    )
+
+
+def pm(metric_id: str, metric: str, field: str = "value", segment: str = "all"):
+    """One value from ``portfolio_metrics``."""
+    df = portfolio()
+    r = df[(df.metric_id == metric_id) & (df.metric == metric) & (df.segment == segment)]
+    return None if r.empty else r[field].iloc[0]
+
+
+def as_of_date():
+    return query("SELECT MAX(as_of) AS d FROM portfolio_metrics").d.iloc[0]
 
 
 def eval_report() -> tuple[dict | None, str]:
@@ -126,16 +157,32 @@ def metrics_md() -> str:
 
 
 # ---------------------------------------------------------------------------------------- formatting
+def _na(x: Any) -> bool:
+    return x is None or (not isinstance(x, str) and pd.isna(x))
+
+
 def usd(cents: Any, digits: int = 0) -> str:
-    if cents is None or pd.isna(cents):
+    """Exact dollars from integer cents: ``$6,648``."""
+    if _na(cents):
         return "n/a"
     v = float(cents) / 100
     sign = "-" if v < 0 else ""
     return f"{sign}${abs(v):,.{digits}f}"
 
 
+def money(cents: Any) -> str:
+    """Short dollars for headlines: ``$11.8M`` from a million up, else ``$33,370``."""
+    if _na(cents):
+        return "n/a"
+    v = float(cents) / 100
+    sign = "-" if v < 0 else ""
+    if abs(v) >= 1e6:
+        return f"{sign}${abs(v) / 1e6:,.1f}M"
+    return f"{sign}${abs(v):,.0f}"
+
+
 def usd_m(cents: Any) -> str:
-    if cents is None or pd.isna(cents):
+    if _na(cents):
         return "n/a"
     return f"${float(cents) / 1e8:,.2f}M"
 
@@ -146,21 +193,41 @@ def mdx(text: str) -> str:
 
 
 def pct(x: Any, digits: int = 1) -> str:
-    if x is None or pd.isna(x):
+    if _na(x):
         return "n/a"
     return f"{float(x) * 100:.{digits}f}%"
 
 
+def pts(x_pp: Any) -> str:
+    """A percentage-point gap: ``21 pts``."""
+    if _na(x_pp):
+        return "n/a"
+    return f"{float(x_pp):.0f} pts"
+
+
 def num(x: Any, digits: int = 2) -> str:
-    if x is None or pd.isna(x):
+    if _na(x):
         return "n/a"
     return f"{float(x):,.{digits}f}"
 
 
+def date(d: Any) -> str:
+    """``Sep 30, 2026``."""
+    if _na(d):
+        return "n/a"
+    t = pd.Timestamp(d)
+    return f"{t:%b} {t.day}, {t.year}"
+
+
+def quarter(q: str) -> str:
+    """``2024Q3`` -> ``2024-Q3``."""
+    return re.sub(r"^(\d{4})Q(\d)$", r"\1-Q\2", str(q))
+
+
 # ------------------------------------------------------------------------------------ definitions
 def link(metric_id: str) -> str:
-    """Markdown link from a metric ID to its definition on the Definitions page."""
-    return f"[{metric_id}]({DEFINITIONS_PAGE}?id={metric_id}#{metric_id.lower()})"
+    """Markdown link from a metric ID to its definition on the Behind the numbers page."""
+    return f"[{metric_id}]({DEFINITIONS_PAGE}?id={metric_id})"
 
 
 def links(ids) -> str:
@@ -170,6 +237,14 @@ def links(ids) -> str:
 def cite(text: str) -> str:
     """Turn every metric ID in ``text`` (D7, R3, P4, T1, Q5, L1 ...) into a link to its definition."""
     return ID_RE.sub(lambda m: link(m.group(0)), mdx(text))
+
+
+def spec(*ids: str, note: str = "") -> str:
+    """Tooltip text naming the METRICS.md IDs behind a number (IDs stay out of headings and labels)."""
+    idx = metric_index(metrics_md())
+    parts = [f"**{i}**: {idx[i]['name']}" if i in idx else f"**{i}**" for i in ids]
+    head = (note + "\n\n") if note else ""
+    return mdx(head + "Spec (METRICS.md): " + "; ".join(parts) + ". Definitions: *Behind the numbers*.")
 
 
 def _clean(cell: str) -> str:
@@ -226,16 +301,66 @@ def metric_index(md: str) -> dict[str, dict[str, str]]:
     return out
 
 
-def sidebar() -> None:
-    meta = app_meta()
-    with st.sidebar:
-        st.caption(
-            f"Snapshot: run `{meta.get('source_run_id', '?')}` · METRICS.md {meta.get('metrics_md', '?')} · "
-            f"exported {meta.get('exported_at', '?')}"
-        )
-        st.caption("Synthetic data. Every merchant, ISO and number is fictional.")
-
-
+# ---------------------------------------------------------------------------------------- layout
 def page_setup(title: str) -> None:
     st.set_page_config(page_title=f"{title} · MCA risk", layout="wide")
-    sidebar()
+    with st.sidebar:
+        st.caption("Synthetic data: every merchant, broker and number is fictional.")
+
+
+def card(col, label: str, value: str, compare: str, meaning: str, help: str | None = None) -> None:
+    """A headline card: a plain label, one big number, what it is compared with, and what it means."""
+    with col.container(border=True):
+        st.metric(label, value, help=help)
+        st.markdown(mdx(compare))
+        st.caption(mdx(meaning))
+
+
+def footer() -> None:
+    meta = app_meta()
+    with st.expander("About this data"):
+        st.markdown(
+            mdx(
+                f"Synthetic MCA book (every merchant, broker and number is fictional), measured as of "
+                f"**{date(as_of_date())}**. The app reads a read-only snapshot of the pipeline's metric "
+                f"tables: run `{meta.get('source_run_id', '?')}`, METRICS.md {meta.get('metrics_md', '?')}, "
+                f"exported {meta.get('exported_at', '?')}. Rebuild with `make all eval app-data`."
+            )
+        )
+
+
+def style(fig: go.Figure, title: str, height: int = 360, subtitle: str | None = None) -> go.Figure:
+    """The house chart style: the title states the takeaway, hairline grid, no chart junk."""
+    text = f"<b>{title}</b>" + (
+        f"<br><span style='font-size:13px;color:{INK_2}'>{subtitle}</span>" if subtitle else ""
+    )
+    fig.update_layout(
+        title={"text": text, "x": 0, "xanchor": "left", "font": {"size": 17, "color": INK}},
+        height=height,
+        margin={"t": 78 if subtitle else 56, "l": 8, "r": 8, "b": 48 if subtitle else 8},
+        plot_bgcolor="white",
+        paper_bgcolor="white",
+        font={"color": INK_2, "size": 13},
+        # with a subtitle the legend sits under the plot, so the two never collide
+        legend=(
+            {"orientation": "h", "y": -0.12, "x": 0, "xanchor": "left", "yanchor": "top", "title": None}
+            if subtitle
+            else {
+                "orientation": "h",
+                "y": 1.02,
+                "x": 1,
+                "xanchor": "right",
+                "yanchor": "bottom",
+                "title": None,
+            }
+        ),
+        hoverlabel={"bgcolor": "white"},
+        bargap=0.35,
+    )
+    fig.update_xaxes(showgrid=False, linecolor=GRID, ticks="", title=None)
+    fig.update_yaxes(gridcolor=GRID, zeroline=False, linecolor=GRID, title=None)
+    return fig
+
+
+def chart(fig: go.Figure, key: str) -> None:
+    st.plotly_chart(fig, width="stretch", key=key, config={"displayModeBar": False})

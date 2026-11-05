@@ -17,8 +17,8 @@ scores, known gaps, and the conventions later parts must follow. Gate rules: `CL
 
 All seven parts are built and gated. From `raw/` (52 files, 171,770 data rows), `make clean all` rebuilds
 everything in **about 30 s** with no network (budget 2 min): ingest, standardize, resolve, ledger,
-metrics, analytics, model, report. `make lint test` is green with **433 tests** (no xfail or skip).
-`make eval` passes overall, every suite E1-E9 green. The Streamlit app (`app/`, six pages) runs on a
+metrics, analytics, model, report. `make lint test` is green with **430 tests** (no xfail or skip; 433 before the UI redesign rewrote the app tests).
+`make eval` passes overall, every suite E1-E9 green. The Streamlit app (`app/`, five pages after the UI redesign) runs on a
 committed 6.3 MB DuckDB snapshot and is ready for Streamlit Community Cloud. `DEMO.md` is the walkthrough.
 
 **Final eval table** (`evals/reports/latest.md`; gates in `evals/thresholds.json`)
@@ -770,6 +770,45 @@ runs in **about 29 s** wall (8 stages, no network; budget 120 s).
 - The deployment itself is not done (it needs the user's Community Cloud account); the Deploy steps are in README.
 - Metric links use relative URLs (`Definitions?id=D7#d7`), which work at the app root (local and Community Cloud).
 - The report's eval summary is from the last `make eval`, which runs after `make all`.
+
+### UI redesign (after Part 7, commit `app: simplify UI for at-a-glance reading`)
+User feedback: the app was "way too confusing and complex". The app was rebuilt for executives reading at a
+glance; the pipeline, METRICS.md, thresholds, `raw/` and the snapshot format are unchanged (`make app-data`
+needed no new export).
+- **Five pages, one job each** (was Home + six): *Home* (overview), *Portfolio trends*, *Merchant story*,
+  *Risk model*, *Behind the numbers* (tabs: data quality, tests, definitions, run details). The old
+  Definitions / Data quality / Evals pages are tabs of the last page; metric links now point to
+  `Behind_the_numbers?id=D7`.
+- **Home** is the whole story on one screen: a one-sentence takeaway, five cards that each compare the
+  tracker's view with the cash view (70.9% vs 92.2% collected; 27.9% vs 14.0% bad; $11.8M vs $24.8M at risk;
+  20.2% of "collections" were renewals; 40.4% vs 18.9% loss rate for distressed-refi chains) and one chart.
+  Before: four dense metric cards with spec IDs in the labels, a page-link list and snapshot metadata.
+- **Plain English first**: human labels and one-line meanings; spec IDs only in `help=` tooltips and muted
+  captions. Numbers are formatted ($11.8M, 70.9%, 21 pts, Sep 30, 2026); tables use friendly headers; full
+  tables, metric grids, lineage and the model card sit in expanders.
+- **Charts** are rebuilt in plotly from the snapshot tables, each titled with its takeaway; one colour
+  meaning everywhere (grey = tracker view, blue = cash view, red = losses only; set in `app/common.py`,
+  checked with the dataviz palette validator; the grey is deliberately achromatic and every chart is
+  direct-labelled). Immature vintages are greyed. Three committed pipeline figures (vintage curves,
+  coefficients, survival) remain inside "more detail" expanders.
+- **Merchant story**: selector by merchant name (default Indigo Spa Corp = M0219), a verdict line ("Lost
+  $6,648: deal 1102 looked 'paid off' but was rolled into a distressed refinance (deal 1150), which was
+  written off."), cash out / back / net cards, the lower-bound note (true loss $10,072 quoted from the
+  METRICS.md v1.3 data note), a simplified timeline and a per-deal summary.
+- **Risk model**: three cards (AUC 0.660 vs the 0.681 observable ceiling from the E8 report; calibration
+  slope 0.96 with the after-test caveat; top-10% lift 2.3x), the model card's "what not to use it for"
+  bullets, then lift, calibration and naive-vs-economic charts.
+- **Theme**: calm light theme in `.streamlit/config.toml`; no custom HTML / CSS.
+- **Tests**: `tests/test_app.py` rewritten (16 tests): AppTest on every page; Home card values equal
+  `portfolio_metrics`; no spec IDs in card labels; vintage maturity labels; Merchant story defaults to M0219
+  with deals 1102 and 1150, the verdict, the floor note and lineage rows (`raw/deal_tracker_2024.xlsx` row
+  31, `raw/ach_exports/ach_2023_11.csv` row 1090, `raw/collections_log.xlsx` row 100); `?deal=` jump; Risk
+  model AUC equals `model_performance`; Behind the numbers has E1-E9, gate changes, report-only metrics, 51
+  anchored definitions and the manifest; formatting helpers; the static ground-truth scan still covers
+  `app/`. Totals: 430 tests pass; `make clean all` 25.6 s; `make eval` overall pass, E1-E9 unchanged.
+- **Known gaps**: Streamlit names the entry page "Home" in the sidebar (renaming it needs `st.navigation`,
+  which would change the entrypoint layout); card heights vary slightly with text length. `make` is not
+  installed on this Windows machine, so the Makefile recipes were run directly (same commands).
 
 ### Open questions / deviations
 1. **Agent decision:** `make all` now runs one Python process (`mcarisk.pipeline`) instead of chaining the per-stage targets, so the time-budget test exercises exactly what `make all` runs. Outputs are unchanged (E1-E9 identical).

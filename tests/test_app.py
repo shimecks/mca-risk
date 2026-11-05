@@ -1,4 +1,4 @@
-"""Part 7: Streamlit app smoke tests (``streamlit.testing.v1.AppTest``) on every page, plus the app's data
+"""Part 7 (UI redesign): Streamlit app smoke tests (``streamlit.testing.v1.AppTest``) on every page, plus the app's data
 snapshot (``app/data/``) and the deployability rules (no pipeline import, no network, no API key)."""
 
 from __future__ import annotations
@@ -17,12 +17,10 @@ APP = paths.ROOT / "app"
 DATA = APP / "data"
 PAGES = {
     "home": APP / "Home.py",
-    "portfolio": APP / "pages" / "1_Portfolio.py",
-    "drilldown": APP / "pages" / "2_Merchant_drilldown.py",
-    "definitions": APP / "pages" / "3_Definitions.py",
-    "data_quality": APP / "pages" / "4_Data_quality.py",
-    "model": APP / "pages" / "5_Model.py",
-    "evals": APP / "pages" / "6_Evals.py",
+    "trends": APP / "pages" / "1_Portfolio_trends.py",
+    "merchant": APP / "pages" / "2_Merchant_story.py",
+    "model": APP / "pages" / "3_Risk_model.py",
+    "behind": APP / "pages" / "4_Behind_the_numbers.py",
 }
 M0219 = "MK1A8B5FBF55"
 TIMEOUT = 120
@@ -125,140 +123,167 @@ def test_static_guard_scans_app_dir():
 
 
 # ------------------------------------------------------------------------------------------- pages
-def test_home():
+def _db_value(sql: str, params: list | None = None):
+    con = duckdb.connect(str(DATA / "portfolio.duckdb"), read_only=True)
+    try:
+        return con.execute(sql, params or []).fetchone()[0]
+    finally:
+        con.close()
+
+
+def _frames(at) -> list:
+    out = []
+    for df in at.dataframe:
+        v = df.value
+        out.append(v.data if hasattr(v, "data") else v)
+    return out
+
+
+def test_home_tells_the_story_in_five_cards_and_one_chart():
     at = run("home")
     assert at.title[0].value.startswith("MCA portfolio risk")
-    assert len(at.metric) == 4
-    assert len(at.get("page_link")) == 6
-    assert "Definitions?id=P2" in all_markdown(at) + " ".join(c.value for c in at.caption)
-
-
-def test_portfolio_cards_charts_and_vintage_maturity():
-    at = run("portfolio")
     labels = [m.label for m in at.metric]
-    for want in (
-        "Reported vs cash-based collection rate",
-        "Renewal masking gap",
-        "Bad rate: naive vs economic",
-        "Open exposure: economic vs contractual",
-        "Internal-payoff share of 'collections'",
-    ):
-        assert want in labels
-    con = duckdb.connect(str(DATA / "portfolio.duckdb"), read_only=True)
-    gap = con.execute(
-        "SELECT value FROM portfolio_metrics WHERE metric_id='P2' AND segment='all'"
-    ).fetchone()[0]
-    con.close()
-    assert next(m.value for m in at.metric if m.label == "Renewal masking gap") == f"{gap:.1f} pp"
+    assert labels == [
+        "Cash collected",
+        "Deals that went bad",
+        "Money really at risk",
+        "Renewal “collections”",
+        "Distressed refi chains",
+    ]
+    adj = _db_value(
+        "SELECT value FROM portfolio_metrics WHERE metric='adjusted_collection_rate' AND segment='all'"
+    )
+    econ = _db_value("SELECT value FROM portfolio_metrics WHERE metric='bad_rate_economic' AND segment='all'")
+    exp = _db_value(
+        "SELECT value FROM portfolio_metrics WHERE metric='economic_exposure_cents' AND segment='all'"
+    )
+    vals = {m.label: m.value for m in at.metric}
+    assert vals["Cash collected"] == f"{adj * 100:.1f}%"
+    assert vals["Deals that went bad"] == f"{econ * 100:.1f}%"
+    assert vals["Money really at risk"] == f"${exp / 1e8:.1f}M"
+    # spec IDs live in tooltips, not in labels or headings
+    assert all(not re.search(r"\b[DRPT]\d+\b", lab) for lab in labels)
+    assert "P1" in at.metric[0].proto.help and "P6" in at.metric[2].proto.help
+    assert len(at.get("plotly_chart")) == 1
+    assert not at.get("page_link")  # no navigation list in the main view
     md = all_markdown(at)
-    for mid in ("P1", "P2", "P3", "P4", "P6", "P8"):
-        assert f"Definitions?id={mid}" in md, mid
-    assert (
-        len(at.get("plotly_chart")) >= 6
-    )  # masking, bad-rate-by-vintage, vintage curves, exposure, refi, segments
-    vint = at.dataframe[0].value
-    vint = vint.data if hasattr(vint, "data") else vint
-    assert {"immature", "partial", "mature"} <= set(vint["maturity"])
+    assert "92.2%" in md and "double" in md
 
 
-def test_drilldown_defaults_to_m0219_with_both_deals_note_and_lineage():
-    at = run("drilldown")
+def test_portfolio_trends_charts_and_vintage_maturity():
+    at = run("trends")
+    assert len(at.get("plotly_chart")) == 5  # vintages, exposure, refis, segments + curves in an expander
+    vint = _frames(at)[0]
+    assert {"mature", "partly mature", "too young"} <= set(vint["Status"])
+    assert "2024-Q3" in set(vint["Funding quarter"])
+    assert not any(re.fullmatch(r"[a-z_]+", col) for col in vint.columns)  # friendly headers only
+    at.radio(key="segment_dim").set_value("Industry").run()
+    assert not at.exception
+
+
+def test_merchant_story_defaults_to_m0219_with_both_deals_verdict_note_and_lineage():
+    at = run("merchant")
     assert at.selectbox(key="merchant").value == M0219
-    md = all_markdown(at)
-    assert "deal 1102" in md and "deal 1150" in md
-    for mid in ("D6", "D7", "D8", "D10", "D11", "D17", "D19", "R1", "R3", "R8"):
-        assert f"Definitions?id={mid}" in md, mid
-    warn = " ".join(w.value for w in at.warning)
-    assert "lower bounds" in warn and "upper bound" in warn and "1102" in warn
-    pops = at.get("popover")
-    labels = [p.proto.popover.label for p in pops]
-    assert any("deal 1102" in lab for lab in labels) and any("deal 1150" in lab for lab in labels)
-    assert any("payoff: internal" in lab for lab in labels)
-    assert any("write-off" in lab for lab in labels)
+    labels = [m.label for m in at.metric]
+    assert labels == ["Cash out", "Cash back", "Net result"]
+    verdict = " ".join(e.value for e in at.error)
+    assert "Lost \\$6,648" in verdict and "deal 1102" in verdict and "distressed refinance" in verdict
+    note = " ".join(i.value for i in at.info)
+    assert "floor" in note and "1102" in note and "10,072" in note
+    frames = _frames(at)
+    summary = frames[0]
+    assert list(summary["Deal"]) == ["Deal 1102", "Deal 1150"]
+    assert list(summary["Cash actually collected"]) == ["44%", "27%"]
     lineage = []
-    for p in pops:
-        for df in p.dataframe:
-            v = df.value
-            if {"src_file", "src_sheet", "src_row"} <= set(v.columns):
-                lineage += list(zip(v.src_file, v.src_sheet, v.src_row, strict=True))
+    for v in frames:
+        if {"Source file", "Sheet", "Row"} <= set(v.columns):
+            lineage += list(zip(v["Source file"], v["Sheet"], v["Row"], strict=True))
     assert ("raw/deal_tracker_2024.xlsx", "2024 Deals", 31) in lineage  # deal 1150's tracker row
-    assert (
-        "raw/ach_exports/ach_2023_11.csv",
-        "(csv)",
-        1090,
-    ) in lineage  # deal 1102 (no tracker row): ACH funding
+    assert ("raw/ach_exports/ach_2023_11.csv", "(csv)", 1090) in lineage  # deal 1102: ACH funding row
     assert ("raw/collections_log.xlsx", "Log", 100) in lineage  # 1150's write-off
-    assert len(at.get("plotly_chart")) == 1  # the chain timeline
+    assert any(e.label.startswith("Where these numbers come from") for e in at.expander)
+    assert len(at.get("plotly_chart")) == 1  # the timeline
+    assert not any("src_file" in f.columns for f in frames[:1])  # the summary uses friendly headers
 
 
-def test_drilldown_other_merchant_by_deal_query_param():
+def test_merchant_story_other_merchant_by_deal_query_param():
     con = duckdb.connect(str(DATA / "portfolio.duckdb"), read_only=True)
     deal, mk = con.execute(
-        "SELECT deal_id, merchant_key FROM deal_metrics WHERE merchant_key <> ? AND d16_default ORDER BY deal_id LIMIT 1",
+        "SELECT deal_id, merchant_key FROM deal_metrics WHERE merchant_key <> ? AND d16_default "
+        "ORDER BY deal_id LIMIT 1",
         [M0219],
     ).fetchone()
     con.close()
-    at = run("drilldown", {"deal": str(deal)})
+    at = run("merchant", {"deal": str(deal)})
     assert at.selectbox(key="merchant").value == mk
-    assert f"deal {deal}" in all_markdown(at)
-    assert not any("METRICS.md §7 data note" in w.value for w in at.warning)
+    assert f"Deal {deal}" in set(_frames(at)[0]["Deal"])
+    assert not any("10,072" in i.value for i in at.info)
 
 
-def test_definitions_anchor_per_metric_and_lookup():
-    at = run("definitions", {"id": "D17"})
-    assert "Distressed refinance" in at.success[0].value
-    subs = [s.value for s in at.subheader]
-    for mid in ["D1", "D7", "D16", "D17", "D19", "R3", "R10", "P2", "P9", "T1", "T3", "L1", "L3", "Q5", "Q7"]:
-        assert any(s.startswith(f"{mid}: ") for s in subs), mid
-    assert sum(1 for s in subs if re.match(r"^[DRPTLQ]\d+: ", s)) == 51
-    anchors = {s.proto.anchor for s in at.subheader}
-    assert {"d7", "r3", "p4", "t1", "l1", "q5"} <= anchors
-    assert any("MCA Risk Metric Definitions" in m.value for m in at.markdown)  # METRICS.md rendered
-    bad = run("definitions", {"id": "X9"})
-    assert any("not a metric ID" in w.value for w in bad.warning)
-
-
-def test_data_quality_rules_samples_exceptions_manifest():
-    at = run("data_quality")
-    rules = at.dataframe[0].value
-    assert {"Q1", "Q5", "Q6", "Q7", "L1", "L2", "L3"} <= set(rules.rule_id)
-    exp = [e.label for e in at.expander]
-    assert any(lab.startswith("L3 ") for lab in exp) and any(lab.startswith("Q5 ") for lab in exp)
-    assert any(lab.startswith("Full manifest") for lab in exp)
-    assert at.multiselect(key="exc_rules").value  # exceptions queue filter has the queued rules
-    assert any(df.value.shape[0] > 0 and "exception_id" in df.value.columns for df in at.dataframe)
-    assert any("stage" in df.value.columns for df in at.dataframe)  # run manifest stages
-    assert len(at.json) >= 1
-
-
-def test_model_page():
+def test_risk_model_page():
     at = run("model")
     labels = [m.label for m in at.metric]
-    assert "Test AUC (primary logit)" in labels and "Calibration slope (test)" in labels
-    con = duckdb.connect(str(DATA / "portfolio.duckdb"), read_only=True)
-    auc = con.execute(
+    assert labels == [
+        "How well it ranks risky deals",
+        "Can its probabilities be trusted?",
+        "Riskiest 10% of deals",
+    ]
+    auc = _db_value(
         "SELECT value FROM model_performance WHERE model='logit' AND split='test' AND metric='auc' "
         "AND eval_target='economic'"
-    ).fetchone()[0]
-    con.close()
-    assert next(m.value for m in at.metric if m.label == "Test AUC (primary logit)") == f"{auc:,.3f}"
-    assert len(at.get("plotly_chart")) == 5  # calibration, lift, naive vs economic, coefficients, survival
-    assert any(
-        "after" in i.value and "test split" in i.value for i in at.info
-    )  # calibration-after-test disclosure
-    assert any("Model card" in s.value for s in at.subheader)
+    )
+    assert at.metric[0].value == f"{auc:,.3f}"
+    md = all_markdown(at)
+    assert "0.681" in md  # the observable ceiling from the E8 report
+    assert "picked" in " ".join(c.value for c in at.caption)  # calibration chosen after the test read
+    assert "What not to use it for" in md and md.count("- Not") >= 3
+    assert len(at.get("plotly_chart")) == 5  # lift, calibration, naive vs economic + 2 in expanders
+    assert any(e.label == "Full model card" for e in at.expander)
 
 
-def test_evals_page_shows_all_suites_and_gate_changes():
-    at = run("evals")
+def test_behind_the_numbers_data_quality_tests_definitions_and_run():
+    at = run("behind", {"id": "D17"})
+    assert [t.label for t in at.tabs] == ["Data quality", "Tests", "Definitions", "Run details"]
+    rules = next(f for f in _frames(at) if "Check" in f.columns and "Spec" in f.columns)
+    assert {"Q1", "Q5", "Q6", "Q7", "L1", "L2", "L3"} <= set(rules["Spec"])
+    assert {m.label: m.value for m in at.metric}["Misposted payments fixed"] == "227"
+    assert at.multiselect(key="exc_rules").value
+    assert any(f.shape[0] > 0 and "exception_id" in f.columns for f in _frames(at))
+    # tests (evals)
     exp = [e.label for e in at.expander]
     for sid in [f"E{i}" for i in range(1, 10)]:
         assert any(lab.startswith(f"{sid} ") for lab in exp), sid
     assert any("E8 gate change" in w.value for w in at.warning)
     assert any("E7 comparison basis" in i.value for i in at.info)
-    assert at.success or at.error
-    md = " ".join(df.value.to_csv() for df in at.dataframe)
-    assert "observable_ceiling_auc" in md and "calibration_slope_uncalibrated" in md  # report-only metrics
+    assert any("test suites pass" in s.value for s in at.success)
+    ro = " ".join(f.to_csv() for f in _frames(at))
+    assert "observable_ceiling_auc" in ro and "calibration_slope_uncalibrated" in ro
+    # definitions: lookup and one anchored entry per ID
+    assert any("Distressed refinance" in s.value for s in at.success)
+    subs = [s.value for s in at.subheader]
+    assert sum(1 for s in subs if re.match(r"^[DRPTLQ]\d+: ", s)) == 51
+    assert {"d7", "r3", "p4", "t1", "l1", "q5"} <= {s.proto.anchor for s in at.subheader}
+    assert any("MCA Risk Metric Definitions" in m.value for m in at.markdown)  # METRICS.md rendered
+    # run details
+    assert any("Stage" in f.columns for f in _frames(at))
+    assert len(at.json) >= 1
+    bad = run("behind", {"id": "X9"})
+    assert any("not a metric ID" in w.value for w in bad.warning)
+
+
+def test_formatting_helpers():
+    import sys
+
+    sys.path.insert(0, str(APP))
+    import common as c
+
+    assert c.money(1_183_871_205) == "$11.8M"
+    assert c.money(664_752) == "$6,648"
+    assert c.usd(-664_752) == "-$6,648"
+    assert c.pct(0.70877) == "70.9%"
+    assert c.pts(21.276) == "21 pts"
+    assert c.date("2026-09-30") == "Sep 30, 2026"
+    assert c.quarter("2024Q3") == "2024-Q3"
 
 
 @pytest.mark.parametrize("page", sorted(PAGES))

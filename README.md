@@ -37,8 +37,22 @@ make app                # Streamlit app on app/data/ (http://localhost:8501)
 - Build status per part, conventions, user decisions and open questions: `PROGRESS.md`.
 
 ## App
-`app/Home.py` plus six pages in `app/pages/`: Portfolio, Merchant drill-down (default: the METRICS.md §7
-relationship M0219), Definitions, Data quality, Model and Evals. The app opens `app/data/portfolio.duckdb`
+Five pages, each with one job, written for executives first (plain-English labels; metric IDs only in the `?`
+tooltips; grey = what the tracker reports, blue = what the cash says, red = losses):
+- **Home (Overview)** (`app/Home.py`): the whole story on one screen: a one-line takeaway, five cards
+  comparing the tracker's view with the cash view (collection rate, bad-deal rate, money at risk, renewal
+  "collections", distressed-refi chains) and one chart (reported vs cash collection rate by quarter).
+- **Portfolio trends**: which funding quarters went bad (young quarters greyed), money at risk, refinance
+  quality and a segment breakdown.
+- **Merchant story**: one merchant dollar by dollar (default: the METRICS.md §7 example M0219, Indigo Spa
+  Corp): cash out / back / net, a one-line verdict, a timeline and a per-deal summary; full metrics and
+  source-row lineage in expanders. `?deal=1150` or `?merchant=<key>` jump to a merchant.
+- **Risk model**: how well it ranks, whether its probabilities can be trusted, top-10% lift, what not to use
+  it for, then charts; the full model card in an expander.
+- **Behind the numbers**: tabs for data quality, tests (the eval report), definitions (`?id=D17` opens one)
+  and run details.
+
+The app opens `app/data/portfolio.duckdb`
 read-only (a 27-table export of `build/portfolio.duckdb`, about 6 MB) and the figure JSON next to it. It
 reads `METRICS.md` and `evals/thresholds.json` from the repo, displays only metric-table values, never
 calls the network and needs no API key. Set `MCARISK_APP_DATA` to point it at another snapshot.

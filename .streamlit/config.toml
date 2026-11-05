@@ -10,5 +10,10 @@ gatherUsageStats = false
 toolbarMode = "viewer"
 
 [theme]
+# Calm, high-contrast light theme. Blue is the "cash view" accent used in every chart.
 base = "light"
 primaryColor = "#2a78d6"
+backgroundColor = "#ffffff"
+secondaryBackgroundColor = "#f5f5f2"
+textColor = "#1f1f1d"
+font = "sans-serif"

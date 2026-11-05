@@ -1,12 +1,12 @@
 {
-  "exported_at": "2026-11-05T00:31:18Z",
-  "source_run_id": "20261105T003036Z-7a03979",
+  "exported_at": "2026-11-05T01:34:30Z",
+  "source_run_id": "20261105T013340Z-14bc449",
   "source_git": {
-    "sha": "7a039799942375098ea496e1e4207c32eecc4b19",
+    "sha": "14bc449ea55721699ec5fb40cbb36018b06ca0e0",
     "dirty": true
   },
   "metrics_md": "v1.3",
-  "db_bytes": 6287360,
+  "db_bytes": 6320128,
   "tables": {
     "portfolio_metrics": 466,
     "target_metrics": 102,

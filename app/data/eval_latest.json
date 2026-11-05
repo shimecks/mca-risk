@@ -1,6 +1,6 @@
 {
-  "timestamp": "20261105T003117Z",
-  "git_sha": "7a039799942375098ea496e1e4207c32eecc4b19",
+  "timestamp": "20261105T013429Z",
+  "git_sha": "14bc449ea55721699ec5fb40cbb36018b06ca0e0",
   "selected": [
     "E1",
     "E2",
@@ -214,7 +214,7 @@
           "raw_tracker_2023:preamble_above_header": 1
         }
       },
-      "seconds": 1.478
+      "seconds": 1.287
     },
     {
       "suite": "E2",
@@ -310,7 +310,7 @@
       "details": {
         "mismatches": []
       },
-      "seconds": 0.104
+      "seconds": 0.096
     },
     {
       "suite": "E3",
@@ -384,7 +384,7 @@
         "dedupe on the raw date text instead would keep 153,066 rows (+125 vs truth): the July 2024 format-switch trap"
       ],
       "details": {},
-      "seconds": 0.624
+      "seconds": 0.609
     },
     {
       "suite": "E4",
@@ -425,7 +425,7 @@
         "mixed_clusters": [],
         "split_merchants": []
       },
-      "seconds": 0.432
+      "seconds": 0.357
     },
     {
       "suite": "E5",
@@ -531,7 +531,7 @@
         "wrong_links": [],
         "l1_errors": []
       },
-      "seconds": 2.295
+      "seconds": 2.572
     },
     {
       "suite": "E6",
@@ -780,7 +780,7 @@
           }
         }
       },
-      "seconds": 2.267
+      "seconds": 2.656
     },
     {
       "suite": "E7",
@@ -1237,7 +1237,7 @@
         "truth as-of adjustment: 41 post-as-of returns ($-34,873.81) removed from truth values"
       ],
       "details": {},
-      "seconds": 3.313
+      "seconds": 4.334
     },
     {
       "suite": "E8",
@@ -1740,7 +1740,7 @@
           }
         }
       },
-      "seconds": 3.076
+      "seconds": 4.112
     },
     {
       "suite": "E9",
@@ -2235,7 +2235,7 @@
           }
         ]
       },
-      "seconds": 0.353
+      "seconds": 0.427
     }
   ]
 }
