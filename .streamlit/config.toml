@@ -1,0 +1,14 @@
+# Streamlit config (repo root, read by `make app` and by Streamlit Community Cloud).
+[server]
+headless = true
+runOnSave = false
+
+[browser]
+gatherUsageStats = false
+
+[client]
+toolbarMode = "viewer"
+
+[theme]
+base = "light"
+primaryColor = "#2a78d6"

@@ -1,0 +1,1916 @@
+{
+  "schema_version": 1,
+  "run_id": "20261105T003036Z-7a03979",
+  "created_at": "2026-11-05T00:30:36.881390Z",
+  "updated_at": "2026-11-05T00:31:03.312980Z",
+  "git": {
+    "sha": "7a039799942375098ea496e1e4207c32eecc4b19",
+    "dirty": true
+  },
+  "metrics_md": {
+    "version": "v1.3",
+    "sha256": "edb43d4196d6020780ff44b6face0739c65b18c788ca865a56fc0ca6c7a8eb6c"
+  },
+  "inputs": {
+    "raw/ach_exports/ach_2023_01.csv": {
+      "sha256": "6220b5bbb1794779f895be6fac9a0f6744d50cebf9e3781411b1cf6a9b3553db",
+      "bytes": 744
+    },
+    "raw/ach_exports/ach_2023_02.csv": {
+      "sha256": "00725b38939ded46fcb58af6766f766dee78f64a2e9cda547632506d0931cd90",
+      "bytes": 3609
+    },
+    "raw/ach_exports/ach_2023_03.csv": {
+      "sha256": "d3406521c6faef942f817ecac96de45c6734c262128da4f8398429202ba23d50",
+      "bytes": 10821
+    },
+    "raw/ach_exports/ach_2023_04.csv": {
+      "sha256": "d114bc0d1bb1e3df9f7e867a2cb6acd2e5170d0b3e5eb22ca4e309d03f890380",
+      "bytes": 14730
+    },
+    "raw/ach_exports/ach_2023_05.csv": {
+      "sha256": "a32ea442c6d75428687fdde404b35f801c602651d05e7f7a7492671d872559a1",
+      "bytes": 22424
+    },
+    "raw/ach_exports/ach_2023_06.csv": {
+      "sha256": "289d7d8a1c9e347e45095049caa7d887c389a2071e5f8fef2a9c7974b231da02",
+      "bytes": 29935
+    },
+    "raw/ach_exports/ach_2023_07.csv": {
+      "sha256": "2d927afd46acbb0cc791364cd48657537ee7c58fba8075b7db8f136c9651d64f",
+      "bytes": 36034
+    },
+    "raw/ach_exports/ach_2023_08.csv": {
+      "sha256": "e8c91109b163634f2c22c9f5f0b475c3261096bb78bb4c36bbd5e2f2e57cb534",
+      "bytes": 42814
+    },
+    "raw/ach_exports/ach_2023_09.csv": {
+      "sha256": "c24fe0dc1eba447f9a32afc433945addbab1b03cf246b10223936bf3eb0c01eb",
+      "bytes": 52560
+    },
+    "raw/ach_exports/ach_2023_10.csv": {
+      "sha256": "d99da8adf220a7f2f0f7902d29dc4246e15529790a018861527ac2cbbfd0ba38",
+      "bytes": 68185
+    },
+    "raw/ach_exports/ach_2023_11.csv": {
+      "sha256": "89ea1b651a6ad5a495dca6696c27d7af8ebe695db3a51c8cef3995bd736df236",
+      "bytes": 82321
+    },
+    "raw/ach_exports/ach_2023_12.csv": {
+      "sha256": "366a7ca1d1aa61f86bee46754203b573d03959200c508388e612875c238a511b",
+      "bytes": 97601
+    },
+    "raw/ach_exports/ach_2024_01.csv": {
+      "sha256": "0ba31f0bc95149047575495f4a9f3288bc6106d9ba96e84133f3bf0e46a01278",
+      "bytes": 100381
+    },
+    "raw/ach_exports/ach_2024_02.csv": {
+      "sha256": "f1f78c361100cad28e76c08e298165765842d8446a853f22d6d7bf404eac90eb",
+      "bytes": 117429
+    },
+    "raw/ach_exports/ach_2024_03.csv": {
+      "sha256": "da7eae745b63f2ab2385216736623267e4565ceda8cffc64bf947bac3b965bbe",
+      "bytes": 128521
+    },
+    "raw/ach_exports/ach_2024_04.csv": {
+      "sha256": "a2e72301c60c8e70575a6e99dac80010590e14a055c52286fe2638c90da428f4",
+      "bytes": 149744
+    },
+    "raw/ach_exports/ach_2024_05.csv": {
+      "sha256": "698d84f6847440df174581385a55100573edf6841a8e3779e715799e0e4ccb7a",
+      "bytes": 171657
+    },
+    "raw/ach_exports/ach_2024_06.csv": {
+      "sha256": "bbf0d5129989415ddf53dc9f497d6fbb9610aec252855e031eefa887d75044b6",
+      "bytes": 183346
+    },
+    "raw/ach_exports/ach_2024_07.csv": {
+      "sha256": "c9f25cc14e0aa3d88e2272e5431459a8ba7a04ad553e3af9c9ab8ef1f35ed577",
+      "bytes": 215355
+    },
+    "raw/ach_exports/ach_2024_08.csv": {
+      "sha256": "a510e1e585c8d7c9612d61fa083ecba001693a11810a5528c5074d224dfe2da0",
+      "bytes": 235694
+    },
+    "raw/ach_exports/ach_2024_09.csv": {
+      "sha256": "42d621b32603e80400a6fd3d6a060cfb562fea834507601daf28033f6e517fe5",
+      "bytes": 232192
+    },
+    "raw/ach_exports/ach_2024_10.csv": {
+      "sha256": "592eb2917bfde67c00be3b8072cb5be59ba6cf523e231bac405edaa4a3b2dd3b",
+      "bytes": 271267
+    },
+    "raw/ach_exports/ach_2024_11.csv": {
+      "sha256": "b99e717f5d7a76e0f0b184eced2660014613828fbf32c54ce85813ac9be67134",
+      "bytes": 270122
+    },
+    "raw/ach_exports/ach_2024_12.csv": {
+      "sha256": "3ff1b470dfa8a0f73fdee8b6d86ae0e0bbd256a166d929adfb04a34968ed2671",
+      "bytes": 283060
+    },
+    "raw/ach_exports/ach_2025_01.csv": {
+      "sha256": "94fc1937673d9636cd0f813357f79c6dd63f6d2cba8b2a003a03f74156521947",
+      "bytes": 302280
+    },
+    "raw/ach_exports/ach_2025_02.csv": {
+      "sha256": "bbb837c545ad4f1aaf4a8d790b1f2e0e5060c7cd4936b80821f5df7c67011699",
+      "bytes": 317723
+    },
+    "raw/ach_exports/ach_2025_03.csv": {
+      "sha256": "ae6036e199e5fa962085a1e6e2505e2ede96b43bce97e4d85f38208ff5caa95b",
+      "bytes": 375753
+    },
+    "raw/ach_exports/ach_2025_04.csv": {
+      "sha256": "476bd62de914e09401bcbd60c22143cd80e19c84289a441eaf8583b52eae1e73",
+      "bytes": 372923
+    },
+    "raw/ach_exports/ach_2025_05.csv": {
+      "sha256": "4dbe19d1284c7773795f20a61cb138a1ca952a55f2e631d9f374c1540014ab14",
+      "bytes": 397406
+    },
+    "raw/ach_exports/ach_2025_06.csv": {
+      "sha256": "167d73a2dac4635a724e399c6a8705d54adaf85e0799145d363db87e3cfef96b",
+      "bytes": 370242
+    },
+    "raw/ach_exports/ach_2025_07.csv": {
+      "sha256": "a5847fa58845729e7eb1de685abfc8de95c088b939355eb80ec8abcea1ea3833",
+      "bytes": 398582
+    },
+    "raw/ach_exports/ach_2025_08.csv": {
+      "sha256": "af47bc231bdd46bfda32b1240282380d974d148e99a881ed6b8c44a685f4df7a",
+      "bytes": 434050
+    },
+    "raw/ach_exports/ach_2025_09.csv": {
+      "sha256": "9f7b6fc2be60f4be17f693a7e3c9819178b5f78773af5d968e6e9e72d6710846",
+      "bytes": 414111
+    },
+    "raw/ach_exports/ach_2025_10.csv": {
+      "sha256": "adecf10190b8dd6ee326fd2c473ac71322dcafeff07841b91eadcd9e4e6ebec2",
+      "bytes": 468976
+    },
+    "raw/ach_exports/ach_2025_11.csv": {
+      "sha256": "036f2ee3d0348c6acd82713242e41e4c81607d785039d1239c6b290dc3066e87",
+      "bytes": 423290
+    },
+    "raw/ach_exports/ach_2025_12.csv": {
+      "sha256": "4f47901f8066e731f22da2d97df65099e99e11d69431fd437486303d6001619d",
+      "bytes": 474799
+    },
+    "raw/ach_exports/ach_2026_01.csv": {
+      "sha256": "6f67b869a80bb29ea2af9ee89966b3dba4382da27317f00132d65dd7094e65e2",
+      "bytes": 483342
+    },
+    "raw/ach_exports/ach_2026_02.csv": {
+      "sha256": "16a3cfaacd4e6b6c6760e17df8035accd8b39ef3a22dc21b0d1af8eabf03d41f",
+      "bytes": 457184
+    },
+    "raw/ach_exports/ach_2026_03.csv": {
+      "sha256": "21305129347e942180c463fb5f7600cc2e3bf226265938cd4596e080eac98c52",
+      "bytes": 537974
+    },
+    "raw/ach_exports/ach_2026_04.csv": {
+      "sha256": "72d6fdeca1ce136ef04b5eff8c12675ab6b461475c95d88c7390c595b57b6131",
+      "bytes": 568914
+    },
+    "raw/ach_exports/ach_2026_05.csv": {
+      "sha256": "66533a1a26b90e75565be016f2147a21001599c78d1eb2e949762f9c162db95f",
+      "bytes": 572577
+    },
+    "raw/ach_exports/ach_2026_06.csv": {
+      "sha256": "fecea6ae3c46f47115e7c512201a0d56d0c8f3cb61aef6ff9fecc83ac8d324e2",
+      "bytes": 540475
+    },
+    "raw/ach_exports/ach_2026_07.csv": {
+      "sha256": "63e09811d26443ccd0820f650822b788d25d17b9e224c2c636507e1e48251cc2",
+      "bytes": 621070
+    },
+    "raw/ach_exports/ach_2026_08.csv": {
+      "sha256": "0bb2557a5059a480cf9a4e1132efc2853c7d7d91760b9dac67de655838f2ace3",
+      "bytes": 637750
+    },
+    "raw/ach_exports/ach_2026_09.csv": {
+      "sha256": "7abe4983d71735e5792e0cf156c3bb181bcbb346f37574fb1af7628843f2863f",
+      "bytes": 570081
+    },
+    "raw/ach_exports/ach_2026_10.csv": {
+      "sha256": "f2cf13171bfeda9a13fb12c242b95fd80d1d545ce6f4311d366e2c1ad4bdc02e",
+      "bytes": 79484
+    },
+    "raw/collections_log.xlsx": {
+      "sha256": "b96889b1b031fc17425c04af3984e0bfb049ce2fc3a41e247c64b46333732278",
+      "bytes": 36345
+    },
+    "raw/deal_tracker_2023.xlsx": {
+      "sha256": "fe8d808ec4d43bbbfb3a831d5647cba76af9553cc8d3b0f4a21b9d43748cb34a",
+      "bytes": 16989
+    },
+    "raw/deal_tracker_2024.xlsx": {
+      "sha256": "41d82a6d843ae947aee4bb58e21fb4a2c79fd7df64164283c561161bef334b43",
+      "bytes": 35987
+    },
+    "raw/deal_tracker_2025.xlsx": {
+      "sha256": "b3ac3e7669b0857232de20fd6d8c15459edbd0751236e2723159161e7cd9a096",
+      "bytes": 89741
+    },
+    "raw/deal_tracker_2026_YTD.xlsx": {
+      "sha256": "e9a74710bf7f880bf5d0a8c041c708f9060406ec6c4b303eca9609e131ed7403",
+      "bytes": 91303
+    },
+    "raw/underwriting_scorecards_2023_2024.xlsx": {
+      "sha256": "b55d1f0805f9efb2daf84c76176a36e0c7bf3b0039db5ff40958e885d33ae8b8",
+      "bytes": 38188
+    }
+  },
+  "stages": {
+    "ingest": {
+      "status": "ok",
+      "started_at": "2026-11-05T00:30:36.939078Z",
+      "finished_at": "2026-11-05T00:30:40.417843Z",
+      "seconds": 3.478,
+      "tables": {
+        "raw_tracker_2023": {
+          "accepted": 114,
+          "rejected": 2,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {
+              "blank_row": 1,
+              "preamble_above_header": 1
+            },
+            "repaired": {}
+          }
+        },
+        "raw_tracker_2024": {
+          "accepted": 405,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "raw_tracker_2025": {
+          "accepted": 1448,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "raw_scorecards": {
+          "accepted": 496,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "raw_collections": {
+          "accepted": 726,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "raw_ach": {
+          "accepted": 168581,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        }
+      },
+      "notes": [],
+      "extra": {
+        "files": [
+          "raw/ach_exports/ach_2023_01.csv",
+          "raw/ach_exports/ach_2023_02.csv",
+          "raw/ach_exports/ach_2023_03.csv",
+          "raw/ach_exports/ach_2023_04.csv",
+          "raw/ach_exports/ach_2023_05.csv",
+          "raw/ach_exports/ach_2023_06.csv",
+          "raw/ach_exports/ach_2023_07.csv",
+          "raw/ach_exports/ach_2023_08.csv",
+          "raw/ach_exports/ach_2023_09.csv",
+          "raw/ach_exports/ach_2023_10.csv",
+          "raw/ach_exports/ach_2023_11.csv",
+          "raw/ach_exports/ach_2023_12.csv",
+          "raw/ach_exports/ach_2024_01.csv",
+          "raw/ach_exports/ach_2024_02.csv",
+          "raw/ach_exports/ach_2024_03.csv",
+          "raw/ach_exports/ach_2024_04.csv",
+          "raw/ach_exports/ach_2024_05.csv",
+          "raw/ach_exports/ach_2024_06.csv",
+          "raw/ach_exports/ach_2024_07.csv",
+          "raw/ach_exports/ach_2024_08.csv",
+          "raw/ach_exports/ach_2024_09.csv",
+          "raw/ach_exports/ach_2024_10.csv",
+          "raw/ach_exports/ach_2024_11.csv",
+          "raw/ach_exports/ach_2024_12.csv",
+          "raw/ach_exports/ach_2025_01.csv",
+          "raw/ach_exports/ach_2025_02.csv",
+          "raw/ach_exports/ach_2025_03.csv",
+          "raw/ach_exports/ach_2025_04.csv",
+          "raw/ach_exports/ach_2025_05.csv",
+          "raw/ach_exports/ach_2025_06.csv",
+          "raw/ach_exports/ach_2025_07.csv",
+          "raw/ach_exports/ach_2025_08.csv",
+          "raw/ach_exports/ach_2025_09.csv",
+          "raw/ach_exports/ach_2025_10.csv",
+          "raw/ach_exports/ach_2025_11.csv",
+          "raw/ach_exports/ach_2025_12.csv",
+          "raw/ach_exports/ach_2026_01.csv",
+          "raw/ach_exports/ach_2026_02.csv",
+          "raw/ach_exports/ach_2026_03.csv",
+          "raw/ach_exports/ach_2026_04.csv",
+          "raw/ach_exports/ach_2026_05.csv",
+          "raw/ach_exports/ach_2026_06.csv",
+          "raw/ach_exports/ach_2026_07.csv",
+          "raw/ach_exports/ach_2026_08.csv",
+          "raw/ach_exports/ach_2026_09.csv",
+          "raw/ach_exports/ach_2026_10.csv",
+          "raw/collections_log.xlsx",
+          "raw/deal_tracker_2023.xlsx",
+          "raw/deal_tracker_2024.xlsx",
+          "raw/deal_tracker_2025.xlsx",
+          "raw/deal_tracker_2026_YTD.xlsx",
+          "raw/underwriting_scorecards_2023_2024.xlsx"
+        ],
+        "sheets": [
+          {
+            "src_file": "raw/deal_tracker_2023.xlsx",
+            "src_sheet": "Funded",
+            "table_name": "raw_tracker_2023",
+            "status": "ingested",
+            "header_row": 3,
+            "n_physical_rows": 117,
+            "n_loaded": 114,
+            "n_rejected": 2
+          },
+          {
+            "src_file": "raw/deal_tracker_2024.xlsx",
+            "src_sheet": "2024 Deals",
+            "table_name": "raw_tracker_2024",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 406,
+            "n_loaded": 405,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/deal_tracker_2025.xlsx",
+            "src_sheet": "Funded",
+            "table_name": "raw_tracker_2025",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 720,
+            "n_loaded": 719,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/deal_tracker_2026_YTD.xlsx",
+            "src_sheet": "Funded",
+            "table_name": "raw_tracker_2025",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 730,
+            "n_loaded": 729,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/underwriting_scorecards_2023_2024.xlsx",
+            "src_sheet": "Scorecards",
+            "table_name": "raw_scorecards",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 497,
+            "n_loaded": 496,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/collections_log.xlsx",
+            "src_sheet": "Log",
+            "table_name": "raw_collections",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 727,
+            "n_loaded": 726,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_01.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 10,
+            "n_loaded": 9,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_02.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 48,
+            "n_loaded": 47,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_03.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 145,
+            "n_loaded": 144,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_04.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 196,
+            "n_loaded": 195,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_05.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 300,
+            "n_loaded": 299,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_06.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 399,
+            "n_loaded": 398,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_07.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 482,
+            "n_loaded": 481,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_08.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 570,
+            "n_loaded": 569,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_09.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 697,
+            "n_loaded": 696,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_10.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 906,
+            "n_loaded": 905,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_11.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 1091,
+            "n_loaded": 1090,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2023_12.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 1297,
+            "n_loaded": 1296,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_01.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 1338,
+            "n_loaded": 1337,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_02.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 1568,
+            "n_loaded": 1567,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_03.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 1717,
+            "n_loaded": 1716,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_04.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 1996,
+            "n_loaded": 1995,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_05.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 2285,
+            "n_loaded": 2284,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_06.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 2454,
+            "n_loaded": 2453,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_07.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 2886,
+            "n_loaded": 2885,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_08.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 3157,
+            "n_loaded": 3156,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_09.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 3119,
+            "n_loaded": 3118,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_10.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 3641,
+            "n_loaded": 3640,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_11.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 3630,
+            "n_loaded": 3629,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2024_12.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 3803,
+            "n_loaded": 3802,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_01.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 4058,
+            "n_loaded": 4057,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_02.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 4250,
+            "n_loaded": 4249,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_03.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 5022,
+            "n_loaded": 5021,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_04.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 4988,
+            "n_loaded": 4987,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_05.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 5305,
+            "n_loaded": 5304,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_06.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 4936,
+            "n_loaded": 4935,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_07.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 5324,
+            "n_loaded": 5323,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_08.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 5793,
+            "n_loaded": 5792,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_09.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 5533,
+            "n_loaded": 5532,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_10.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 6262,
+            "n_loaded": 6261,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_11.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 5645,
+            "n_loaded": 5644,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2025_12.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 6316,
+            "n_loaded": 6315,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_01.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 6434,
+            "n_loaded": 6433,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_02.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 6093,
+            "n_loaded": 6092,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_03.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 7159,
+            "n_loaded": 7158,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_04.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 7564,
+            "n_loaded": 7563,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_05.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 7617,
+            "n_loaded": 7616,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_06.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 7200,
+            "n_loaded": 7199,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_07.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 8267,
+            "n_loaded": 8266,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_08.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 8484,
+            "n_loaded": 8483,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_09.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 7589,
+            "n_loaded": 7588,
+            "n_rejected": 0
+          },
+          {
+            "src_file": "raw/ach_exports/ach_2026_10.csv",
+            "src_sheet": "(csv)",
+            "table_name": "raw_ach",
+            "status": "ingested",
+            "header_row": 1,
+            "n_physical_rows": 1053,
+            "n_loaded": 1052,
+            "n_rejected": 0
+          }
+        ],
+        "db_path": "C:/Users/shime/MCA/mca-risk/build/portfolio.duckdb"
+      }
+    },
+    "standardize": {
+      "status": "ok",
+      "started_at": "2026-11-05T00:30:40.420359Z",
+      "finished_at": "2026-11-05T00:30:46.627601Z",
+      "seconds": 6.207,
+      "tables": {
+        "deals_std": {
+          "accepted": 1967,
+          "rejected": 0,
+          "repaired": 412,
+          "reasons": {
+            "rejected": {},
+            "repaired": {
+              "payment_whole_dollar_from_rtr_term": 7,
+              "term_bdays_derived_rtr_over_payment": 405
+            }
+          }
+        },
+        "payments_std": {
+          "accepted": 152941,
+          "rejected": 15640,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {
+              "l2_duplicate": 15640
+            },
+            "repaired": {}
+          }
+        },
+        "scorecards_std": {
+          "accepted": 496,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "collections_std": {
+          "accepted": 726,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        }
+      },
+      "notes": [
+        "payments_std rejected = unparseable rows + L2 overlap duplicates (details in payments_dupes)"
+      ],
+      "extra": {
+        "accounting": [
+          {
+            "source_table": "raw_tracker_2023",
+            "target_table": "deals_std",
+            "n_l2_duplicates": 0,
+            "n_raw": 114,
+            "n_loaded": 114,
+            "n_rejected": 0,
+            "n_repaired": 7
+          },
+          {
+            "source_table": "raw_tracker_2024",
+            "target_table": "deals_std",
+            "n_l2_duplicates": 0,
+            "n_raw": 405,
+            "n_loaded": 405,
+            "n_rejected": 0,
+            "n_repaired": 405
+          },
+          {
+            "source_table": "raw_tracker_2025",
+            "target_table": "deals_std",
+            "n_l2_duplicates": 0,
+            "n_raw": 1448,
+            "n_loaded": 1448,
+            "n_rejected": 0,
+            "n_repaired": 0
+          },
+          {
+            "source_table": "raw_ach",
+            "target_table": "payments_std",
+            "n_raw": 168581,
+            "n_loaded": 152941,
+            "n_rejected": 0,
+            "n_l2_duplicates": 15640,
+            "n_repaired": 0
+          },
+          {
+            "source_table": "raw_scorecards",
+            "target_table": "scorecards_std",
+            "n_raw": 496,
+            "n_loaded": 496,
+            "n_rejected": 0,
+            "n_l2_duplicates": 0,
+            "n_repaired": 0
+          },
+          {
+            "source_table": "raw_collections",
+            "target_table": "collections_std",
+            "n_raw": 726,
+            "n_loaded": 726,
+            "n_rejected": 0,
+            "n_l2_duplicates": 0,
+            "n_repaired": 0
+          }
+        ],
+        "field_events": [
+          {
+            "table": "deals_std",
+            "field": "payment_cents",
+            "action": "repaired",
+            "reason": "payment_whole_dollar_from_rtr_term",
+            "rows": 7
+          },
+          {
+            "table": "deals_std",
+            "field": "term_bdays",
+            "action": "derived",
+            "reason": "term_bdays_derived_rtr_over_payment",
+            "rows": 405
+          }
+        ],
+        "data_quality": {
+          "Q1": {
+            "status": "pending (Part 3)",
+            "hits": null
+          },
+          "Q2": {
+            "status": "partial",
+            "hits": 634
+          },
+          "Q3": {
+            "status": "pending (Part 3)",
+            "hits": null
+          },
+          "Q4": {
+            "status": "partial",
+            "hits": 174
+          },
+          "Q5": {
+            "status": "partial",
+            "hits": 44
+          },
+          "Q6": {
+            "status": "pending (Part 4)",
+            "hits": null
+          },
+          "Q7": {
+            "status": "evaluated",
+            "hits": 412
+          },
+          "L1": {
+            "status": "pending (Part 3)",
+            "hits": null
+          },
+          "L2": {
+            "status": "evaluated",
+            "hits": 15640
+          },
+          "L3": {
+            "status": "pending (Part 3)",
+            "hits": null
+          },
+          "S1": {
+            "status": "evaluated",
+            "hits": 0
+          },
+          "S2": {
+            "status": "evaluated",
+            "hits": 0
+          },
+          "S3": {
+            "status": "evaluated",
+            "hits": 0
+          },
+          "S4": {
+            "status": "evaluated",
+            "hits": 17
+          },
+          "S5": {
+            "status": "evaluated",
+            "hits": 0
+          },
+          "S6": {
+            "status": "evaluated",
+            "hits": 0
+          }
+        }
+      }
+    },
+    "resolve": {
+      "status": "ok",
+      "started_at": "2026-11-05T00:30:46.632111Z",
+      "finished_at": "2026-11-05T00:30:50.740596Z",
+      "seconds": 4.108,
+      "tables": {
+        "deals_resolved": {
+          "accepted": 2011,
+          "rejected": 0,
+          "repaired": 44,
+          "reasons": {
+            "rejected": {},
+            "repaired": {
+              "tracker_missing": 44
+            }
+          }
+        },
+        "merchants": {
+          "accepted": 1200,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "merchant_aliases": {
+          "accepted": 9098,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "merchant_merges": {
+          "accepted": 811,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "deal_links": {
+          "accepted": 811,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "payoff_classes": {
+          "accepted": 836,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "payments_resolved": {
+          "accepted": 152941,
+          "rejected": 0,
+          "repaired": 227,
+          "reasons": {
+            "rejected": {},
+            "repaired": {
+              "l3_posted_to_prior_after_internal_payoff": 227
+            }
+          }
+        },
+        "misposting_repairs": {
+          "accepted": 227,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "scorecard_links": {
+          "accepted": 496,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "collections_links": {
+          "accepted": 726,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "notes_extractions": {
+          "accepted": 1452,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "collections_terms": {
+          "accepted": 726,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "exceptions": {
+          "accepted": 25,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        }
+      },
+      "notes": [
+        "payments_resolved: 152941 rows = payments_std; 227 reassigned by L3 (deal_id_posted kept)",
+        "deals_resolved: 44 rows reconstructed from ACH (flag tracker_missing)"
+      ],
+      "extra": {
+        "data_quality": {
+          "Q1": {
+            "status": "evaluated",
+            "hits": 1200,
+            "denominator": 2011
+          },
+          "Q2": {
+            "status": "evaluated",
+            "hits": 811,
+            "denominator": 2011
+          },
+          "Q3": {
+            "status": "evaluated",
+            "hits": 496,
+            "denominator": 496
+          },
+          "Q4": {
+            "status": "evaluated",
+            "hits": 725,
+            "denominator": 726
+          },
+          "Q5": {
+            "status": "evaluated",
+            "hits": 44,
+            "denominator": 2011
+          },
+          "L1": {
+            "status": "evaluated",
+            "hits": 811,
+            "denominator": 836
+          },
+          "L3": {
+            "status": "evaluated",
+            "hits": 227,
+            "denominator": null
+          }
+        },
+        "exceptions_by_reason": {
+          "L1:l1_successor_tracker_missing_inferred_internal": 22,
+          "Q4:collection_unmatched": 1,
+          "Q4:no_open_deal_on_log_date": 1,
+          "Q4:several_open_deals": 1
+        },
+        "payoff_classes": {
+          "internal_payoff": 811,
+          "early_payoff_cash": 25
+        },
+        "deal_links_by_method": {
+          "regex": 44,
+          "inferred": 133,
+          "explicit": 634
+        },
+        "l1_tracker_missing_policy": "infer",
+        "notes_extraction": {
+          "chosen": "llm",
+          "detail": "auto: LLM cache covers all 258 distinct notes",
+          "model": "openai/gpt-6-luna",
+          "fallback_notes": 0,
+          "llm_calls": 0,
+          "cache_hits": 258,
+          "errors": []
+        }
+      }
+    },
+    "ledger": {
+      "status": "ok",
+      "started_at": "2026-11-05T00:30:50.744362Z",
+      "finished_at": "2026-11-05T00:30:53.651890Z",
+      "seconds": 2.908,
+      "tables": {
+        "ledger": {
+          "accepted": 155067,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "deal_status_events": {
+          "accepted": 391,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "ledger_rejects": {
+          "accepted": 0,
+          "rejected": 1,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {
+              "collections_row_unlinked": 1
+            },
+            "repaired": {}
+          }
+        },
+        "cal_sched": {
+          "accepted": 13146,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        }
+      },
+      "notes": [
+        "44 tracker-missing deals have no commission_out event (commission % unknown); deal_metrics.commission_known = false"
+      ],
+      "extra": {
+        "ledger_by_kind": {
+          "commission_out": 1792,
+          "debit": 142178,
+          "early_payoff_cash": 25,
+          "funding_out": 2011,
+          "internal_payoff": 811,
+          "modification": 177,
+          "return": 7636,
+          "settlement": 280,
+          "write_off": 157
+        },
+        "accounting": [
+          {
+            "source_table": "payments_resolved",
+            "n_source": 152941,
+            "n_ledger": 152941,
+            "n_status_events": 0,
+            "n_rejected": 0
+          },
+          {
+            "source_table": "deals_resolved (commission_out)",
+            "n_source": 2011,
+            "n_ledger": 1792,
+            "n_status_events": 0,
+            "n_rejected": 0
+          },
+          {
+            "source_table": "collections_terms",
+            "n_source": 726,
+            "n_ledger": 334,
+            "n_status_events": 391,
+            "n_rejected": 1
+          }
+        ],
+        "unmatched_returns": 0
+      }
+    },
+    "metrics": {
+      "status": "ok",
+      "started_at": "2026-11-05T00:30:53.654196Z",
+      "finished_at": "2026-11-05T00:30:56.192978Z",
+      "seconds": 2.538,
+      "tables": {
+        "deal_metrics": {
+          "accepted": 2011,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "relationship_metrics": {
+          "accepted": 1200,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "portfolio_metrics": {
+          "accepted": 466,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "deal_attributes": {
+          "accepted": 2011,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "deal_targets": {
+          "accepted": 2011,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "target_metrics": {
+          "accepted": 102,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        }
+      },
+      "notes": [],
+      "extra": {
+        "as_of": "2026-09-30",
+        "d17_basis": "attempt",
+        "outcomes": {
+          "renewed_healthy": 591,
+          "paid_in_full": 524,
+          "active": 325,
+          "refinanced_distressed": 220,
+          "written_off": 160,
+          "defaulted": 66,
+          "settled": 61,
+          "active_modified": 39,
+          "paid_in_full_early": 25
+        },
+        "headline": {
+          "P1.reported_collection_rate": 0.9215325036536083,
+          "P1.adjusted_collection_rate": 0.7087696412516719,
+          "P2.renewal_masking_gap_pp": 21.27628624019364,
+          "P3.internal_payoff_share": 0.2021910745740264,
+          "P4.bad_rate_naive": 0.13978494623655913,
+          "P4.bad_rate_economic": 0.27893738140417457,
+          "P5.resolved_bad_share": 0.21428571428571427,
+          "P5.resolved_cash_multiple": 1.1449278028098184,
+          "P6.economic_exposure_cents": 1183871205.0,
+          "P6.contractual_balance_cents": 2484089022.0,
+          "P8.distressed_share_of_renewals": 0.2712700369913687,
+          "P8.bad_rate_chains_with_distressed": 0.4044943820224719
+        },
+        "q6_stale_status": {
+          "hits": 364,
+          "denominator": 1967,
+          "pairs": {
+            "active->defaulted": 2,
+            "active->paid_in_full": 93,
+            "active->paid_in_full_early": 1,
+            "active->refinanced_distressed": 9,
+            "active->renewed_healthy": 37,
+            "active->settled": 5,
+            "active->written_off": 17,
+            "defaulted->active": 2,
+            "defaulted->active_modified": 2,
+            "defaulted->written_off": 2,
+            "paid_off->refinanced_distressed": 57,
+            "paid_off->renewed_healthy": 137
+          }
+        },
+        "sql_files": [
+          "01_deal_metrics.sql",
+          "02_relationship_metrics.sql",
+          "03_portfolio_metrics.sql",
+          "04_targets.sql"
+        ],
+        "t1": {
+          "horizon_bdays": 180,
+          "mature_deals": 1297,
+          "bad_rate_economic": 0.29067077872012337,
+          "bad_rate_naive": 0.16653816499614496
+        },
+        "tracker_missing": {
+          "deals": 44,
+          "commission_unknown": 44,
+          "rtr_source": {
+            "inferred_paid_in_full": 11,
+            "inferred_internal_payoff": 20,
+            "None": 13
+          }
+        }
+      }
+    },
+    "analytics": {
+      "status": "ok",
+      "started_at": "2026-11-05T00:30:56.196479Z",
+      "finished_at": "2026-11-05T00:30:59.034943Z",
+      "seconds": 2.838,
+      "tables": {},
+      "notes": [],
+      "extra": {
+        "figures": {
+          "masking": "C:/Users/shime/MCA/mca-risk/build/figures/masking.png",
+          "bad_rate_vintage": "C:/Users/shime/MCA/mca-risk/build/figures/bad_rate_vintage.png",
+          "exposure": "C:/Users/shime/MCA/mca-risk/build/figures/exposure.png",
+          "vintage_curves": "C:/Users/shime/MCA/mca-risk/build/figures/vintage_curves.png",
+          "refi_quality": "C:/Users/shime/MCA/mca-risk/build/figures/refi_quality.png",
+          "segments": "C:/Users/shime/MCA/mca-risk/build/figures/segments.png"
+        },
+        "figure_metric_ids": {
+          "masking": [
+            "P1",
+            "P2",
+            "P3",
+            "D9",
+            "D10",
+            "D11"
+          ],
+          "bad_rate_vintage": [
+            "T1",
+            "D18",
+            "D19",
+            "P4"
+          ],
+          "exposure": [
+            "P6",
+            "R6",
+            "R7"
+          ],
+          "vintage_curves": [
+            "P7",
+            "R1",
+            "R2"
+          ],
+          "refi_quality": [
+            "P8",
+            "P9",
+            "P5",
+            "R9",
+            "D17"
+          ],
+          "segments": [
+            "T1",
+            "D19"
+          ]
+        },
+        "findings": {
+          "path": "C:/Users/shime/MCA/mca-risk/build/findings.md",
+          "numbers": 266,
+          "picks": {
+            "vintages": [
+              "2023Q1",
+              "2023Q2",
+              "2023Q3",
+              "2023Q4",
+              "2024Q1",
+              "2024Q2",
+              "2024Q3",
+              "2024Q4",
+              "2025Q1",
+              "2025Q2",
+              "2025Q3",
+              "2025Q4",
+              "2026Q1",
+              "2026Q2",
+              "2026Q3"
+            ],
+            "industry": [
+              "Construction",
+              "Medical/Dental"
+            ],
+            "iso": [
+              "Keystone Referral Group",
+              "Hudson Bridge Capital Advisors"
+            ],
+            "positions": [
+              "0",
+              "1",
+              "2",
+              "3+"
+            ],
+            "burden": [
+              "<15%",
+              "20-25%"
+            ]
+          }
+        },
+        "findings_check": {
+          "numbers": 266,
+          "quoted_in_findings": 224,
+          "unregistered_tokens": [],
+          "match_rate": 1.0
+        }
+      }
+    },
+    "model": {
+      "status": "ok",
+      "started_at": "2026-11-05T00:30:59.039199Z",
+      "finished_at": "2026-11-05T00:31:03.261113Z",
+      "seconds": 4.221,
+      "tables": {
+        "model_features": {
+          "accepted": 2011,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "model_predictions": {
+          "accepted": 11802,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "model_performance": {
+          "accepted": 264,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "model_coefficients": {
+          "accepted": 20,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "model_lift": {
+          "accepted": 120,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "model_calibration": {
+          "accepted": 120,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "model_naive_comparison": {
+          "accepted": 16,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "model_fairness": {
+          "accepted": 20,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "survival_km": {
+          "accepted": 663,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "survival_cox": {
+          "accepted": 9,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        },
+        "t3_summary": {
+          "accepted": 10,
+          "rejected": 0,
+          "repaired": 0,
+          "reasons": {
+            "rejected": {},
+            "repaired": {}
+          }
+        }
+      },
+      "notes": [],
+      "extra": {
+        "headline": {
+          "primary_model": "logit",
+          "split_counts": {
+            "train": {
+              "immature": 0,
+              "in_sample": 519,
+              "out_of_window": 0,
+              "tracker_missing": 15
+            },
+            "val": {
+              "immature": 0,
+              "in_sample": 321,
+              "out_of_window": 0,
+              "tracker_missing": 6
+            },
+            "test": {
+              "immature": 195,
+              "in_sample": 424,
+              "out_of_window": 0,
+              "tracker_missing": 18
+            },
+            "out_of_window": {
+              "immature": 0,
+              "in_sample": 0,
+              "out_of_window": 508,
+              "tracker_missing": 5
+            }
+          },
+          "n_train": 519,
+          "n_val": 321,
+          "test": {
+            "baseline_rule": {
+              "n": 424.0,
+              "bad_rate": 0.23820754716981132,
+              "auc": 0.5751310425160163,
+              "brier": 0.18432076540007192,
+              "calibration_slope": 0.9870731882932741,
+              "calibration_intercept": -0.3877446117410412,
+              "top_decile_lift": 1.4644255123186738
+            },
+            "logit": {
+              "n": 424.0,
+              "bad_rate": 0.23820754716981132,
+              "auc": 0.6604542807221899,
+              "brier": 0.17374162795050227,
+              "calibration_slope": 0.9565748026256589,
+              "calibration_intercept": -0.5149852613003179,
+              "top_decile_lift": 2.343080819709878
+            },
+            "logit_uncalibrated": {
+              "n": 424.0,
+              "bad_rate": 0.23820754716981132,
+              "auc": 0.6604542807221899,
+              "brier": 0.17255039729632812,
+              "calibration_slope": 0.6929126242993211,
+              "calibration_intercept": -0.5957410901146898,
+              "top_decile_lift": 2.343080819709878
+            },
+            "gbm": {
+              "n": 424.0,
+              "bad_rate": 0.23820754716981132,
+              "auc": 0.6430432516935904,
+              "brier": 0.17934479531631561,
+              "calibration_slope": 0.5320161257818099,
+              "calibration_intercept": -0.6197822026980904,
+              "top_decile_lift": 2.147824084734055
+            },
+            "gbm_isotonic": {
+              "n": 424.0,
+              "bad_rate": 0.23820754716981132,
+              "auc": 0.6360696441161143,
+              "brier": 0.18396080257888867,
+              "calibration_slope": 0.4904757625828837,
+              "calibration_intercept": -0.8095503913915992,
+              "top_decile_lift": 2.2454524522219663
+            },
+            "logit_naive": {
+              "n": 424.0,
+              "bad_rate": 0.23820754716981132,
+              "auc": 0.6504306777426969,
+              "brier": 0.17124173628373124,
+              "calibration_slope": 0.9045124233611885,
+              "calibration_intercept": 0.2818547205914003,
+              "top_decile_lift": 1.9525673497582317
+            }
+          },
+          "val": {
+            "baseline_rule": {
+              "auc": 0.6074536837570013,
+              "brier": 0.217417048507061,
+              "calibration_slope": 2.261692785532437
+            },
+            "logit": {
+              "auc": 0.6928909952606636,
+              "brier": 0.200618643131105,
+              "calibration_slope": 1.0
+            },
+            "logit_uncalibrated": {
+              "auc": 0.6928909952606636,
+              "brier": 0.2025038443700791,
+              "calibration_slope": 0.7243684679936966
+            },
+            "gbm": {
+              "auc": 0.6877638948728996,
+              "brier": 0.21066777105038148,
+              "calibration_slope": 0.5812520740742102
+            },
+            "gbm_isotonic": {
+              "auc": 0.7035114174924602,
+              "brier": 0.19697060210356945,
+              "calibration_slope": 1.0005293051448971
+            },
+            "logit_naive": {
+              "auc": 0.6800086169754416,
+              "brier": 0.228752313423503,
+              "calibration_slope": 1.0139548232982731
+            }
+          },
+          "naive_comparison": {
+            "logit.auc_economic": 0.6604542807221899,
+            "logit.auc_naive": 0.6437688226014627,
+            "logit.recall_all_bad_topk": 0.38613861386138615,
+            "logit.recall_distressed_refi_topk": 0.38636363636363635,
+            "logit.mean_pct_rank_distressed_refi": 0.6205510291595198,
+            "logit.mean_pred": 0.3271301783401984,
+            "logit.observed_economic_bad_rate": 0.23820754716981132,
+            "logit.mean_pred_distressed_refi": 0.39757148687912325,
+            "logit_naive.auc_economic": 0.6504306777426969,
+            "logit_naive.auc_naive": 0.6011759644342464,
+            "logit_naive.recall_all_bad_topk": 0.40594059405940597,
+            "logit_naive.recall_distressed_refi_topk": 0.38636363636363635,
+            "logit_naive.mean_pct_rank_distressed_refi": 0.650782590051458,
+            "logit_naive.mean_pred": 0.1744428068531812,
+            "logit_naive.observed_economic_bad_rate": 0.23820754716981132,
+            "logit_naive.mean_pred_distressed_refi": 0.23261910032430252
+          },
+          "t2": {
+            "n": 1967,
+            "events": 496,
+            "cox_concordance": 0.7201833205329363
+          },
+          "t3": {
+            "n_relationships": 1200,
+            "n_observable": 453,
+            "n_population": 404,
+            "n_scored": 394,
+            "n_train": 170,
+            "n_test": 224,
+            "bad_rate": 0.2436548223350254,
+            "auc_train": 0.7480645874806459,
+            "auc_test": 0.6914620920832101
+          }
+        },
+        "figures": {
+          "model_calibration": "C:/Users/shime/MCA/mca-risk/build/figures/model_calibration.png",
+          "model_lift": "C:/Users/shime/MCA/mca-risk/build/figures/model_lift.png",
+          "model_naive_vs_economic": "C:/Users/shime/MCA/mca-risk/build/figures/model_naive_vs_economic.png",
+          "model_coefficients": "C:/Users/shime/MCA/mca-risk/build/figures/model_coefficients.png",
+          "survival_km": "C:/Users/shime/MCA/mca-risk/build/figures/survival_km.png"
+        },
+        "figure_metric_ids": {
+          "model_calibration": [
+            "T1",
+            "D19"
+          ],
+          "model_lift": [
+            "T1",
+            "D19"
+          ],
+          "model_naive_vs_economic": [
+            "T1",
+            "D18",
+            "D19",
+            "D17"
+          ],
+          "model_coefficients": [
+            "T1",
+            "D13",
+            "D14"
+          ],
+          "survival_km": [
+            "T2",
+            "D19",
+            "D16",
+            "D17"
+          ]
+        },
+        "model_card": "C:/Users/shime/MCA/mca-risk/build/model_card.md"
+      }
+    },
+    "report": {
+      "status": "ok",
+      "started_at": "2026-11-05T00:31:03.264128Z",
+      "finished_at": "2026-11-05T00:31:03.309561Z",
+      "seconds": 0.046,
+      "tables": {},
+      "notes": [],
+      "extra": {
+        "report": {
+          "path": "C:/Users/shime/MCA/mca-risk/build/report.md",
+          "sections": [
+            "Documents",
+            "Headline (from the findings registry)",
+            "Pipeline stages",
+            "Data quality (25 exceptions queued for review)",
+            "Evals"
+          ],
+          "eval_overall": "pass"
+        }
+      }
+    }
+  },
+  "llm": {
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "cost_usd": 0.0,
+    "cache_hits": 258,
+    "models": {
+      "openai/gpt-6-luna": {
+        "calls": 0,
+        "input_tokens": 0,
+        "output_tokens": 0,
+        "cost_usd": 0.0
+      }
+    }
+  },
+  "totals": {
+    "seconds": 26.344
+  }
+}

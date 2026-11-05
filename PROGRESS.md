@@ -11,7 +11,52 @@ scores, known gaps, and the conventions later parts must follow. Gate rules: `CL
 | 4 Ledger + metrics library | done | `part-4` |
 | 5 Portfolio analytics | done | `part-5` |
 | 6 Risk modeling | done | `part-6` |
-| 7 App, report, demo | not started | |
+| 7 App, report, demo | done | `part-7` |
+
+## Final project summary
+
+All seven parts are built and gated. From `raw/` (52 files, 171,770 data rows), `make clean all` rebuilds
+everything in **about 30 s** with no network (budget 2 min): ingest, standardize, resolve, ledger,
+metrics, analytics, model, report. `make lint test` is green with **433 tests** (no xfail or skip).
+`make eval` passes overall, every suite E1-E9 green. The Streamlit app (`app/`, six pages) runs on a
+committed 6.3 MB DuckDB snapshot and is ready for Streamlit Community Cloud. `DEMO.md` is the walkthrough.
+
+**Final eval table** (`evals/reports/latest.md`; gates in `evals/thresholds.json`)
+| Suite | Gated metrics (value, gate) | Status |
+|---|---|---|
+| E1 Ingestion | rows accounted 1.0 (>= 1.0); files reconciled 1.0 (>= 1.0) | pass |
+| E2 Standardization | field accuracy 1.0 (>= 0.995) | pass |
+| E3 Dedupe | payments count diff 0, sum diff 0 cents (== 0) | pass |
+| E4 Entity resolution | pairwise F1 1.0 (>= 0.98) | pass |
+| E5 Linkage | renewal links P 1.0 / R 1.0 (>= 0.98 / 0.97); L1 accuracy 1.0 (>= 0.99); L3 recall 1.0 (>= 0.95) | pass |
+| E6 Definitions | outcome accuracy 0.981 (>= 0.97); D17 precision 0.986 (>= 0.95), recall 0.889 (>= 0.85) | pass |
+| E7 Metrics | deal max error $0.63, relationship $0.00 (<= $1); portfolio 0.21 pp (<= 0.5 pp) | pass |
+| E8 Model | test AUC 0.660 - observable ceiling 0.681 = -0.021 (>= -0.03); calibration slope 0.96 (0.8-1.2); driver signs 7/7 | pass |
+| E9 Notes (optional LLM) | LLM - regex accuracy 0 (>= 0) | pass |
+
+**User decisions log** (details in the part sections below; gate-related ones also in `evals/thresholds.json`)
+| Date | Decision | Where |
+|---|---|---|
+| 2026-11-03 | E6 default date within +/-25 business days stays report-only | Part 1 Q2, Part 4 |
+| 2026-11-03 | METRICS.md v1.1: L1 fourth condition for tracker-missing successors (`inferred_tracker_missing`, 0.6, always queued) | Part 3 |
+| 2026-11-04 | METRICS.md v1.2: D17 counts returns that post after the renewal for debits attempted on or before it; D14 below 20 attempts = returns / attempts; §7 M0219 data note | Part 4 |
+| 2026-11-04 | E7: every D17-dependent P-metric gated at 0.5 pp against spec-on-truth, not the simulator labels (gate value unchanged) | Part 4 |
+| 2026-11-04 | E8 AUC gate relative to the observable ceiling (>= ceiling - 0.03) instead of an absolute 0.70 | Part 6 |
+| 2026-11-04 | Primary `logit` recalibrated on validation, a method chosen after the test split had been read (disclosed) | Part 6 |
+| 2026-11-04 | METRICS.md v1.3 wording fix: for M0219, D6 / R1 / R8 are lower bounds and R3 (0.80) is an upper bound | docs commit after Part 6 |
+| (Part 1) | `openai` (OpenRouter) instead of the Anthropic SDK for the optional notes LLM | Part 1 Q4 |
+
+**Known limitations**
+- The economic bad rate (27.9% closed, P4) is below the simulator's 29.3%: D17 is an observable-stress rule
+  with recall about 0.89 against the hidden distressed labels, so it is a lower bound on them.
+- The 44 tracker-missing deals (Q5) have no commission or contract terms: D6 / R1 / R8 are lower bounds for
+  their relationships and R3 an upper bound (M0219: $6,648 vs the true $10,072; 0.80 vs 0.73).
+- The model's test AUC (0.660) misses the plan's absolute 0.70; it passes only the user-approved relative
+  gate. Its recalibration was chosen after the test read, and the level stays high on test (+0.089
+  calibration-in-the-large). The naive-target model ranks about as well (0.650) but under-predicts risk levels.
+- The app shows a snapshot (`app/data/`): refresh it with `make all eval app-data` and recommit after any
+  pipeline change. Its Evals page prefers `evals/reports/latest.json` when one exists locally.
+- Findings prose (not numbers) is written for this seed; the numbers are registry-checked.
 
 ---
 
@@ -683,4 +728,49 @@ Burden is modelled together with renewal status and term. Without the term, burd
 5. **Agent decision: T3 window** is 18 calendar months from first funding. The population is restricted to relationships whose window has fully elapsed by 2026-09-30.
 
 ## Part 7: App, report, reproducibility, demo
-_not started_
+
+**Status: done, tagged `part-7`.** `make lint test` is green (433 passed, no xfail or skip). `make eval`
+passes overall with E1-E9 all green (scores unchanged from Part 6; table at the top). `make clean all`
+runs in **about 29 s** wall (8 stages, no network; budget 120 s).
+
+### What was built
+| Path | What it is |
+|---|---|
+| `src/mcarisk/pipeline.py` | `python -m mcarisk.pipeline` = `make all`: every stage (ingest .. model, report) in one process into one build dir and one manifest, from an empty DB. `run_all(build_dir, raw_dir=..)` returns per-stage seconds; `TIME_BUDGET_SECONDS = 120`. The per-stage make targets still work. |
+| `src/mcarisk/report.py` | Stage `report` (`make report`): `build/report.md` links findings, model card, DQ report, run manifest, figures and the latest eval report; quotes 9 headline numbers from the findings registry (metric-table queries); stage timings; `data_quality` rule hits; the eval summary of the last `make eval` (with its timestamp and SHA), or "run make eval". Defines no metric. |
+| `src/mcarisk/appdata.py` | `make app-data`: exports the 27 tables the app reads (`APP_TABLES`, column subsets for `ledger`, `deals_resolved`, `payoff_classes`, `merchants`, `raw_sources`) row for row into `app/data/portfolio.duckdb` with 16 KiB blocks (6.3 MB vs 42 MB for the build DB), copies the 11 figure JSONs, findings, registry, model card, DQ report, manifest and `evals/reports/latest.json` (as `eval_latest.json`), and writes `app_data.json` (source run, tables, row counts, figure metric IDs). |
+| `app/Home.py`, `app/common.py`, `app/pages/1_Portfolio.py` .. `6_Evals.py` | Streamlit multipage app (below). `common.py`: read-only DuckDB connection (cursor per query), cached loaders, formatting, `link("D7")` -> `Definitions?id=D7#d7`, `cite(text)` links every metric ID in a text, `mdx` escapes `$`, and a METRICS.md index parser (51 IDs: D1-D19, R1-R10, P1-P9, T1-T3, L1-L3, Q1-Q7). |
+| `app/data/` | The committed snapshot (above). |
+| `app/requirements.txt`, `.streamlit/config.toml` | Community Cloud: the requirements file next to the entrypoint takes precedence over the root `uv.lock` (checked in the current Streamlit docs via Context7), so only streamlit 1.66.1, duckdb 1.4.5, pandas, numpy, pyarrow and plotly are installed (versions = `uv.lock`). Config: headless, no usage stats, light theme. |
+| `Makefile` | `all` -> `mcarisk.pipeline`; `report`, `app-data`, `app` (`uv run streamlit run app/Home.py`) are real targets; the last stub is gone. |
+| `.github/workflows/ci.yml` | `make lint test` (includes the app smoke tests on the committed snapshot and the pipeline time-budget test), `make clean all` (5-minute step timeout), `make eval`, then `make app-data` + `pytest tests/test_app.py` on a snapshot rebuilt in CI. Uploads manifest, report.md and the eval report. |
+| `.gitattributes` | `app/data/**` is byte-exact (`-text`). |
+| `DEMO.md` | The plan.md §6 script with the pipeline's numbers, the page / tab to show at each step and the honest caveats. |
+| `README.md` | Quickstart updated; App and Deploy sections. |
+
+**Pages**
+- **Portfolio**: 9 headline cards from `portfolio_metrics` / `target_metrics` (P1, P2, P3, P4, P6, P8, T1, P5, P9), each with linked metric IDs; the D17-recall note on 27.9% vs 29.3%; tabs: masking, vintages (bad rate by vintage figure + table with immature grey / partial orange, vintage curves), exposure, refinance quality, segments; findings.md with linked IDs.
+- **Merchant drill-down**: any of the 1,200 relationships (default M0219 = `MK1A8B5FBF55`; `?merchant=` or `?deal=`). The METRICS.md §7 v1.3 data note (quoted from METRICS.md) for M0219, a generic tracker-missing note for other relationships. R1-R10 table; chain timeline (fundings, commission, debits, returns, internal vs cash payoffs, settlements, modifications, write-offs, collections-log default / bankruptcy / settlement events, derived D16 default date and outcome; hover shows source file and row); D1-D19 + outcome per deal; lineage popovers for each deal's tracker (or ACH) row, each key event, and all events of a deal; renewal links and payoff classification with method and confidence.
+- **Definitions**: lookup (`?id=D17`), a metric index with one anchored subheader per ID (`#d17`), then METRICS.md in full.
+- **Data quality**: rule-hit table, sample rows per rule, exceptions queue (filter by rule), row accounting (std / ledger / rejects / raw sources with SHA-256), run manifest (stages, totals, LLM usage, full JSON), dq_report.md.
+- **Model**: AUC, slope (and uncalibrated slope), lift cards; disclosure of the relative gate and calibration-after-test; every model's val / test metrics; tabs for calibration, lift, naive vs economic (figure, table and the measured "ranks the same, under-predicts the level" text), coefficients, KM survival + Cox + T3; segment monitoring; model card.
+- **Evals**: source and run of the report, overall status, suite summary, the E8 `gate_change` and E7 `comparison_basis` texts from `evals/thresholds.json`, then per suite the gated metrics, report-only metrics and notes.
+
+### Tests: 433 passed (`make lint test` green); the 411 from Parts 1-6 still pass
+- `tests/test_app.py` (19): AppTest on **every page** with no exception (parametrized) plus key elements per page: Home cards and 6 page links; Portfolio cards equal `portfolio_metrics`, P-metric links, 6 charts, and the vintage table keeps immature / partial / mature rows; **drill-down defaults to M0219, shows deals 1102 and 1150, the lower/upper-bound note, and lineage popovers containing `raw/deal_tracker_2024.xlsx` row 31, `raw/ach_exports/ach_2023_11.csv` row 1090 and `raw/collections_log.xlsx` row 100**; `?deal=` jumps to another relationship; Definitions has all 51 anchored IDs and the lookup; DQ rules, samples, exceptions, manifest; Model AUC equals `model_performance`, 5 charts, the disclosure; Evals has E1-E9, the E8 gate change and E7 basis, report-only metrics. Snapshot: all tables / columns / figures present, < 20 MB. Deployability: `app/` imports only streamlit / duckdb / pandas / plotly / stdlib, no mcarisk, no API key. The ground-truth static scan covers `app/` (code and data snapshot) and is checked to be non-vacuous.
+- `tests/test_pipeline.py` (3): `run_all` from raw/ into a temp dir completes all 8 stages, status ok, **within 120 s**; report.md sections, links and registry numbers; `export_app_data` copies every table row for row.
+
+### Eval scores (`make eval`): overall **pass** (E1-E9), unchanged from Part 6 (table at the top).
+
+### Runtime
+`make clean all`: about 29 s wall (ingest 2.6, standardize 5.0, resolve 4.1, ledger 3.4, metrics 3.3, analytics 2.8, model 7.8, report 0.1; slower than Part 6's 22 s on this machine today, same code paths). `make test`: about 3 min. App pages render in 1-3 s under AppTest.
+
+### Known gaps
+- The app shows the committed snapshot; refresh with `make all eval app-data` and commit after pipeline changes. The Evals page prefers a local `evals/reports/latest.json` over the snapshot copy, so locally it can be newer than the DB snapshot.
+- The deployment itself is not done (it needs the user's Community Cloud account); the Deploy steps are in README.
+- Metric links use relative URLs (`Definitions?id=D7#d7`), which work at the app root (local and Community Cloud).
+- The report's eval summary is from the last `make eval`, which runs after `make all`.
+
+### Open questions / deviations
+1. **Agent decision:** `make all` now runs one Python process (`mcarisk.pipeline`) instead of chaining the per-stage targets, so the time-budget test exercises exactly what `make all` runs. Outputs are unchanged (E1-E9 identical).
+2. **Agent decision:** the app snapshot is a column subset for five tables and leaves out the large internal tables (`raw_*`, `payments_*`, `model_predictions`, ...), which the app does not show.

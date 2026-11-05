@@ -1,7 +1,7 @@
 # MCA risk pipeline. Recipes are POSIX sh and call every tool through `uv run`, so they work on Linux CI
 # and on Windows (GNU make + Git Bash sh). `make all` rebuilds build/ from raw/.
 #
-#   make all            full pipeline (stages not built yet print "not implemented until Part N")
+#   make all            full pipeline from raw/ (python -m mcarisk.pipeline; all stages below, < 2 min)
 #   make ingest         Part 1: raw/ -> build/portfolio.duckdb raw_* tables + build/run_manifest.json
 #   make standardize    Part 2: raw_* -> *_std tables, data_quality, build/dq_report.md (mappings/*.yaml)
 #   make resolve        Part 3: merchants, renewal links, L1 payoffs, L3 repairs, Q3/Q4 links, exceptions
@@ -13,7 +13,9 @@
 #   make test | lint    pytest | ruff check + ruff format --check
 #   make eval           all eval suites (unimplemented suites are reported, not failed)
 #   make eval SUITE=E1  one suite (fails if that suite is not implemented yet)
-#   make app            Streamlit app (Part 7)
+#   make report         Part 7: build/report.md (index of findings, model card, DQ report, eval summary)
+#   make app-data       Part 7: refresh app/data/ (the app's committed DB + figures snapshot) from build/
+#   make app            Streamlit app (Part 7) on app/data/
 #   make clean          remove build/
 
 UV      ?= uv
@@ -27,8 +29,9 @@ SUITE   ?=
 .PHONY: all ingest standardize resolve ledger metrics analytics model report \
         test lint format eval app clean help
 
-all: ingest standardize resolve ledger metrics analytics model report
-	@echo "[all] done -> $(BUILD)/ (see $(BUILD)/run_manifest.json)"
+# One process runs every stage (mcarisk.pipeline), from an empty build/portfolio.duckdb.
+all:
+	$(PY) -m mcarisk.pipeline
 
 ingest:
 	$(PY) -m mcarisk.ingest
@@ -56,8 +59,12 @@ analytics:
 # predictions in DuckDB and build/model_card.md.
 model:
 	$(PY) -m mcarisk.model
+# Part 7: build/report.md (links findings, model card, DQ report, latest eval summary).
 report:
-	@echo "[report] not implemented until Part 7 -- skipped"
+	$(PY) -m mcarisk.report
+# Part 7: refresh the app's committed snapshot app/data/ from build/ (+ evals/reports/latest.json).
+app-data:
+	$(PY) -m mcarisk.appdata
 
 test:
 	$(UV) run pytest
@@ -74,10 +81,10 @@ eval:
 	$(PY) -m evals.run $(if $(SUITE),--suite $(SUITE),)
 
 app:
-	@echo "[app] not implemented until Part 7 (will run: $(UV) run streamlit run app/Home.py)"; exit 1
+	$(UV) run streamlit run app/Home.py
 
 clean:
 	rm -rf $(BUILD)
 
 help:
-	@sed -n '1,17p' Makefile
+	@sed -n '1,20p' Makefile

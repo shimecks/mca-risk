@@ -25,8 +25,32 @@ Everything here is fictional: every merchant, ISO and number.
 ## Quickstart
 ```sh
 uv sync                 # Python 3.12 env from uv.lock
-make all                # pipeline -> build/portfolio.duckdb, run_manifest.json, dq_report.md, findings.md, figures/
-make lint test          # ruff + pytest
-make eval SUITE=E2      # eval suites vs evals/thresholds.json -> evals/reports/
+make all                # full pipeline from raw/ (< 2 min, no network) -> build/: portfolio.duckdb, run_manifest.json,
+                        #   dq_report.md, findings.md, model_card.md, figures/, report.md
+make lint test          # ruff + pytest (incl. Streamlit AppTest smoke tests on every app page)
+make eval               # eval suites E1-E9 vs evals/thresholds.json -> evals/reports/latest.{json,md}
+make app-data           # refresh the app's committed snapshot app/data/ from build/ (+ the latest eval report)
+make app                # Streamlit app on app/data/ (http://localhost:8501)
 ```
-Build status per part, conventions and open questions: `PROGRESS.md`.
+- `build/report.md` links the findings, model card, data-quality report and eval summary.
+- `DEMO.md` is the 15-minute walkthrough script, with the numbers and which app page to show.
+- Build status per part, conventions, user decisions and open questions: `PROGRESS.md`.
+
+## App
+`app/Home.py` plus six pages in `app/pages/`: Portfolio, Merchant drill-down (default: the METRICS.md §7
+relationship M0219), Definitions, Data quality, Model and Evals. The app opens `app/data/portfolio.duckdb`
+read-only (a 27-table export of `build/portfolio.duckdb`, about 6 MB) and the figure JSON next to it. It
+reads `METRICS.md` and `evals/thresholds.json` from the repo, displays only metric-table values, never
+calls the network and needs no API key. Set `MCARISK_APP_DATA` to point it at another snapshot.
+
+## Deploy (Streamlit Community Cloud)
+The snapshot in `app/data/` is committed, so the deployed app needs no pipeline run.
+1. Push the repository to GitHub (with `app/data/` committed; refresh it first with `make all eval app-data`).
+2. On [share.streamlit.io](https://share.streamlit.io), choose **Create app**, pick the repo and branch, and set
+   **Main file path** to `app/Home.py`.
+3. Under **Advanced settings**, choose **Python 3.12**. No secrets are needed.
+4. Deploy. Community Cloud installs `app/requirements.txt` (the dependency file next to the entrypoint takes
+   precedence over the repo-root `uv.lock`, so only streamlit, duckdb, pandas, numpy, pyarrow and plotly are
+   installed). The theme comes from `.streamlit/config.toml`.
+
+To update the deployment, rerun `make all eval app-data`, commit `app/data/` and push.

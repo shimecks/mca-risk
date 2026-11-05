@@ -1,0 +1,9 @@
+# Streamlit Community Cloud dependencies for the app only (app/Home.py). A dependency file next to the
+# entrypoint takes precedence over the repo-root uv.lock, so the deployed app installs just what it
+# imports instead of the whole pipeline stack. Versions match uv.lock.
+streamlit==1.66.1
+duckdb==1.4.5
+pandas==2.3.3
+numpy==2.5.4
+pyarrow==21.0.0
+plotly==7.1.0

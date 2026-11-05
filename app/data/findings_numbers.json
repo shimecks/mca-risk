@@ -1,0 +1,3128 @@
+[
+ {
+  "key": "p1_rep",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.9215325036536083,
+  "text": "92.2%"
+ },
+ {
+  "key": "p1_adj",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.7087696412516719,
+  "text": "70.9%"
+ },
+ {
+  "key": "p2_gap",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = 'all' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 21.27628624019364,
+  "text": "21.3 pp"
+ },
+ {
+  "key": "p3_share",
+  "metric_ids": [
+   "P3",
+   "D8",
+   "D9"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P3' AND metric = 'internal_payoff_share' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.2021910745740264,
+  "text": "20.2%"
+ },
+ {
+  "key": "p4_naive",
+  "metric_ids": [
+   "P4",
+   "D18"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_naive' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.13978494623655913,
+  "text": "14.0%"
+ },
+ {
+  "key": "p4_econ",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.27893738140417457,
+  "text": "27.9%"
+ },
+ {
+  "key": "p4_closed_n",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = 'all' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 1581,
+  "text": "1,581"
+ },
+ {
+  "key": "t1_econ",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'all' AND segment = 'all'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.29067077872012337,
+  "text": "29.1%"
+ },
+ {
+  "key": "t1_naive",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'all' AND segment = 'all'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.16653816499614496,
+  "text": "16.7%"
+ },
+ {
+  "key": "t1_mature_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'all' AND segment = 'all'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 1297,
+  "text": "1,297"
+ },
+ {
+  "key": "t1_funded_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'all' AND segment = 'all'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 2011,
+  "text": "2,011"
+ },
+ {
+  "key": "p6_econ",
+  "metric_ids": [
+   "P6",
+   "R6"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P6' AND metric = 'economic_exposure_cents' AND segment = 'all' AND k IS NULL",
+  "fmt": "usd_m",
+  "wilson": null,
+  "value": 1183871205.0,
+  "text": "$11.84M"
+ },
+ {
+  "key": "p6_contr",
+  "metric_ids": [
+   "P6",
+   "R7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P6' AND metric = 'contractual_balance_cents' AND segment = 'all' AND k IS NULL",
+  "fmt": "usd_m",
+  "wilson": null,
+  "value": 2484089022.0,
+  "text": "$24.84M"
+ },
+ {
+  "key": "p6_open_n",
+  "metric_ids": [
+   "P6",
+   "R5"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P6' AND metric = 'economic_exposure_cents' AND segment = 'all' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 430,
+  "text": "430"
+ },
+ {
+  "key": "p8_share",
+  "metric_ids": [
+   "P8",
+   "D17"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'distressed_share_of_renewals' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.2712700369913687,
+  "text": "27.1%"
+ },
+ {
+  "key": "p8_share_k",
+  "metric_ids": [
+   "P8",
+   "D17"
+  ],
+  "sql": "SELECT numerator FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'distressed_share_of_renewals' AND segment = 'all' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 220,
+  "text": "220"
+ },
+ {
+  "key": "p8_share_n",
+  "metric_ids": [
+   "P8"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'distressed_share_of_renewals' AND segment = 'all' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 811,
+  "text": "811"
+ },
+ {
+  "key": "p8_with",
+  "metric_ids": [
+   "P8",
+   "R9",
+   "D17"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'bad_rate_chains_with_distressed' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.4044943820224719,
+  "text": "40.4%"
+ },
+ {
+  "key": "p8_with_k",
+  "metric_ids": [
+   "P8"
+  ],
+  "sql": "SELECT numerator FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'bad_rate_chains_with_distressed' AND segment = 'all' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 36,
+  "text": "36"
+ },
+ {
+  "key": "p8_with_n",
+  "metric_ids": [
+   "P8"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'bad_rate_chains_with_distressed' AND segment = 'all' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 89,
+  "text": "89"
+ },
+ {
+  "key": "p8_with_lo",
+  "metric_ids": [
+   "P8"
+  ],
+  "sql": "SELECT numerator, denominator FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'bad_rate_chains_with_distressed' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.3085343968169969,
+  "text": "30.9%"
+ },
+ {
+  "key": "p8_with_hi",
+  "metric_ids": [
+   "P8"
+  ],
+  "sql": "SELECT numerator, denominator FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'bad_rate_chains_with_distressed' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.5083577522730738,
+  "text": "50.8%"
+ },
+ {
+  "key": "p8_without",
+  "metric_ids": [
+   "P8",
+   "R9"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'bad_rate_chains_without_distressed' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.1894273127753304,
+  "text": "18.9%"
+ },
+ {
+  "key": "p8_without_lo",
+  "metric_ids": [
+   "P8"
+  ],
+  "sql": "SELECT numerator, denominator FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'bad_rate_chains_without_distressed' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.16177028912748997,
+  "text": "16.2%"
+ },
+ {
+  "key": "p8_without_hi",
+  "metric_ids": [
+   "P8"
+  ],
+  "sql": "SELECT numerator, denominator FROM portfolio_metrics WHERE metric_id = 'P8' AND metric = 'bad_rate_chains_without_distressed' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.22056850687879814,
+  "text": "22.1%"
+ },
+ {
+  "key": "p5_bad",
+  "metric_ids": [
+   "P5",
+   "R9"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P5' AND metric = 'resolved_bad_share' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.21428571428571427,
+  "text": "21.4%"
+ },
+ {
+  "key": "p5_n",
+  "metric_ids": [
+   "P5",
+   "R5"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P5' AND metric = 'resolved_bad_share' AND segment = 'all' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 770,
+  "text": "770"
+ },
+ {
+  "key": "p5_loss",
+  "metric_ids": [
+   "P5",
+   "R8",
+   "R1"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P5' AND metric = 'capital_weighted_loss_rate' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.06536363450744448,
+  "text": "6.5%"
+ },
+ {
+  "key": "p5_mult",
+  "metric_ids": [
+   "P5",
+   "R2",
+   "R1"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P5' AND metric = 'resolved_cash_multiple' AND segment = 'all' AND k IS NULL",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.1449278028098184,
+  "text": "1.14"
+ },
+ {
+  "key": "p9_all",
+  "metric_ids": [
+   "P9"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P9' AND metric = 'modification_cure_rate' AND segment = 'all' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.327683615819209,
+  "text": "32.8%"
+ },
+ {
+  "key": "p9_all_k",
+  "metric_ids": [
+   "P9"
+  ],
+  "sql": "SELECT numerator FROM portfolio_metrics WHERE metric_id = 'P9' AND metric = 'modification_cure_rate' AND segment = 'all' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 58,
+  "text": "58"
+ },
+ {
+  "key": "p9_all_n",
+  "metric_ids": [
+   "P9"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P9' AND metric = 'modification_cure_rate' AND segment = 'all' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 177,
+  "text": "177"
+ },
+ {
+  "key": "p9_closed",
+  "metric_ids": [
+   "P9"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P9' AND metric = 'modification_cure_rate' AND segment = 'closed' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.48739495798319327,
+  "text": "48.7%"
+ },
+ {
+  "key": "p9_closed_n",
+  "metric_ids": [
+   "P9"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P9' AND metric = 'modification_cure_rate' AND segment = 'closed' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 119,
+  "text": "119"
+ },
+ {
+  "key": "m0219_r3",
+  "metric_ids": [
+   "R3"
+  ],
+  "sql": "SELECT r3_cash_multiple FROM relationship_metrics WHERE merchant_key = 'MK1A8B5FBF55'",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.8007959149425838,
+  "text": "0.80"
+ },
+ {
+  "key": "m0219_loss",
+  "metric_ids": [
+   "R8"
+  ],
+  "sql": "SELECT r8_realized_loss_cents FROM relationship_metrics WHERE merchant_key = 'MK1A8B5FBF55'",
+  "fmt": "usd",
+  "wilson": null,
+  "value": 664752,
+  "text": "$6,648"
+ },
+ {
+  "key": "tracker_missing_n",
+  "metric_ids": [
+   "D6",
+   "R1"
+  ],
+  "sql": "SELECT COUNT(*) FROM deal_metrics WHERE NOT commission_known AND tracker_missing",
+  "fmt": "int",
+  "wilson": null,
+  "value": 44,
+  "text": "44"
+ },
+ {
+  "key": "t1e_2023Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q1'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.3333333333333333,
+  "text": "33.3%"
+ },
+ {
+  "key": "t1e_lo_2023Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q1'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.1205838183869109,
+  "text": "12.1%"
+ },
+ {
+  "key": "t1e_hi_2023Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q1'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.6457978644196036,
+  "text": "64.6%"
+ },
+ {
+  "key": "t1n_2023Q1",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2023Q1'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.1111111111111111,
+  "text": "11.1%"
+ },
+ {
+  "key": "t1m_2023Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q1'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 9,
+  "text": "9"
+ },
+ {
+  "key": "t1f_2023Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q1'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 9,
+  "text": "9"
+ },
+ {
+  "key": "p4e_2023Q1",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2023Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.3333333333333333,
+  "text": "33.3%"
+ },
+ {
+  "key": "p4n_2023Q1",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2023Q1' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 9,
+  "text": "9"
+ },
+ {
+  "key": "p1r_2023Q1",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2023Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.9028432289494467,
+  "text": "90.3%"
+ },
+ {
+  "key": "p1a_2023Q1",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2023Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.5541446762443097,
+  "text": "55.4%"
+ },
+ {
+  "key": "p2_2023Q1",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2023Q1' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 34.869855270513696,
+  "text": "34.9 pp"
+ },
+ {
+  "key": "t1e_2023Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q2'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.19047619047619047,
+  "text": "19.0%"
+ },
+ {
+  "key": "t1e_lo_2023Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q2'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.07667565052761793,
+  "text": "7.7%"
+ },
+ {
+  "key": "t1e_hi_2023Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q2'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.40000564690204926,
+  "text": "40.0%"
+ },
+ {
+  "key": "t1n_2023Q2",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2023Q2'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.09523809523809523,
+  "text": "9.5%"
+ },
+ {
+  "key": "t1m_2023Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q2'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 21,
+  "text": "21"
+ },
+ {
+  "key": "t1f_2023Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q2'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 21,
+  "text": "21"
+ },
+ {
+  "key": "p4e_2023Q2",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2023Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.19047619047619047,
+  "text": "19.0%"
+ },
+ {
+  "key": "p4n_2023Q2",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2023Q2' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 21,
+  "text": "21"
+ },
+ {
+  "key": "p1r_2023Q2",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2023Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.958300329916134,
+  "text": "95.8%"
+ },
+ {
+  "key": "p1a_2023Q2",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2023Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.7028576580085814,
+  "text": "70.3%"
+ },
+ {
+  "key": "p2_2023Q2",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2023Q2' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 25.544267190755264,
+  "text": "25.5 pp"
+ },
+ {
+  "key": "t1e_2023Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q3'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.17647058823529413,
+  "text": "17.6%"
+ },
+ {
+  "key": "t1e_lo_2023Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q3'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.0834896904537232,
+  "text": "8.3%"
+ },
+ {
+  "key": "t1e_hi_2023Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q3'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.33513737399842747,
+  "text": "33.5%"
+ },
+ {
+  "key": "t1n_2023Q3",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2023Q3'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.058823529411764705,
+  "text": "5.9%"
+ },
+ {
+  "key": "t1m_2023Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q3'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 34,
+  "text": "34"
+ },
+ {
+  "key": "t1f_2023Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q3'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 34,
+  "text": "34"
+ },
+ {
+  "key": "p4e_2023Q3",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2023Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.17647058823529413,
+  "text": "17.6%"
+ },
+ {
+  "key": "p4n_2023Q3",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2023Q3' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 34,
+  "text": "34"
+ },
+ {
+  "key": "p1r_2023Q3",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2023Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.954489606112146,
+  "text": "95.4%"
+ },
+ {
+  "key": "p1a_2023Q3",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2023Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.6793766130774007,
+  "text": "67.9%"
+ },
+ {
+  "key": "p2_2023Q3",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2023Q3' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 27.511299303474523,
+  "text": "27.5 pp"
+ },
+ {
+  "key": "t1e_2023Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q4'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.2909090909090909,
+  "text": "29.1%"
+ },
+ {
+  "key": "t1e_lo_2023Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q4'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.18771193553959536,
+  "text": "18.8%"
+ },
+ {
+  "key": "t1e_hi_2023Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q4'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.42140720492754985,
+  "text": "42.1%"
+ },
+ {
+  "key": "t1n_2023Q4",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2023Q4'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.18181818181818182,
+  "text": "18.2%"
+ },
+ {
+  "key": "t1m_2023Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q4'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 55,
+  "text": "55"
+ },
+ {
+  "key": "t1f_2023Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2023Q4'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 55,
+  "text": "55"
+ },
+ {
+  "key": "p4e_2023Q4",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2023Q4' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.2909090909090909,
+  "text": "29.1%"
+ },
+ {
+  "key": "p4n_2023Q4",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2023Q4' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 55,
+  "text": "55"
+ },
+ {
+  "key": "p1r_2023Q4",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2023Q4' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.8414802581194843,
+  "text": "84.1%"
+ },
+ {
+  "key": "p1a_2023Q4",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2023Q4' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.7177743303755125,
+  "text": "71.8%"
+ },
+ {
+  "key": "p2_2023Q4",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2023Q4' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 12.370592774397181,
+  "text": "12.4 pp"
+ },
+ {
+  "key": "t1e_2024Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q1'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.1896551724137931,
+  "text": "19.0%"
+ },
+ {
+  "key": "t1e_lo_2024Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q1'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.10934251661120264,
+  "text": "10.9%"
+ },
+ {
+  "key": "t1e_hi_2024Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q1'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.3085237387049922,
+  "text": "30.9%"
+ },
+ {
+  "key": "t1n_2024Q1",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2024Q1'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.08620689655172414,
+  "text": "8.6%"
+ },
+ {
+  "key": "t1m_2024Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q1'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 58,
+  "text": "58"
+ },
+ {
+  "key": "t1f_2024Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q1'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 58,
+  "text": "58"
+ },
+ {
+  "key": "p4e_2024Q1",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2024Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.20689655172413793,
+  "text": "20.7%"
+ },
+ {
+  "key": "p4n_2024Q1",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2024Q1' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 58,
+  "text": "58"
+ },
+ {
+  "key": "p1r_2024Q1",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2024Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.9820631023145701,
+  "text": "98.2%"
+ },
+ {
+  "key": "p1a_2024Q1",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2024Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.8105220702462281,
+  "text": "81.1%"
+ },
+ {
+  "key": "p2_2024Q1",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2024Q1' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 17.154103206834193,
+  "text": "17.2 pp"
+ },
+ {
+  "key": "t1e_2024Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q2'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.3235294117647059,
+  "text": "32.4%"
+ },
+ {
+  "key": "t1e_lo_2024Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q2'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.24057906530881729,
+  "text": "24.1%"
+ },
+ {
+  "key": "t1e_hi_2024Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q2'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.4192895683899344,
+  "text": "41.9%"
+ },
+ {
+  "key": "t1n_2024Q2",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2024Q2'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.18627450980392157,
+  "text": "18.6%"
+ },
+ {
+  "key": "t1m_2024Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q2'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 102,
+  "text": "102"
+ },
+ {
+  "key": "t1f_2024Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q2'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 102,
+  "text": "102"
+ },
+ {
+  "key": "p4e_2024Q2",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2024Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.32673267326732675,
+  "text": "32.7%"
+ },
+ {
+  "key": "p4n_2024Q2",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2024Q2' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 101,
+  "text": "101"
+ },
+ {
+  "key": "p1r_2024Q2",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2024Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.8850248961804494,
+  "text": "88.5%"
+ },
+ {
+  "key": "p1a_2024Q2",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2024Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.6697833978527051,
+  "text": "67.0%"
+ },
+ {
+  "key": "p2_2024Q2",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2024Q2' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 21.52414983277443,
+  "text": "21.5 pp"
+ },
+ {
+  "key": "t1e_2024Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q3'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.34146341463414637,
+  "text": "34.1%"
+ },
+ {
+  "key": "t1e_lo_2024Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q3'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.2636013620103963,
+  "text": "26.4%"
+ },
+ {
+  "key": "t1e_hi_2024Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q3'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.4289281913186044,
+  "text": "42.9%"
+ },
+ {
+  "key": "t1n_2024Q3",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2024Q3'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.17073170731707318,
+  "text": "17.1%"
+ },
+ {
+  "key": "t1m_2024Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q3'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 123,
+  "text": "123"
+ },
+ {
+  "key": "t1f_2024Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q3'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 123,
+  "text": "123"
+ },
+ {
+  "key": "p4e_2024Q3",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2024Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.34959349593495936,
+  "text": "35.0%"
+ },
+ {
+  "key": "p4n_2024Q3",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2024Q3' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 123,
+  "text": "123"
+ },
+ {
+  "key": "p1r_2024Q3",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2024Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.8908448712948058,
+  "text": "89.1%"
+ },
+ {
+  "key": "p1a_2024Q3",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2024Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.672659109635592,
+  "text": "67.3%"
+ },
+ {
+  "key": "p2_2024Q3",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2024Q3' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 21.81857616592139,
+  "text": "21.8 pp"
+ },
+ {
+  "key": "t1e_2024Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q4'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.3560606060606061,
+  "text": "35.6%"
+ },
+ {
+  "key": "t1e_lo_2024Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q4'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.2795059103512503,
+  "text": "28.0%"
+ },
+ {
+  "key": "t1e_hi_2024Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q4'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.4407562222119856,
+  "text": "44.1%"
+ },
+ {
+  "key": "t1n_2024Q4",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2024Q4'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.23484848484848486,
+  "text": "23.5%"
+ },
+ {
+  "key": "t1m_2024Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q4'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 132,
+  "text": "132"
+ },
+ {
+  "key": "t1f_2024Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2024Q4'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 132,
+  "text": "132"
+ },
+ {
+  "key": "p4e_2024Q4",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2024Q4' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.36153846153846153,
+  "text": "36.2%"
+ },
+ {
+  "key": "p4n_2024Q4",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2024Q4' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 130,
+  "text": "130"
+ },
+ {
+  "key": "p1r_2024Q4",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2024Q4' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.8950367085704207,
+  "text": "89.5%"
+ },
+ {
+  "key": "p1a_2024Q4",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2024Q4' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.669879718941992,
+  "text": "67.0%"
+ },
+ {
+  "key": "p2_2024Q4",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2024Q4' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 22.51569896284287,
+  "text": "22.5 pp"
+ },
+ {
+  "key": "t1e_2025Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q1'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.40522875816993464,
+  "text": "40.5%"
+ },
+ {
+  "key": "t1e_lo_2025Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q1'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.3306827885909024,
+  "text": "33.1%"
+ },
+ {
+  "key": "t1e_hi_2025Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q1'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.48441712046341434,
+  "text": "48.4%"
+ },
+ {
+  "key": "t1n_2025Q1",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2025Q1'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.23529411764705882,
+  "text": "23.5%"
+ },
+ {
+  "key": "t1m_2025Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q1'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 153,
+  "text": "153"
+ },
+ {
+  "key": "t1f_2025Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q1'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 153,
+  "text": "153"
+ },
+ {
+  "key": "p4e_2025Q1",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2025Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.40789473684210525,
+  "text": "40.8%"
+ },
+ {
+  "key": "p4n_2025Q1",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2025Q1' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 152,
+  "text": "152"
+ },
+ {
+  "key": "p1r_2025Q1",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2025Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.8630419979022178,
+  "text": "86.3%"
+ },
+ {
+  "key": "p1a_2025Q1",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2025Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.6722685779640794,
+  "text": "67.2%"
+ },
+ {
+  "key": "p2_2025Q1",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2025Q1' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 19.077341993813846,
+  "text": "19.1 pp"
+ },
+ {
+  "key": "t1e_2025Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q2'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.29310344827586204,
+  "text": "29.3%"
+ },
+ {
+  "key": "t1e_lo_2025Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q2'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.23052434873996566,
+  "text": "23.1%"
+ },
+ {
+  "key": "t1e_hi_2025Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q2'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.3646206726884018,
+  "text": "36.5%"
+ },
+ {
+  "key": "t1n_2025Q2",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2025Q2'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.1839080459770115,
+  "text": "18.4%"
+ },
+ {
+  "key": "t1m_2025Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q2'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 174,
+  "text": "174"
+ },
+ {
+  "key": "t1f_2025Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q2'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 174,
+  "text": "174"
+ },
+ {
+  "key": "p4e_2025Q2",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2025Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.30057803468208094,
+  "text": "30.1%"
+ },
+ {
+  "key": "p4n_2025Q2",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2025Q2' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 173,
+  "text": "173"
+ },
+ {
+  "key": "p1r_2025Q2",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2025Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.9179514473612864,
+  "text": "91.8%"
+ },
+ {
+  "key": "p1a_2025Q2",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2025Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.7461495839046092,
+  "text": "74.6%"
+ },
+ {
+  "key": "p2_2025Q2",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2025Q2' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 17.180186345667725,
+  "text": "17.2 pp"
+ },
+ {
+  "key": "t1e_2025Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q3'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.23316062176165803,
+  "text": "23.3%"
+ },
+ {
+  "key": "t1e_lo_2025Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q3'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.17906866959530457,
+  "text": "17.9%"
+ },
+ {
+  "key": "t1e_hi_2025Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q3'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.29766757988644577,
+  "text": "29.8%"
+ },
+ {
+  "key": "t1n_2025Q3",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2025Q3'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.12953367875647667,
+  "text": "13.0%"
+ },
+ {
+  "key": "t1m_2025Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q3'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 193,
+  "text": "193"
+ },
+ {
+  "key": "t1f_2025Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q3'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 193,
+  "text": "193"
+ },
+ {
+  "key": "p4e_2025Q3",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2025Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.234375,
+  "text": "23.4%"
+ },
+ {
+  "key": "p4n_2025Q3",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2025Q3' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 192,
+  "text": "192"
+ },
+ {
+  "key": "p1r_2025Q3",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2025Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.9158533756446752,
+  "text": "91.6%"
+ },
+ {
+  "key": "p1a_2025Q3",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2025Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.749739725500191,
+  "text": "75.0%"
+ },
+ {
+  "key": "p2_2025Q3",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2025Q3' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 16.61136501444842,
+  "text": "16.6 pp"
+ },
+ {
+  "key": "t1e_2025Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q4'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.2534562211981567,
+  "text": "25.3%"
+ },
+ {
+  "key": "t1e_lo_2025Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q4'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.20021442600626574,
+  "text": "20.0%"
+ },
+ {
+  "key": "t1e_hi_2025Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q4'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.31527509950499455,
+  "text": "31.5%"
+ },
+ {
+  "key": "t1n_2025Q4",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2025Q4'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.14746543778801843,
+  "text": "14.7%"
+ },
+ {
+  "key": "t1m_2025Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q4'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 217,
+  "text": "217"
+ },
+ {
+  "key": "t1f_2025Q4",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2025Q4'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 217,
+  "text": "217"
+ },
+ {
+  "key": "p4e_2025Q4",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2025Q4' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.23,
+  "text": "23.0%"
+ },
+ {
+  "key": "p4n_2025Q4",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2025Q4' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 200,
+  "text": "200"
+ },
+ {
+  "key": "p1r_2025Q4",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2025Q4' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.9223899900205095,
+  "text": "92.2%"
+ },
+ {
+  "key": "p1a_2025Q4",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2025Q4' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.7258290963550158,
+  "text": "72.6%"
+ },
+ {
+  "key": "p2_2025Q4",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2025Q4' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 19.656089366549367,
+  "text": "19.7 pp"
+ },
+ {
+  "key": "t1e_2026Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q1'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.07692307692307693,
+  "text": "7.7%"
+ },
+ {
+  "key": "t1e_lo_2026Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q1'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.0213550884722762,
+  "text": "2.1%"
+ },
+ {
+  "key": "t1e_hi_2026Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q1'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.2414155377162906,
+  "text": "24.1%"
+ },
+ {
+  "key": "t1n_2026Q1",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2026Q1'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.0,
+  "text": "0.0%"
+ },
+ {
+  "key": "t1m_2026Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q1'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 26,
+  "text": "26"
+ },
+ {
+  "key": "t1f_2026Q1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q1'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 227,
+  "text": "227"
+ },
+ {
+  "key": "p4e_2026Q1",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2026Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.17647058823529413,
+  "text": "17.6%"
+ },
+ {
+  "key": "p4n_2026Q1",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2026Q1' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 187,
+  "text": "187"
+ },
+ {
+  "key": "p1r_2026Q1",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2026Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.9721366496295215,
+  "text": "97.2%"
+ },
+ {
+  "key": "p1a_2026Q1",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2026Q1' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.7380357590559263,
+  "text": "73.8%"
+ },
+ {
+  "key": "p2_2026Q1",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2026Q1' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 23.410089057359517,
+  "text": "23.4 pp"
+ },
+ {
+  "key": "t1e_2026Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q2'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": null,
+  "text": "n/a"
+ },
+ {
+  "key": "t1e_lo_2026Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q2'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": null,
+  "text": "n/a"
+ },
+ {
+  "key": "t1e_hi_2026Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q2'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": null,
+  "text": "n/a"
+ },
+ {
+  "key": "t1n_2026Q2",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2026Q2'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": null,
+  "text": "n/a"
+ },
+ {
+  "key": "t1m_2026Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q2'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 0,
+  "text": "0"
+ },
+ {
+  "key": "t1f_2026Q2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q2'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 268,
+  "text": "268"
+ },
+ {
+  "key": "p4e_2026Q2",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2026Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.21138211382113822,
+  "text": "21.1%"
+ },
+ {
+  "key": "p4n_2026Q2",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2026Q2' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 123,
+  "text": "123"
+ },
+ {
+  "key": "p1r_2026Q2",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2026Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.9939618682854294,
+  "text": "99.4%"
+ },
+ {
+  "key": "p1a_2026Q2",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2026Q2' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.6845549469244079,
+  "text": "68.5%"
+ },
+ {
+  "key": "p2_2026Q2",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2026Q2' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 30.940692136102154,
+  "text": "30.9 pp"
+ },
+ {
+  "key": "t1e_2026Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q3'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": null,
+  "text": "n/a"
+ },
+ {
+  "key": "t1e_lo_2026Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q3'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": null,
+  "text": "n/a"
+ },
+ {
+  "key": "t1e_hi_2026Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q3'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": null,
+  "text": "n/a"
+ },
+ {
+  "key": "t1n_2026Q3",
+  "metric_ids": [
+   "T1",
+   "D18"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_naive' AND dimension = 'vintage' AND segment = '2026Q3'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": null,
+  "text": "n/a"
+ },
+ {
+  "key": "t1m_2026Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q3'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 0,
+  "text": "0"
+ },
+ {
+  "key": "t1f_2026Q3",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT n_deals FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'vintage' AND segment = '2026Q3'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 245,
+  "text": "245"
+ },
+ {
+  "key": "p4e_2026Q3",
+  "metric_ids": [
+   "P4",
+   "D19"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2026Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.5652173913043478,
+  "text": "56.5%"
+ },
+ {
+  "key": "p4n_2026Q3",
+  "metric_ids": [
+   "P4"
+  ],
+  "sql": "SELECT denominator FROM portfolio_metrics WHERE metric_id = 'P4' AND metric = 'bad_rate_economic' AND segment = '2026Q3' AND k IS NULL",
+  "fmt": "int",
+  "wilson": null,
+  "value": 23,
+  "text": "23"
+ },
+ {
+  "key": "p1r_2026Q3",
+  "metric_ids": [
+   "P1",
+   "D10"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'reported_collection_rate' AND segment = '2026Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 1.0,
+  "text": "100.0%"
+ },
+ {
+  "key": "p1a_2026Q3",
+  "metric_ids": [
+   "P1",
+   "D11"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P1' AND metric = 'adjusted_collection_rate' AND segment = '2026Q3' AND k IS NULL",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.38890732399733785,
+  "text": "38.9%"
+ },
+ {
+  "key": "p2_2026Q3",
+  "metric_ids": [
+   "P2"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P2' AND metric = 'renewal_masking_gap_pp' AND segment = '2026Q3' AND k IS NULL",
+  "fmt": "pp",
+  "wilson": null,
+  "value": 61.109267600266215,
+  "text": "61.1 pp"
+ },
+ {
+  "key": "p7_2023Q1_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2023Q1' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.9578419129319471,
+  "text": "0.96"
+ },
+ {
+  "key": "p7_2023Q1_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2023Q1' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.2009625491193519,
+  "text": "1.20"
+ },
+ {
+  "key": "p7_2023Q2_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2023Q2' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.7629977851362212,
+  "text": "0.76"
+ },
+ {
+  "key": "p7_2023Q2_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2023Q2' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.0857646783173216,
+  "text": "1.09"
+ },
+ {
+  "key": "p7_2023Q3_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2023Q3' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.8847103165798741,
+  "text": "0.88"
+ },
+ {
+  "key": "p7_2023Q3_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2023Q3' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.1242240677144766,
+  "text": "1.12"
+ },
+ {
+  "key": "p7_2023Q4_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2023Q4' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.7809483373712752,
+  "text": "0.78"
+ },
+ {
+  "key": "p7_2023Q4_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2023Q4' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.990646237667829,
+  "text": "0.99"
+ },
+ {
+  "key": "p7_2024Q1_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2024Q1' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.8470298498931523,
+  "text": "0.85"
+ },
+ {
+  "key": "p7_2024Q1_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2024Q1' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.0537072250147363,
+  "text": "1.05"
+ },
+ {
+  "key": "p7_2024Q2_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2024Q2' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.806327420257484,
+  "text": "0.81"
+ },
+ {
+  "key": "p7_2024Q2_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2024Q2' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.0369626913906833,
+  "text": "1.04"
+ },
+ {
+  "key": "p7_2024Q3_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2024Q3' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.8112832630848832,
+  "text": "0.81"
+ },
+ {
+  "key": "p7_2024Q3_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2024Q3' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.0112984352048782,
+  "text": "1.01"
+ },
+ {
+  "key": "p7_2024Q4_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2024Q4' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.8181286770781323,
+  "text": "0.82"
+ },
+ {
+  "key": "p7_2024Q4_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2024Q4' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.058598387388018,
+  "text": "1.06"
+ },
+ {
+  "key": "p7_2025Q1_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2025Q1' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.8609446910157819,
+  "text": "0.86"
+ },
+ {
+  "key": "p7_2025Q1_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2025Q1' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.0628832116849416,
+  "text": "1.06"
+ },
+ {
+  "key": "p7_2025Q2_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2025Q2' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.834302875311804,
+  "text": "0.83"
+ },
+ {
+  "key": "p7_2025Q2_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2025Q2' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.05191783201192,
+  "text": "1.05"
+ },
+ {
+  "key": "p7_2025Q3_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2025Q3' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.8446222206018495,
+  "text": "0.84"
+ },
+ {
+  "key": "p7_2025Q3_12",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2025Q3' AND k = 12",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 1.0831011673962039,
+  "text": "1.08"
+ },
+ {
+  "key": "p7_2025Q4_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2025Q4' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.8376520290831774,
+  "text": "0.84"
+ },
+ {
+  "key": "p7_2026Q1_6",
+  "metric_ids": [
+   "P7"
+  ],
+  "sql": "SELECT value FROM portfolio_metrics WHERE metric_id = 'P7' AND metric = 'cumulative_cash_multiple' AND segment = '2026Q1' AND k = 6",
+  "fmt": "x2",
+  "wilson": null,
+  "value": 0.8851101893052316,
+  "text": "0.89"
+ },
+ {
+  "key": "seg_industry_Construction",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'industry' AND segment = 'Construction'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.38562091503267976,
+  "text": "38.6%"
+ },
+ {
+  "key": "seg_industry_Construction_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'industry' AND segment = 'Construction'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.312195215399136,
+  "text": "31.2%"
+ },
+ {
+  "key": "seg_industry_Construction_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'industry' AND segment = 'Construction'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.46464950242503933,
+  "text": "46.5%"
+ },
+ {
+  "key": "seg_industry_Construction_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'industry' AND segment = 'Construction'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 153,
+  "text": "153"
+ },
+ {
+  "key": "seg_industry_Medical/Dental",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'industry' AND segment = 'Medical/Dental'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.16470588235294117,
+  "text": "16.5%"
+ },
+ {
+  "key": "seg_industry_Medical/Dental_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'industry' AND segment = 'Medical/Dental'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.10072462065396519,
+  "text": "10.1%"
+ },
+ {
+  "key": "seg_industry_Medical/Dental_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'industry' AND segment = 'Medical/Dental'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.2576830331978105,
+  "text": "25.8%"
+ },
+ {
+  "key": "seg_industry_Medical/Dental_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'industry' AND segment = 'Medical/Dental'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 85,
+  "text": "85"
+ },
+ {
+  "key": "seg_iso_Keystone Referral Group",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'iso' AND segment = 'Keystone Referral Group'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.38095238095238093,
+  "text": "38.1%"
+ },
+ {
+  "key": "seg_iso_Keystone Referral Group_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'iso' AND segment = 'Keystone Referral Group'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.2844714924548898,
+  "text": "28.4%"
+ },
+ {
+  "key": "seg_iso_Keystone Referral Group_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'iso' AND segment = 'Keystone Referral Group'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.48784558573907677,
+  "text": "48.8%"
+ },
+ {
+  "key": "seg_iso_Keystone Referral Group_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'iso' AND segment = 'Keystone Referral Group'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 84,
+  "text": "84"
+ },
+ {
+  "key": "seg_iso_Hudson Bridge Capital Advisors",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'iso' AND segment = 'Hudson Bridge Capital Advisors'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.20869565217391303,
+  "text": "20.9%"
+ },
+ {
+  "key": "seg_iso_Hudson Bridge Capital Advisors_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'iso' AND segment = 'Hudson Bridge Capital Advisors'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.1444453928121506,
+  "text": "14.4%"
+ },
+ {
+  "key": "seg_iso_Hudson Bridge Capital Advisors_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'iso' AND segment = 'Hudson Bridge Capital Advisors'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.29177828985831866,
+  "text": "29.2%"
+ },
+ {
+  "key": "seg_iso_Hudson Bridge Capital Advisors_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'iso' AND segment = 'Hudson Bridge Capital Advisors'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 115,
+  "text": "115"
+ },
+ {
+  "key": "seg_positions_0",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '0'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.20473773265651438,
+  "text": "20.5%"
+ },
+ {
+  "key": "seg_positions_0_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '0'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.17416189392045123,
+  "text": "17.4%"
+ },
+ {
+  "key": "seg_positions_0_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '0'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.23912715171548726,
+  "text": "23.9%"
+ },
+ {
+  "key": "seg_positions_0_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '0'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 591,
+  "text": "591"
+ },
+ {
+  "key": "seg_positions_1",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '1'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.302158273381295,
+  "text": "30.2%"
+ },
+ {
+  "key": "seg_positions_1_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '1'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.26005532002929865,
+  "text": "26.0%"
+ },
+ {
+  "key": "seg_positions_1_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '1'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.3478730422038986,
+  "text": "34.8%"
+ },
+ {
+  "key": "seg_positions_1_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '1'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 417,
+  "text": "417"
+ },
+ {
+  "key": "seg_positions_2",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '2'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.46938775510204084,
+  "text": "46.9%"
+ },
+ {
+  "key": "seg_positions_2_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '2'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.39052152210813906,
+  "text": "39.1%"
+ },
+ {
+  "key": "seg_positions_2_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '2'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.5498131838118142,
+  "text": "55.0%"
+ },
+ {
+  "key": "seg_positions_2_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '2'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 147,
+  "text": "147"
+ },
+ {
+  "key": "seg_positions_3+",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '3+'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.631578947368421,
+  "text": "63.2%"
+ },
+ {
+  "key": "seg_positions_3+_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '3+'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.47283959557009003,
+  "text": "47.3%"
+ },
+ {
+  "key": "seg_positions_3+_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '3+'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.7661578075284404,
+  "text": "76.6%"
+ },
+ {
+  "key": "seg_positions_3+_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'positions' AND segment = '3+'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 38,
+  "text": "38"
+ },
+ {
+  "key": "seg_burden_<15%",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'burden' AND segment = '<15%'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.37209302325581395,
+  "text": "37.2%"
+ },
+ {
+  "key": "seg_burden_<15%_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'burden' AND segment = '<15%'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.3226897987140892,
+  "text": "32.3%"
+ },
+ {
+  "key": "seg_burden_<15%_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'burden' AND segment = '<15%'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.4243213819014958,
+  "text": "42.4%"
+ },
+ {
+  "key": "seg_burden_<15%_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'burden' AND segment = '<15%'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 344,
+  "text": "344"
+ },
+ {
+  "key": "seg_burden_20-25%",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT value FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'burden' AND segment = '20-25%'",
+  "fmt": "pct",
+  "wilson": null,
+  "value": 0.2396694214876033,
+  "text": "24.0%"
+ },
+ {
+  "key": "seg_burden_20-25%_lo",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'burden' AND segment = '20-25%'",
+  "fmt": "pct",
+  "wilson": "lo",
+  "value": 0.19022095227582697,
+  "text": "19.0%"
+ },
+ {
+  "key": "seg_burden_20-25%_hi",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT numerator, denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'burden' AND segment = '20-25%'",
+  "fmt": "pct",
+  "wilson": "hi",
+  "value": 0.2972536152587774,
+  "text": "29.7%"
+ },
+ {
+  "key": "seg_burden_20-25%_n",
+  "metric_ids": [
+   "T1",
+   "D19"
+  ],
+  "sql": "SELECT denominator FROM target_metrics WHERE metric_id = 'T1' AND metric = 'bad_rate_economic' AND dimension = 'burden' AND segment = '20-25%'",
+  "fmt": "int",
+  "wilson": null,
+  "value": 242,
+  "text": "242"
+ }
+]

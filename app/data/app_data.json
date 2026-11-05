@@ -1,0 +1,122 @@
+{
+  "exported_at": "2026-11-05T00:31:18Z",
+  "source_run_id": "20261105T003036Z-7a03979",
+  "source_git": {
+    "sha": "7a039799942375098ea496e1e4207c32eecc4b19",
+    "dirty": true
+  },
+  "metrics_md": "v1.3",
+  "db_bytes": 6287360,
+  "tables": {
+    "portfolio_metrics": 466,
+    "target_metrics": 102,
+    "relationship_metrics": 1200,
+    "deal_metrics": 2011,
+    "merchants": 1200,
+    "deals_resolved": 2011,
+    "deal_links": 811,
+    "ledger": 155067,
+    "deal_status_events": 391,
+    "payoff_classes": 836,
+    "misposting_repairs": 227,
+    "data_quality": 16,
+    "exceptions": 25,
+    "std_accounting": 6,
+    "ledger_accounting": 3,
+    "raw_sources": 52,
+    "raw_rejects": 2,
+    "ledger_rejects": 1,
+    "model_performance": 264,
+    "model_coefficients": 20,
+    "model_calibration": 120,
+    "model_lift": 120,
+    "model_naive_comparison": 16,
+    "model_fairness": 20,
+    "survival_km": 663,
+    "survival_cox": 9,
+    "t3_summary": 10
+  },
+  "files": [
+    "findings.md",
+    "findings_numbers.json",
+    "model_card.md",
+    "dq_report.md",
+    "run_manifest.json",
+    "eval_latest.json"
+  ],
+  "figures": {
+    "masking": "figures/masking.plotly.json",
+    "bad_rate_vintage": "figures/bad_rate_vintage.plotly.json",
+    "exposure": "figures/exposure.plotly.json",
+    "vintage_curves": "figures/vintage_curves.plotly.json",
+    "refi_quality": "figures/refi_quality.plotly.json",
+    "segments": "figures/segments.plotly.json",
+    "model_calibration": "figures/model_calibration.plotly.json",
+    "model_lift": "figures/model_lift.plotly.json",
+    "model_naive_vs_economic": "figures/model_naive_vs_economic.plotly.json",
+    "model_coefficients": "figures/model_coefficients.plotly.json",
+    "survival_km": "figures/survival_km.plotly.json"
+  },
+  "figure_metric_ids": {
+    "masking": [
+      "P1",
+      "P2",
+      "P3",
+      "D9",
+      "D10",
+      "D11"
+    ],
+    "bad_rate_vintage": [
+      "T1",
+      "D18",
+      "D19",
+      "P4"
+    ],
+    "exposure": [
+      "P6",
+      "R6",
+      "R7"
+    ],
+    "vintage_curves": [
+      "P7",
+      "R1",
+      "R2"
+    ],
+    "refi_quality": [
+      "P8",
+      "P9",
+      "P5",
+      "R9",
+      "D17"
+    ],
+    "segments": [
+      "T1",
+      "D19"
+    ],
+    "model_calibration": [
+      "T1",
+      "D19"
+    ],
+    "model_lift": [
+      "T1",
+      "D19"
+    ],
+    "model_naive_vs_economic": [
+      "T1",
+      "D18",
+      "D19",
+      "D17"
+    ],
+    "model_coefficients": [
+      "T1",
+      "D13",
+      "D14"
+    ],
+    "survival_km": [
+      "T2",
+      "D19",
+      "D16",
+      "D17"
+    ]
+  }
+}

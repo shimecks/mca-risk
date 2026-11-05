@@ -22,14 +22,22 @@ jobs:
       - name: Install dependencies (locked)
         run: uv sync --locked
 
+      # Includes the app smoke tests (tests/test_app.py, AppTest on every page) against the committed
+      # snapshot app/data/, and the full-pipeline time-budget test (tests/test_pipeline.py).
       - name: Lint and test
         run: make lint test
 
-      - name: Full pipeline from a clean build/
+      - name: Full pipeline from a clean build/ (budget 2 minutes, no network)
         run: make clean all
+        timeout-minutes: 5
 
-      - name: Evals (implemented suites are gated; unimplemented ones are reported)
+      - name: Evals E1-E9 (every gate must pass)
         run: make eval
+
+      - name: App smoke tests on a snapshot rebuilt from this run
+        run: |
+          make app-data
+          uv run pytest tests/test_app.py -q
 
       - name: Upload build manifest and eval report
         if: always()
@@ -38,5 +46,6 @@ jobs:
           name: run-artifacts
           path: |
             build/run_manifest.json
+            build/report.md
             evals/reports/latest.*
           if-no-files-found: warn

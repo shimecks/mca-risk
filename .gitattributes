@@ -14,3 +14,6 @@ ground_truth/** -text
 *.yaml text eol=lf
 Makefile text eol=lf
 *.jsonl text eol=lf
+# app data snapshot (make app-data): binary DuckDB file, byte-identical on every OS
+app/data/*.duckdb binary
+app/data/** -text
